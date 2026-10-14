@@ -173,3 +173,5 @@ Tiếp nối Mission 1 trong `evidence-log.md`. Giữ yêu cầu không có trư
 **Quyết định người dùng:** USER-DECISION: giữ demo local trước sau khi thấy Streamlit yêu cầu quyền GitHub rộng (public repositories, webhooks/services, Codespaces, email/tổ chức). Không cấp quyền thay người dùng; dừng deploy và đóng tab authorize. Quyền dùng Gemini đã xác nhận ở M2-EL-004; budget/model/key local vẫn chưa có.
 
 **AI-PROPOSAL và phần chờ:** Ba Forced Decisions/kịch bản video vẫn là bản thảo để người dùng rà soát. Chưa chạy T01–T03/T06/T09 live, chưa có human audit thực, chi phí live, demo online hoặc video bài nộp cuối. Preview offline không thay thế các yêu cầu này. Deadline chính xác chưa được cung cấp.
+
+**Cập nhật kiểm chứng bổ sung:** GitHub Actions `Offline tests` đã hiển thị completed successfully cho implementation commit `21e3e14`: https://github.com/nghunganh110/gamota-game-market-intelligence/actions/runs/38584626587. Main local và remote đã đồng bộ sau báo cáo môi trường sạch. Video preview offline đã xác minh H.264, 88 giây, ảnh màn hình thực và phụ đề đọc được; đây là video minh họa tiến độ, không phải live research hoặc video bài nộp cuối.
