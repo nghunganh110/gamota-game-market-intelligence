@@ -8,6 +8,10 @@ Lần đầu: 30 passed, 3 failed. Hai UI tests sai đường dẫn; một HTML 
 
 Lần sau: 33 passed; sau khi thêm kiểm tra sửa đánh giá nguồn, blocker định nghĩa trước, PDF reader và pipeline mock đầy đủ: **37 passed**. Bao gồm kiểm tra UI/review, API disabled, mock SDK/schema/attribution, scope/cutoff/citation, lỗi thu thập và reader. `test_known_semantic_failure...` PASS vì tái hiện được giới hạn sản phẩm; không phải semantic support PASS.
 
+## Kiểm tra môi trường sạch
+
+Source từ Git archive + venv Python mới + requirements.txt (cài từ cache offline): **37 passed**. Artifact: test-artifacts/pytest-clean.xml. Browser cold start và các tình huống good/conflict/missing/semantic failure đã mở được. Khi hot-reload sau thay đổi module, server giữ import cũ và báo thiếu SourceReview; restart server giải quyết, cold start không tái hiện lỗi này.
+
 ## Các tình huống có kết quả thực tế
 
 ### O01 — Tình huống tốt

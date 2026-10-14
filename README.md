@@ -6,7 +6,7 @@ MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn �
 
 ## Chạy local
 
-Môi trường đã kiểm thử: Python 3.13.12, Streamlit 1.65.0, google-genai 1.75.0. Dependencies được khóa trong `requirements.txt`.
+Môi trường đã kiểm thử: Python 3.13.12, Streamlit 1.65.0, google-genai 1.75.0. Dependencies được khóa trong `requirements.txt`. Đã tạo source checkout sạch và venv mới, cài dependency từ cache rồi chạy **37/37 tests đạt**. Khi sửa các module Python trong lúc phát triển, khởi động lại server nếu Streamlit giữ import cũ.
 
 ```sh
 python3.13 -m venv .venv
@@ -63,6 +63,6 @@ SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/pyt
 
 ## Demo và bài nộp
 
-Demo local đã chạy; chưa deploy online. Deploy còn cần repo public, đăng nhập nền tảng và smoke test. Trên Streamlit Community Cloud, chọn `app.py`, Python 3.13 và `requirements.txt`; demo public ban đầu chỉ replay, không đặt live key. Chưa có URL deployment được xác minh.
+Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. Demo local đã chạy; người dùng chọn **giữ demo local trước** khi Streamlit yêu cầu cấp quyền GitHub. Chưa cấp quyền/deploy online. Khi người dùng muốn tiếp tục, deploy cần đăng nhập nền tảng và smoke test. Trên Streamlit Community Cloud, chọn `app.py`, Python 3.13 và `requirements.txt`; demo public ban đầu chỉ replay, không đặt live key. Chưa có URL deployment được xác minh.
 
 [Technical plan](docs/mission2/mission2-technical-plan.md) giữ nguyên lịch sử đề xuất; [Evidence Log](docs/mission2/mission2-evidence-log.md) ghi xác nhận mới. Báo cáo Mission 1 trong `docs/mission1` chỉ là tài liệu nền. [Ba Forced Decisions](docs/mission2/forced-decisions-draft.md) và [kịch bản video](docs/mission2/video-script.md) là AI-PROPOSAL để người dùng rà soát. Không tự nộp thay người dùng.

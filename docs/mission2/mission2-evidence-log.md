@@ -153,3 +153,23 @@ Tiếp nối Mission 1 trong `evidence-log.md`. Giữ yêu cầu không có trư
 **Đề xuất/chi tiết AI:** AI-PROPOSAL: triển khai offline trước, một search call + một extraction call, cap attempts theo browser session và public demo giữ live tắt. Các bản thảo Forced Decisions cần người dùng rà soát. Không thay stack đã duyệt hoặc tự thêm dịch vụ retrieval trả phí.
 
 **Trạng thái mới thay thế phần “Trạng thái thực tế” cũ:** Có implementation và tests offline/local demo. Chưa có live research, reviewer audit, public repo được xác minh, deploy online hoặc video bài nộp cuối. Quota/budget/model và deadline vẫn chưa chốt. Không có timestamp cuộc trò chuyện trong log; ngày publication/access/cutoff trong evidence schemas là metadata nghiên cứu.
+
+## M2-EL-005 Repo public, cold start và lựa chọn demo local
+
+**Công cụ/model:** Git, GitHub browser, Python/pytest, Streamlit browser, FFmpeg; không gọi Gemini API.
+
+**Nguyên văn trả lời mới của người dùng:**
+
+> Giữ demo local trước
+
+**Mục tiêu:** Đưa mã đã kiểm thử lên GitHub public, xác minh fresh local run, chuẩn bị gói review và thử điều kiện deploy.
+
+**Kết quả AI:** Tạo repo public `nghunganh110/gamota-game-market-intelligence`, merge README khởi tạo GitHub với README đầy đủ local; push main thành công và xác nhận app.py/gmi/tests/docs hiện trên trang public. Thêm reviewer sửa source assessment và lưu history; hard blocker phải định nghĩa trước. Kiểm thử cuối 37 passed. Tạo source checkout sạch từ Git archive và venv mới, cài requirements từ cache offline, 37 passed. Demo browser tái hiện good/conflict/missing/semantic failure. Có video preview offline 88 giây bằng ảnh màn hình thực và phụ đề, không có narration và không phải live research.
+
+**Nguồn bằng chứng:** Git push result, repo URL, pytest-final/pytest-clean artifacts, browser screenshots và metadata video. Secret-pattern scan không phát hiện key/private-key patterns ở tracked text; .env/.streamlit/secrets.toml/.venv bị ignore; không commit key.
+
+**Hành động kiểm chứng và lỗi giữ lại:** Bản server đang chạy trước thay đổi module giữ import cũ và báo thiếu SourceReview khi hot reload. Restart server và browser cold start chạy được. Repo public đã được kiểm tra trên trang; GitHub CI chỉ ghi đạt sau khi nhìn thấy kết quả cụ thể. Video preview được kiểm tra duration và frame ngữ nghĩa. Không tạo snapshot thị trường giả.
+
+**Quyết định người dùng:** USER-DECISION: giữ demo local trước sau khi thấy Streamlit yêu cầu quyền GitHub rộng (public repositories, webhooks/services, Codespaces, email/tổ chức). Không cấp quyền thay người dùng; dừng deploy và đóng tab authorize. Quyền dùng Gemini đã xác nhận ở M2-EL-004; budget/model/key local vẫn chưa có.
+
+**AI-PROPOSAL và phần chờ:** Ba Forced Decisions/kịch bản video vẫn là bản thảo để người dùng rà soát. Chưa chạy T01–T03/T06/T09 live, chưa có human audit thực, chi phí live, demo online hoặc video bài nộp cuối. Preview offline không thay thế các yêu cầu này. Deadline chính xác chưa được cung cấp.
