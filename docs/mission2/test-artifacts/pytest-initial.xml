@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="33" time="1.440" timestamp="2026-10-14T21:41:59.927180+07:00" hostname="hunganh-OMEN-by-HP-Gaming-Laptop-16-wf0xxx"><testcase classname="tests.test_app" name="test_replay_ui_and_review" time="0.002"><failure message="FileNotFoundError: AppTest script not found at /home/hunganh/Documents/Codex/2026-10-14/gamota-game-market-intelligence/project/tests/app.py. Relative paths are resolved against the file that calls AppTest.from_file().">def test_replay_ui_and_review():
+&gt;       app=AppTest.from_file('app.py').run(timeout=20)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_app.py:4: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = &lt;class 'streamlit.testing.v1.app_test.AppTest'&gt;
+script_path = PosixPath('app.py'), default_timeout = 3
+
+    @classmethod
+    def from_file(
+        cls, script_path: str | Path, *, default_timeout: float = 3
+    ) -&gt; AppTest:
+        """
+        Create an ``AppTest`` for an app entrypoint defined in a file.
+    
+        This option is most convenient for CI workflows and testing of
+        published apps. The script must be executable on its own and so must
+        contain all necessary imports. For a multipage app, pass the main
+        script that you would supply to ``streamlit run``. To test a
+        file-based child page, initialize from the main script and use
+        ``AppTest.switch_page()``.
+    
+        Parameters
+        ----------
+        script_path: str | Path
+            Path to the app's entrypoint script. An absolute path is used as
+            given. A relative path is resolved against the Python file that
+            calls ``AppTest.from_file()``.
+    
+        default_timeout: float
+            Default time in seconds before a script run is timed out. Can be
+            overridden for individual ``.run()`` calls.
+    
+        Returns
+        -------
+        AppTest
+            A simulated Streamlit app for testing. The simulated app can be
+            executed via ``.run()``.
+    
+        Raises
+        ------
+        FileNotFoundError
+            If ``script_path`` does not point to an existing file.
+    
+        Examples
+        --------
+        Initialize a multipage app from its entrypoint, then switch to a page:
+    
+        &gt;&gt;&gt; at = AppTest.from_file("app.py").run()
+        &gt;&gt;&gt; at.switch_page("pages/settings.py").run()
+        """
+        script_path = Path(script_path)
+        if script_path.is_absolute():
+            path = script_path
+        else:
+            stack = traceback.StackSummary.extract(traceback.walk_stack(None))
+            caller_file = Path(stack[1].filename)
+            path = caller_file.parent / script_path
+    
+        if not path.is_file():
+&gt;           raise FileNotFoundError(
+                f"AppTest script not found at {path.resolve()}. Relative paths are "
+                "resolved against the file that calls AppTest.from_file()."
+            )
+E           FileNotFoundError: AppTest script not found at /home/hunganh/Documents/Codex/2026-10-14/gamota-game-market-intelligence/project/tests/app.py. Relative paths are resolved against the file that calls AppTest.from_file().
+
+.venv/lib/python3.13/site-packages/streamlit/testing/v1/app_test.py:464: FileNotFoundError</failure></testcase><testcase classname="tests.test_app" name="test_live_ui_disabled_by_default" time="0.001"><failure message="FileNotFoundError: AppTest script not found at /home/hunganh/Documents/Codex/2026-10-14/gamota-game-market-intelligence/project/tests/app.py. Relative paths are resolved against the file that calls AppTest.from_file().">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x720c7471afd0&gt;
+
+    def test_live_ui_disabled_by_default(monkeypatch):
+        monkeypatch.delenv('GMI_LIVE_ENABLED',raising=False)
+&gt;       app=AppTest.from_file('app.py').run()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_app.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = &lt;class 'streamlit.testing.v1.app_test.AppTest'&gt;
+script_path = PosixPath('app.py'), default_timeout = 3
+
+    @classmethod
+    def from_file(
+        cls, script_path: str | Path, *, default_timeout: float = 3
+    ) -&gt; AppTest:
+        """
+        Create an ``AppTest`` for an app entrypoint defined in a file.
+    
+        This option is most convenient for CI workflows and testing of
+        published apps. The script must be executable on its own and so must
+        contain all necessary imports. For a multipage app, pass the main
+        script that you would supply to ``streamlit run``. To test a
+        file-based child page, initialize from the main script and use
+        ``AppTest.switch_page()``.
+    
+        Parameters
+        ----------
+        script_path: str | Path
+            Path to the app's entrypoint script. An absolute path is used as
+            given. A relative path is resolved against the Python file that
+            calls ``AppTest.from_file()``.
+    
+        default_timeout: float
+            Default time in seconds before a script run is timed out. Can be
+            overridden for individual ``.run()`` calls.
+    
+        Returns
+        -------
+        AppTest
+            A simulated Streamlit app for testing. The simulated app can be
+            executed via ``.run()``.
+    
+        Raises
+        ------
+        FileNotFoundError
+            If ``script_path`` does not point to an existing file.
+    
+        Examples
+        --------
+        Initialize a multipage app from its entrypoint, then switch to a page:
+    
+        &gt;&gt;&gt; at = AppTest.from_file("app.py").run()
+        &gt;&gt;&gt; at.switch_page("pages/settings.py").run()
+        """
+        script_path = Path(script_path)
+        if script_path.is_absolute():
+            path = script_path
+        else:
+            stack = traceback.StackSummary.extract(traceback.walk_stack(None))
+            caller_file = Path(stack[1].filename)
+            path = caller_file.parent / script_path
+    
+        if not path.is_file():
+&gt;           raise FileNotFoundError(
+                f"AppTest script not found at {path.resolve()}. Relative paths are "
+                "resolved against the file that calls AppTest.from_file()."
+            )
+E           FileNotFoundError: AppTest script not found at /home/hunganh/Documents/Codex/2026-10-14/gamota-game-market-intelligence/project/tests/app.py. Relative paths are resolved against the file that calls AppTest.from_file().
+
+.venv/lib/python3.13/site-packages/streamlit/testing/v1/app_test.py:464: FileNotFoundError</failure></testcase><testcase classname="tests.test_evidence" name="test_sufficient_screening_and_export_roundtrip" time="0.002" /><testcase classname="tests.test_evidence" name="test_conflict_keeps_both_sides_and_holds" time="0.001" /><testcase classname="tests.test_evidence" name="test_retention_question_not_replaced_by_revenue" time="0.001" /><testcase classname="tests.test_evidence" name="test_false_citations_rejected[source_id-FAKE]" time="0.001" /><testcase classname="tests.test_evidence" name="test_false_citations_rejected[quote-This invented quote is absent from content]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[wrong_market]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[wrong_subject]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[wrong_period]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[unknown_date]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[future_date]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[no_snapshot]" time="0.001" /><testcase classname="tests.test_evidence" name="test_scope_and_cutoff_gates[irrelevant]" time="0.001" /><testcase classname="tests.test_evidence" name="test_duplicate_tracking_and_repost_exact_content" time="0.001" /><testcase classname="tests.test_evidence" name="test_stop_requires_human_confirmed_evidence" time="0.001" /><testcase classname="tests.test_evidence" name="test_override_reason_and_invalid_verification" time="0.001" /><testcase classname="tests.test_evidence" name="test_multiple_game_questions_without_hardcoding" time="0.001" /><testcase classname="tests.test_evidence" name="test_known_semantic_failure_is_exposed_not_mislabeled_verified" time="0.001" /><testcase classname="tests.test_evidence" name="test_fabricated_finding_excluded" time="0.001" /><testcase classname="tests.test_pipeline" name="test_timeout_is_run_failure_not_stop" time="0.001" /><testcase classname="tests.test_pipeline" name="test_all_documents_unreadable_no_fake_narrative" time="0.001" /><testcase classname="tests.test_pipeline" name="test_live_default_off_even_with_model_and_fake_client" time="0.400" /><testcase classname="tests.test_pipeline" name="test_budget_attempt_limit_includes_errors" time="0.001" /><testcase classname="tests.test_pipeline" name="test_sdk_search_attribution_and_schema_parse_offline" time="0.006" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[http://127.0.0.1/private]" time="0.001" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[http://169.254.169.254/latest]" time="0.001" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[file:///etc/passwd]" time="0.001" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[https://user:pass@example.org]" time="0.000" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[http://[::1]/]" time="0.001" /><testcase classname="tests.test_reader" name="test_private_or_credential_urls_blocked[https://example.org:22/]" time="0.001" /><testcase classname="tests.test_reader" name="test_html_full_text_extraction" time="0.283"><failure message="AssertionError: assert ('invented document' in 'Synthetic research\nThis invented document describes demand research for a fictional mobile game. It contains readabl...xt so that extraction can be tested without network access or search snippets. All statements are synthetic test data.' and 'Synthetic research' == 'Synthetic source'&#10;  &#10;  - Synthetic source&#10;  ?            ^^  ^&#10;  + Synthetic research&#10;  ?           ++ ^^  ^)">def test_html_full_text_extraction():
+        html=b'&lt;html&gt;&lt;head&gt;&lt;title&gt;Synthetic source&lt;/title&gt;&lt;meta property="article:published_time" content="2025-03-01"/&gt;&lt;/head&gt;&lt;body&gt;&lt;article&gt;&lt;h1&gt;Synthetic research&lt;/h1&gt;&lt;p&gt;This invented document describes demand research for a fictional mobile game. It contains readable body text so that extraction can be tested without network access or search snippets. All statements are synthetic test data.&lt;/p&gt;&lt;/article&gt;&lt;/body&gt;&lt;/html&gt;'
+        text,title,published=parse_document(html,'text/html','https://example.org')
+&gt;       assert 'invented document' in text and title=='Synthetic source'
+E       AssertionError: assert ('invented document' in 'Synthetic research\nThis invented document describes demand research for a fictional mobile game. It contains readabl...xt so that extraction can be tested without network access or search snippets. All statements are synthetic test data.' and 'Synthetic research' == 'Synthetic source'
+E         
+E         - Synthetic source
+E         ?            ^^  ^
+E         + Synthetic research
+E         ?           ++ ^^  ^)
+
+tests/test_reader.py:12: AssertionError</failure></testcase><testcase classname="tests.test_reader" name="test_empty_scan_and_unsupported_types_fail" time="0.003" /></testsuite></testsuites>

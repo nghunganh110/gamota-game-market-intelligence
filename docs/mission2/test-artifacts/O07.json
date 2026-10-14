@@ -1,0 +1,73 @@
+{
+  "id": "b2597622-fdfa-43cd-970c-d8c70d10eec8",
+  "evidence_mode": "live",
+  "scope": {
+    "question": "Does fictional Game Alpha justify deeper research in Vietnam?",
+    "subject": "Fictional Game Alpha",
+    "market": "Vietnam",
+    "period": "Q1 2025",
+    "cutoff": "2025-04-01",
+    "mode": "screening",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [],
+    "gaps": [
+      {
+        "missing": "No eligible evidence",
+        "impact": "Question cannot be answered reliably",
+        "action": "Obtain readable, dated sources matching scope",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "business_accessibility",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "feasibility",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "market_potential",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "status": "failed",
+  "recommendation": "Tạm giữ",
+  "errors": [
+    "Pipeline interrupted (TimeoutError); no fabricated fallback"
+  ],
+  "usage": {
+    "latency_seconds": 0.0
+  },
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [],
+    "claims": [],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "review_history": []
+}

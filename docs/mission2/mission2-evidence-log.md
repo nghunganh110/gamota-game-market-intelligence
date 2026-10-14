@@ -129,3 +129,27 @@ Tiếp nối Mission 1 trong `evidence-log.md`. Giữ yêu cầu không có trư
 - Chưa thực hiện: implementation, gọi API MVP, test, tạo GitHub repository, deploy, quay video hoặc nộp bài.
 - Đã duyệt phương án kỹ thuật; đang chuyển sang repo và phiên Codex mới theo yêu cầu.
 - Chưa rõ: budget, model/quota trên tài khoản và thời hạn Mission 2 chính xác.
+
+## M2-EL-004 Repository local và implementation offline
+
+**Công cụ/model:** Codex local, Git, Python/pytest, Streamlit AppTest, trình duyệt local; đọc tài liệu SDK Google chính thức. Không gọi Gemini của người dùng.
+
+**Nguyên văn trả lời mới của người dùng:**
+
+> Đã được phép — tôi sẽ cung cấp giới hạn
+
+> Tôi sẽ đăng nhập trong tab
+
+**Mục tiêu:** Tiếp tục Mission 2 tại repository local riêng theo handoff và stack đã duyệt.
+
+**Kết quả AI:** Tạo Git repo `project/` trên nhánh main vì `.git` ở root phiên chỉ đọc; commit khởi tạo thành công bằng identity Git có sẵn. Copy chọn lọc tám tài liệu vào docs/mission1 và docs/mission2, giữ nguyên bản gốc. Cài dependencies stack thành công sau khi dùng cache riêng và quyền network. Viết schema, reader, Gemini adapter, pipeline, validators, export, replay và UI/review. Live mặc định tắt; không gọi API Gemini. Viết report actual offline, bản thảo Forced Decisions và kịch bản video.
+
+**Nguồn bằng chứng:** Handoff, technical plan, Mission 1 PDF/Word/ledger/log; source code và actual test artifacts. SDK usage đối chiếu với https://github.com/googleapis/python-genai và tài liệu Google/Streamlit trong README.
+
+**Hành động kiểm chứng:** Lần test đầu 30 passed/3 failed (hai đường dẫn UI test và một giả định HTML title). Sau sửa test assumptions: 33 passed. App local mở được tại 127.0.0.1:8501; quote/source quality/relevance hiển thị được. Tám acceptance cases synthetic/fault injection đã chạy; O08 chưa đạt ngữ nghĩa vì quote có thật nhưng claim đảo nghĩa vẫn vượt validator. Test regression O08 PASS chỉ vì tái hiện đúng giới hạn. Không coi các fixture là evidence thị trường hoặc live Gemini.
+
+**Quyết định người dùng:** USER-DECISION: key được phép sử dụng cho MVP; sẽ cung cấp giới hạn. USER-DECISION: sẽ đăng nhập GitHub trong tab. Chưa nhận giới hạn/model/key local hoặc xác nhận đăng nhập hoàn tất. Không tự coi lựa chọn trên là phép dùng API không giới hạn.
+
+**Đề xuất/chi tiết AI:** AI-PROPOSAL: triển khai offline trước, một search call + một extraction call, cap attempts theo browser session và public demo giữ live tắt. Các bản thảo Forced Decisions cần người dùng rà soát. Không thay stack đã duyệt hoặc tự thêm dịch vụ retrieval trả phí.
+
+**Trạng thái mới thay thế phần “Trạng thái thực tế” cũ:** Có implementation và tests offline/local demo. Chưa có live research, reviewer audit, public repo được xác minh, deploy online hoặc video bài nộp cuối. Quota/budget/model và deadline vẫn chưa chốt. Không có timestamp cuộc trò chuyện trong log; ngày publication/access/cutoff trong evidence schemas là metadata nghiên cứu.

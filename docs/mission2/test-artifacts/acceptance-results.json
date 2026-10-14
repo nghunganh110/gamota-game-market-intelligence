@@ -1,0 +1,151 @@
+[
+  {
+    "id": "O01",
+    "type": "synthetic / offline",
+    "expected": "Các chiều đủ synthetic evidence → Tiếp tục; xuất ledger truy vết được",
+    "actual": {
+      "status": "completed",
+      "recommendation": "Tiếp tục",
+      "claim_statuses": [
+        "mechanically_checked",
+        "mechanically_checked",
+        "mechanically_checked"
+      ],
+      "findings": [
+        "Fictional signals justify reviewing the opportunity."
+      ],
+      "errors": []
+    },
+    "product_result": "Đạt",
+    "lesson": "Workflow hoạt động trên đầu vào synthetic; chưa chứng minh chất lượng Gemini."
+  },
+  {
+    "id": "O02",
+    "type": "synthetic / offline",
+    "expected": "Xử lý Game Beta ở China; Research không ép recommendation",
+    "actual": {
+      "status": "completed",
+      "recommendation": null,
+      "claim_statuses": [
+        "mechanically_checked",
+        "mechanically_checked",
+        "mechanically_checked"
+      ],
+      "findings": [
+        "Signals are scoped to fictional China data; no transfer to Vietnam assumed."
+      ],
+      "errors": []
+    },
+    "product_result": "Đạt",
+    "lesson": "Logic không hard-code MABINOGI; chưa thay thế ba live runs."
+  },
+  {
+    "id": "O03",
+    "type": "synthetic / offline",
+    "expected": "Giữ C1 và C4, Tạm giữ, có bước phân xử",
+    "actual": {
+      "status": "completed",
+      "recommendation": "Tạm giữ",
+      "claim_statuses": [
+        "mechanically_checked",
+        "mechanically_checked",
+        "mechanically_checked",
+        "mechanically_checked"
+      ],
+      "findings": [
+        "Fictional signals justify reviewing the opportunity."
+      ],
+      "errors": []
+    },
+    "product_result": "Đạt",
+    "lesson": "Không lấy trung bình hoặc bỏ một phía."
+  },
+  {
+    "id": "O04",
+    "type": "synthetic / offline",
+    "expected": "Không thay bằng doanh thu; partial và gap cụ thể",
+    "actual": {
+      "status": "partial",
+      "recommendation": null,
+      "claim_statuses": [],
+      "findings": [],
+      "errors": []
+    },
+    "product_result": "Đạt",
+    "lesson": "Câu hỏi chưa được đáp ứng; xử lý thiếu dữ liệu đúng. Case synthetic, không phải T09 live."
+  },
+  {
+    "id": "O05",
+    "type": "synthetic / offline",
+    "expected": "Loại claim và findings phụ thuộc; Tạm giữ",
+    "actual": {
+      "status": "partial",
+      "recommendation": "Tạm giữ",
+      "claim_statuses": [
+        "rejected",
+        "mechanically_checked",
+        "mechanically_checked"
+      ],
+      "findings": [],
+      "errors": [
+        "Finding excluded: invalid claim references"
+      ]
+    },
+    "product_result": "Đạt",
+    "lesson": "Chặn trích đoạn giả bằng nội dung đã đọc."
+  },
+  {
+    "id": "O06",
+    "type": "synthetic / offline",
+    "expected": "Không dùng Korea evidence vượt gate Vietnam",
+    "actual": {
+      "status": "partial",
+      "recommendation": "Tạm giữ",
+      "claim_statuses": [
+        "rejected",
+        "mechanically_checked",
+        "mechanically_checked"
+      ],
+      "findings": [],
+      "errors": [
+        "Finding excluded: invalid claim references"
+      ]
+    },
+    "product_result": "Đạt",
+    "lesson": "Uy tín nguồn không thay thế độ phù hợp."
+  },
+  {
+    "id": "O07",
+    "type": "synthetic / offline",
+    "expected": "failed; không tạo claim, không Dừng opportunity",
+    "actual": {
+      "status": "failed",
+      "recommendation": "Tạm giữ",
+      "claim_statuses": [],
+      "findings": [],
+      "errors": [
+        "Pipeline interrupted (TimeoutError); no fabricated fallback"
+      ]
+    },
+    "product_result": "Đạt",
+    "lesson": "Fault injection PASS kỹ thuật; không tự tính thành case thị trường thất bại."
+  },
+  {
+    "id": "O08",
+    "type": "synthetic / offline",
+    "expected": "Nhận ra claim nói mạnh trong khi quote nói không mạnh",
+    "actual": {
+      "status": "completed",
+      "recommendation": null,
+      "claim_statuses": [
+        "mechanically_checked"
+      ],
+      "findings": [
+        "Strong Vietnam demand."
+      ],
+      "errors": []
+    },
+    "product_result": "Chưa đạt",
+    "lesson": "Actual: claim và finding sai vẫn qua quote matching. Cần semantic audit người dùng; ưu tiên thêm entailment assessment và audit set khi chạy live."
+  }
+]

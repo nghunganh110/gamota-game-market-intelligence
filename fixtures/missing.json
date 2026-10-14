@@ -1,0 +1,88 @@
+{
+  "id": "synthetic-missing",
+  "evidence_mode": "synthetic",
+  "scope": {
+    "question": "What is D30 retention by country for Fictional Game Alpha?",
+    "subject": "Fictional Game Alpha",
+    "market": "Vietnam",
+    "period": "Q1 2025",
+    "cutoff": "2025-04-01",
+    "mode": "research",
+    "strict_cutoff": true
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.org/synthetic/1",
+      "title": "Synthetic document 1",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S2",
+      "url": "https://example.org/synthetic/2",
+      "title": "Synthetic document 2",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S3",
+      "url": "https://example.org/synthetic/3",
+      "title": "Synthetic document 3",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [],
+    "gaps": [
+      {
+        "missing": "D30 retention by country",
+        "impact": "Cannot answer requested KPI",
+        "action": "Request owner cohort dataset",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "status": "failed",
+  "recommendation": null,
+  "errors": [],
+  "usage": {},
+  "review": null
+}

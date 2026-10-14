@@ -1,0 +1,200 @@
+{
+  "id": "synthetic-conflict",
+  "evidence_mode": "synthetic",
+  "scope": {
+    "question": "Does fictional Game Alpha justify deeper research in Vietnam?",
+    "subject": "Fictional Game Alpha",
+    "market": "Vietnam",
+    "period": "Q1 2025",
+    "cutoff": "2025-04-01",
+    "mode": "screening",
+    "strict_cutoff": true
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.org/synthetic/1",
+      "title": "Synthetic document 1",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S2",
+      "url": "https://example.org/synthetic/2",
+      "title": "Synthetic document 2",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S3",
+      "url": "https://example.org/synthetic/3",
+      "title": "Synthetic document 3",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S4",
+      "url": "https://example.org/synthetic/4",
+      "title": "Synthetic contradictory demand",
+      "publisher": "unknown",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "The Vietnam concept study reports a negative demand signal for Fictional Game Alpha in Q1 2025. Synthetic software test data only.",
+      "sha256": "",
+      "read_status": "read",
+      "quality": "Synthetic",
+      "relevance": "direct",
+      "relevance_reason": "Same metric, market and period",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [
+      {
+        "id": "C1",
+        "text": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "source_id": "S1",
+        "quote": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "period": "Q1 2025",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "id": "C2",
+        "text": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S2",
+        "quote": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "period": "Q1 2025",
+        "metric": "rights",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "id": "C3",
+        "text": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S3",
+        "quote": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "period": "Q1 2025",
+        "metric": "feasibility",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "id": "C4",
+        "text": "Negative demand",
+        "source_id": "S4",
+        "quote": "The Vietnam concept study reports a negative demand signal for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "period": "Q1 2025",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "market_potential",
+        "state": "supported",
+        "claim_ids": [
+          "C1"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "business_accessibility",
+        "state": "supported",
+        "claim_ids": [
+          "C2"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "feasibility",
+        "state": "supported",
+        "claim_ids": [
+          "C3"
+        ],
+        "reason": "Synthetic supporting claim"
+      }
+    ],
+    "conflicts": [
+      {
+        "claim_ids": [
+          "C1",
+          "C4"
+        ],
+        "relation": "conflict",
+        "explanation": "Same scope but opposing fictional demand results.",
+        "next_action": "Review sampling and methods; obtain original study",
+        "material": true
+      }
+    ],
+    "findings": [
+      {
+        "text": "Fictional signals justify reviewing the opportunity.",
+        "claim_ids": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "inference": true
+      }
+    ],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "status": "failed",
+  "recommendation": null,
+  "errors": [],
+  "usage": {},
+  "review": null
+}
