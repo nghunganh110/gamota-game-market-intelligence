@@ -1,15 +1,15 @@
-# Kịch bản video — tối đa 4 phút 50 giây
+# Kịch bản quay video Mission 2 — khoảng 4 phút 30 giây
 
-AI-PROPOSAL lịch sử, chưa sẵn sàng quay/nộp. Các mốc 37 tests và giả định chưa có live runs bên dưới đã cũ; xem [kiểm toán Mission 2](acceptance-gap-audit.md). Quay phiên bản cuối sau khi có một case thật được reviewer audit. Không nói replay là Gemini research.
+Đây là **kịch bản**, chưa phải file video. Quay màn hình app đang chạy trong phiên của chủ bài nộp. Không dùng API Gemini khi quay; hai ví dụ rút gọn đã lưu giúp demo lặp lại được. Khi nói về A01/A02, dùng đúng nhãn “lượt live đã lưu và biên tập, chưa có human acceptance”.
 
-| Mốc | Nội dung |
+| Thời gian | Màn hình / lời nói chính |
 |---|---|
-| 0:00–0:30 | Bài toán: Publishing/Strategy Lead cần nhận định truy được về bằng chứng để sàng lọc, không cần AI dự đoán doanh thu. |
-| 0:30–1:00 | Phần chọn hiện thực hóa: source → quote/claim → conflict/gap → brief → human review. Python/Streamlit/Gemini là stack đã chọn. |
-| 1:00–2:00 | Demo tình huống tốt: ghi rõ synthetic nếu chưa live. Mở claim, xem đoạn trích, quality/relevance và scope; tải JSON/Markdown. |
-| 2:00–2:40 | Demo câu hỏi/game khác để cho thấy không hard-code case. Chưa live thì nói engine offline cùng input schema, chưa chứng minh retrieval đa game. |
-| 2:40–3:20 | Tình huống khó: conflict giữ hai phía và Hold có action; thiếu D30 retention không thay bằng proxy. |
-| 3:20–4:10 | O08: claim đảo nghĩa quote vẫn qua validator. Trình bày actual failure; nhấn mechanically checked khác human verified; demo review và lý do. |
-| 4:10–4:50 | 37 tests offline, các yêu cầu live còn thiếu, ba Forced Decisions và ưu tiên audit/entailment. Đưa repo/demo URL chỉ khi đã được kiểm tra. |
+| 0:00–0:35 | Bài toán: thông tin game nhiều, độ tin cậy khác nhau; mục tiêu là nhận định truy được tới chứng cứ và phần còn thiếu, để người phụ trách quyết định. |
+| 0:35–1:00 | Mở app. Giải thích phần MVP chọn chứng minh: câu hỏi → nguồn → claim và quote → nhận định sơ bộ → review. Chỉ vào bốn tab kết quả. |
+| 1:00–2:05 | Chọn **Ví dụ đã lưu — nguồn thật → A01 → Mở case**. Đọc nhận định sơ bộ, mở một claim và trang gốc. Chỉ ra thông tin chất lượng/độ phù hợp của nguồn và giới hạn số liệu. Nói rõ A01 pipeline hoàn tất nhưng claim chưa được người review duyệt. |
+| 2:05–2:55 | Chọn **A02 → Mở case**. Đây là câu hỏi khác về Mobile MMORPG Việt Nam. Chỉ nguồn Gamota chỉ nói nhóm MMORPG/4X/Team Battle, không cho doanh thu riêng MMORPG. Chỉ mục “Điều chưa biết”; vì vậy nhận định phải hẹp. |
+| 2:55–3:40 | Chuyển **Demo offline — synthetic → Giới hạn: diễn giải sai đoạn trích**. Mở claim sai dấu phủ định; chỉ rằng gate cơ học vẫn có thể cho qua. Demo form reviewer bác claim và finding biến mất. Nhắc case này là dữ liệu giả lập để kiểm thử lỗi. |
+| 3:40–4:15 | Mở tab review của một case để chỉ cách người phụ trách viết nhận định cuối, gắn claim đã kiểm tra và lưu lý do. Xem report: case tốt kỹ thuật, case khó và failure được ghi theo kỳ vọng/thực tế/bài học. |
+| 4:15–4:30 | Kết: ưu tiên tiếp theo là kiểm chứng ngữ nghĩa claim và cải thiện nguồn; nêu repo public, demo link và tài liệu ba Forced Decisions. |
 
-Tài liệu này là kịch bản, không phải video đã quay. Video demo offline nếu tạo chỉ dùng để review tiến độ, chưa coi là video bài nộp cuối.
+Trước khi quay: kiểm tra app mở được khi đã đăng nhập, thử A01/A02 một lần, phóng to chữ đủ đọc và ẩn mọi Secrets/API key. Sau khi quay: kiểm tra thời lượng **dưới 5 phút**, âm thanh/chữ đọc được và link video có quyền xem cho người chấm. Không nói `completed` đồng nghĩa nhận định đã đúng; không gọi replay là lượt Gemini mới.

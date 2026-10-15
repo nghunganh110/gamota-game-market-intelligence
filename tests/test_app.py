@@ -31,12 +31,21 @@ def test_one_click_real_case_replay_renders_two_questions_without_gemini():
     assert app.session_state['run'].id == 'curated-real-a02-20261015'
     assert app.session_state['run'].extraction.gaps
 
+
+def test_switching_demo_mode_clears_previous_result():
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    next(x for x in app.button if x.label == 'Mở case').click().run()
+    assert app.session_state['run'].id.startswith('curated-real-')
+    app.radio[0].set_value('Demo offline — synthetic').run()
+    assert 'run' not in app.session_state
+
 def test_replay_ui_and_review():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
     assert not app.exception
+    app.radio[0].set_value('Demo offline — synthetic').run()
     app.button[0].click().run()
     assert not app.exception
-    assert app.metric[0].value=='synthetic'
+    assert app.metric[0].value=='Giả lập'
     assert app.metric[2].value=='Tiếp tục'
     assert any('Câu trả lời sơ bộ' in x.value for x in app.subheader)
     next(x for x in app.text_input if x.label=='Người review').set_value('Offline test reviewer')
@@ -103,6 +112,7 @@ def test_live_ui_rejects_subject_mismatch_before_provider(monkeypatch):
 
 def test_reviewer_can_reject_semantically_false_claim_in_ui():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    app.radio[0].set_value('Demo offline — synthetic').run()
     next(x for x in app.selectbox if x.label=='Tình huống').select('semantic_failure')
     next(x for x in app.button if x.label=='Chạy tình huống').click().run()
     assert app.session_state['run'].extraction.findings
@@ -118,6 +128,7 @@ def test_reviewer_can_reject_semantically_false_claim_in_ui():
 
 def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    app.radio[0].set_value('Demo offline — synthetic').run()
     next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
     next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
     next(x for x in app.text_input if x.key == 'claim_reviewer_C1').set_value('Fixture reviewer')
@@ -137,6 +148,7 @@ def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
 
 def test_reviewer_can_narrow_claim_in_ui_before_final_answer():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    app.radio[0].set_value('Demo offline — synthetic').run()
     next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
     next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
     revised = 'Fictional Game Beta has a positive demand signal in the China concept study for Q1 2025.'

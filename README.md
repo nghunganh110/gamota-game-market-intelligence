@@ -1,26 +1,32 @@
-# Gamota Game Market Intelligence
+# Gamota Game Market Intelligence — Mission 2 MVP
 
-MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn → đọc HTML/PDF riêng → Claim Ledger → kiểm tra evidence → brief → người phụ trách review và quyết định.
+**Demo:** https://gamota-game-market-intelligence.streamlit.app/
 
-**MVP hiện tại:** nghiên cứu bằng Gemini tự tìm nguồn hoặc bằng URL nguồn người dùng chọn; câu hỏi đánh giá phải có tiêu chí; reviewer kiểm tra từng claim, viết nhận định cuối với claim đã duyệt, rồi xuất hoặc mở lại run JSON. [Báo cáo kiểm thử hiện tại](docs/mission2/test-report.md) ghi rõ phần đã chạy và phần còn cần kiểm chứng. [A01/A02 trên bản mới](docs/mission2/mvp-live-results-2026-10-15.md) đã chạy với 3 Gemini API attempts; A01 hoàn thành pipeline, A02 auto lỗi discovery và guided còn gap. Chưa có hai lượt live được người dùng chấp nhận, nên chưa thể tuyên bố đã chứng minh giả thuyết Mission 2.
+**Bộ kiểm thử và kết quả thật:** [docs/mission2/test-report.md](docs/mission2/test-report.md)
 
-Để xem nhanh không dùng API: chọn **Ví dụ đã lưu — nguồn thật** → chọn A01 hoặc A02 → **Mở case**. Đây là hai case biên tập từ các lượt live đã lưu, chỉ chứa trích đoạn ngắn và chưa có human review; mở trang gốc để kiểm chứng. Để nghiên cứu mới: chọn **Nghiên cứu Gemini** → nhập câu hỏi, tiêu chí nếu hỏi “thành công”, tên game/thể loại, thị trường và kỳ → chọn **Gemini tìm nguồn** hoặc **Tôi cung cấp URL nguồn**. Chế độ URL nhận 1–6 đường dẫn bài viết/báo cáo công khai; nếu không đọc được nguồn nào, app không gọi Gemini để trích xuất. Sau khi có kết quả, xem *Nguồn đã thu*, mở từng claim và trang gốc, lưu đánh giá Supported/Unsupported/Unclear, rồi viết *Nhận định cuối* trong phần review. Tải run JSON để mở lại bằng **Mở run đã lưu**; tải brief Markdown để chia sẻ bản nhận định. Các thao tác review không gọi Gemini.
+**Ba câu trả lời bắt buộc:** [docs/mission2/forced-decisions-draft.md](docs/mission2/forced-decisions-draft.md)
+**Kịch bản video ≤5 phút:** [docs/mission2/video-script.md](docs/mission2/video-script.md)
 
-**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **80 đạt**; 8 acceptance cases synthetic/fault injection, [T01–T03 với model thật](docs/mission2/live-test-progress.md) và A01/A02 đã chạy. A01 có 6 claim qua cơ học nhưng cần review câu chữ; A02 guided có một claim định tính sau khi áp lại gate; chưa có human acceptance end-to-end. Hai case replay một cú bấm chỉ giúp người dùng xem lại bằng chứng đã thu, không phải hai lượt Gemini live mới. Người dùng đã chạy một lượt Gemini trên URL Streamlit online và báo kết quả partial; môi trường kiểm tra không đăng nhập vẫn chuyển tới login nên chưa tự smoke test được app. Chưa có kết quả chi phí tiền tệ. Replay sau sửa không thay thế bằng chứng fresh retrieval.
+MVP thử một giả thuyết hẹp: một câu hỏi nghiên cứu game có thể được chuyển thành nhận định truy ngược được tới claim, đoạn trích và nguồn; phần thiếu và độ tin cậy được hiện rõ để người phụ trách quyết định. Luồng là **câu hỏi → thu nguồn → trích claim → kiểm tra cơ học → nhận định sơ bộ → người review đối chiếu và viết kết luận cuối**. Ứng dụng không tự gán nhãn “đúng” cho một claim chỉ vì câu trích xuất hiện trên trang.
 
-Nếu Streamlit Cloud cập nhật `app.py` trong một tiến trình đang chạy nhưng giữ import `gmi` cũ, app nay phát hiện mã nguồn module đã đổi, nạp lại các module theo thứ tự phụ thuộc và xóa run cũ trong phiên (có thông báo). Test riêng mô phỏng đúng lỗi `Scope` thiếu `criteria` và hàm scope cũ đã qua.
+## Xem demo trong hai phút
 
-**Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; reviewer có thể thu hẹp câu claim và tên chỉ số trước khi duyệt. Bản gốc AI được giữ, và finding AI dựa trên claim đã sửa bị loại để reviewer viết lại nhận định cuối. Export giữ review. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
+1. Mở link demo, giữ chế độ **Ví dụ đã lưu — nguồn thật**, chọn **A01** và bấm **Mở case**. Đây là bản rút gọn, đã biên tập từ lượt Gemini thật; không gọi API, không phải bản đã được người review chấp nhận.
+2. Đọc nhận định sơ bộ và mục **Điều chưa biết**. Mở tab **Claim & đoạn trích** để xem claim và trang gốc; sang **Nguồn & độ tin cậy** để xem chất lượng, độ phù hợp và ngày công bố.
+3. Chọn **A02** và mở case thứ hai: câu hỏi về thể loại MMORPG ở Việt Nam cho thấy nguồn chỉ hỗ trợ nhận định nhóm thể loại, không có số riêng MMORPG. Tab **Người review quyết định** minh họa chỗ người phụ trách kiểm chứng và ghi nhận định cuối.
+4. Để xem trường hợp sai có chủ đích, chuyển **Demo offline — synthetic** → **Giới hạn: diễn giải sai đoạn trích**. Đoạn trích phủ định nhưng claim khẳng định vẫn qua gate cơ học; reviewer có thể bác claim. Dữ liệu synthetic không phải dữ kiện thị trường.
 
-**Lượt online Liên Quân Mobile:** người dùng báo subject `MOBA` cho câu hỏi về tên game, kỳ `Q1 2025`, các ô ngày đang hiện 01/10–31/12/2025 (chỉ có hiệu lực nếu chọn nhập ngày thủ công), cutoff 31/12/2025 và strict. Kết quả 2 API calls, 5 claim rejected, 4 findings excluded, 3 nguồn đọc lỗi. UI nay kiểm tra các mâu thuẫn phạm vi trước khi gọi Gemini, tự suy ra ngày đầu/cuối quý từ `Q1–Q4 YYYY` và tóm tắt lý do claim bị loại. [Chi tiết quan sát](docs/mission2/mission2-evidence-log.md).
+**Nghiên cứu Gemini** cho phép đặt câu hỏi mới, để Gemini tìm nguồn hoặc nhập URL nguồn công khai đã chọn. Chế độ này dùng key server và mã truy cập riêng, tiêu thụ quota; không cần chạy live để xem demo. App có thể xuất brief Markdown và run JSON; JSON có thể chứa snapshot toàn văn nguồn, nên không tự động công khai.
 
-[Extraction mới trên snapshots](docs/mission2/live-T01-extraction-review.md) đã chạy với 1 API call: 5/6 claim vượt cơ học, xác nhận bản sửa kỳ đo trên output model thật; partial vì một quote ghép không khớp. AI audit vẫn phát hiện kết luận vượt bằng chứng. Đây là replay có model call mới, không phải một lượt tìm nguồn live mới.
+## Kết quả kiểm thử và giới hạn
 
-[T02 game thứ hai](docs/mission2/live-T02-review.md) đã chạy live: 6/10 claim qua cơ học, partial vì scope và còn lỗi ngữ nghĩa. Xem [tiến độ kiểm chứng](docs/mission2/live-test-progress.md); T03 cũng đã chạy, human acceptance vẫn còn thiếu.
+[Report hiện tại](docs/mission2/test-report.md) ghi từng case theo **kỳ vọng → thực tế → đạt/chưa đạt → bài học**, gồm nhiều câu hỏi, tình huống tốt, khó và thất bại. A01 live đọc được 2 nguồn và tạo 6 claim qua gate cơ học, nhưng có câu chữ cần thu hẹp trước khi chấp nhận. A02 Gemini tự tìm nguồn gặp `ServerError`; A02 với URL được chọn chỉ hỗ trợ một nhận định định tính hẹp. Chưa có nhận định live cuối được người review xác nhận. `completed` chỉ là trạng thái pipeline, không phải chứng nhận độ đúng của nghiên cứu.
 
-## Chạy local
+MVP có thể trả về `partial` hoặc không đủ căn cứ khi nguồn không đọc được, sai chủ thể/thị trường/kỳ đo, thiếu chỉ số, hoặc mâu thuẫn. Chất lượng nhà xuất bản/phương pháp và độ phù hợp với câu hỏi được đánh giá riêng; reviewer có thể sửa đánh giá nguồn và claim, giữ lịch sử. Giới hạn lớn nhất hiện tại là kiểm tra chuỗi trích dẫn chưa hiểu ngữ nghĩa (ví dụ phủ định); nguồn web động/paywall và snapshot lịch sử cũng chưa được xử lý đầy đủ. Không dùng MVP để quyết định đầu tư nếu chưa kiểm chứng claim trọng yếu.
 
-Môi trường đã kiểm thử: Python 3.13.12, Streamlit 1.65.0, google-genai 1.75.0. Dependencies được khóa trong `requirements.txt`. Đã tạo source checkout sạch và venv mới, cài dependency từ cache rồi chạy **37/37 tests đạt**. Khi sửa các module Python trong lúc phát triển, khởi động lại server nếu Streamlit giữ import cũ.
+## Chạy local và cấu hình
+
+Đã kiểm thử với Python 3.13; dependencies khóa trong `requirements.txt`.
 
 ```sh
 python3.13 -m venv .venv
@@ -29,63 +35,23 @@ pip install -r requirements.txt
 python -m streamlit run app.py --browser.gatherUsageStats false
 ```
 
-Mở địa chỉ local mà Streamlit hiển thị. Chọn **Demo offline — synthetic**, chọn tình huống và bấm **Chạy tình huống**. Demo không cần key và không gọi Gemini. Game Alpha/Beta và tất cả số liệu fixture là hư cấu.
+Demo ví dụ đã lưu và synthetic chạy không cần key. Để bật Gemini, sao chép `.env.example` thành `.env` trên máy của bạn rồi điền key, model, mã truy cập, giới hạn sử dụng; xem [hướng dẫn cấu hình](docs/mission2/online-gemini-setup.md). `.env`, `runs/` và Cloud Secrets không được commit. Không đưa API key vào giao diện hoặc chat. Session cap chỉ giới hạn trình duyệt, không thay thế quota phía nhà cung cấp.
 
 ```sh
 python -m pytest -q
 python -m scripts.offline_report
 ```
 
-Kết quả và kỳ vọng được ghi trong [test report](docs/mission2/test-report.md). Test ngữ nghĩa PASS chỉ chứng minh tái hiện được lỗi sản phẩm, không chứng minh claim đúng.
+## Cấu trúc bàn giao
 
-## Luồng và ranh giới kiểm chứng
-
-- **Research:** câu hỏi dữ kiện/diễn giải, không ép một quyết định cơ hội.
-- **Screening:** tách market potential, business accessibility, feasibility; chiều thiếu evidence hoặc conflict trọng yếu → Tạm giữ.
-- Mỗi claim giữ source ID, đoạn trích, game, market, period, metric, loại reported/estimate/qualitative/observed và giới hạn.
-- Kiểm tra cơ học source/quote/scope/cutoff. `mechanically_checked` không phải `human_verified`; người review kiểm tra ngữ nghĩa và chọn claim đã xác nhận.
-- Source quality và relevance là hai trường riêng. Gemini chỉ đề xuất đánh giá; nguồn không có đánh giá đủ vẫn được xử lý bảo thủ.
-- Reviewer có thể sửa quality/relevance nguồn, lưu lý do và tính gate lại; review quyết định cũ được giữ trong history. Hard blocker phải được định nghĩa trước trong scope.
-- Reviewer có thể override và phải ghi lý do. Dừng cần claim blocker hợp lệ và người review xác nhận. Khuyến nghị AI và quyết định người phụ trách được lưu riêng.
-- JSON export gồm snapshot nội dung/hash và metadata; chỉ dùng local/reviewer. Không tự public nội dung nguồn đầy đủ. Markdown export gồm ledger, conflict, unknowns, actions và review.
-
-## Gemini live — mặc định tắt
-
-CLI/app hỗ trợ đọc `.env` riêng trong root project; điền key/model trực tiếp trên máy, không gửi key trong chat. `.env` bị Git bỏ qua; `.env.example` chỉ là mẫu không có credential. Env đã export có ưu tiên hơn file. Xem [hướng dẫn cấu hình](docs/mission2/live-run-guide.md). Bộ test loader literal/không lộ secret nằm trong suite hiện tại.
-
-[T03 thể loại tại Vietnam](docs/mission2/live-T03-review.md) đã chạy bằng .env: partial, 1/5 claim qua cơ học, chỉ đọc được 2/6 nguồn. T01/T02/T03 đã thực thi; vẫn chưa human-accepted. Không có API calls bổ sung ngoài lượt đã được phép. Giới hạn T03 trong .env không phải allowance cho các lần chạy tiếp.
-
-[Hướng dẫn live T01](docs/mission2/live-run-guide.md) có scope, lệnh preflight không gọi API và lệnh chạy một lần để lưu run/brief/mẫu audit. Lần live đầu đã có [báo cáo và AI audit](docs/mission2/live-T01-review.md); lần gọi tiếp theo cần nằm trong giới hạn sử dụng được xác nhận.
-
-Quyền dùng key đã được người dùng xác nhận. Key/model đã được người dùng cấu hình trong `.env` local cho T03; file này không nằm trên GitHub. Giới hạn hai calls cho T03 đã được sử dụng. Không nhập key vào chat, source code hoặc GitHub. Nếu chạy live thêm, xác định giới hạn sử dụng mới và cấu hình riêng trên máy:
-
-| Biến | Ý nghĩa |
+| Thành phần | Vai trò |
 |---|---|
-| `GEMINI_API_KEY` hoặc `GOOGLE_API_KEY` | Key bí mật; không in/log giá trị |
-| `GEMINI_MODEL` | Model do người dùng chọn sau khi kiểm tra khả năng tài khoản |
-| `GMI_LIVE_ENABLED=1` | Mở live sau khi quyền và giới hạn được xác nhận |
-| `GMI_KEY_AUTHORIZED=1` | Quyền sử dụng key cho MVP |
-| `GMI_BUDGET_NOTE` | Giới hạn đã xác nhận, không chứa key |
-| `GMI_MAX_CALLS` | Tổng API attempts trong một browser session, 1–3; mặc định 2 |
-| `GMI_LIVE_ACCESS_CODE` | Mã riêng ít nhất 12 ký tự để mở Gemini trên UI; không phải API key |
+| `app.py` | Trang vào, chọn demo/live/upload và cấu hình phiên Streamlit |
+| `gmi/ui_results.py` | Trình bày nhận định, claim, nguồn, gap và form review |
+| `gmi/pipeline.py`, `gmi/gemini.py`, `gmi/reader.py` | Điều phối, gọi model, đọc nguồn HTML/PDF |
+| `gmi/validation.py`, `gmi/models.py` | Gate, cấu trúc dữ liệu và hành động review |
+| `gmi/export.py`, `gmi/replay.py` | Brief/JSON và fixture offline |
+| `fixtures/real_cases/` | Hai ví dụ nguồn thật đã rút gọn cho demo một nút |
+| `tests/`, `docs/mission2/` | Kiểm thử, evidence và tài liệu nộp |
 
-Một run tự tìm nguồn dùng tối đa một search call, sáu nguồn và một extraction call; run dùng URL do người dùng cung cấp bỏ search call và chỉ gọi extraction nếu đọc được nguồn. Không retry API tự động. Search queries bên trong call do model quyết định, không đồng nghĩa với số API attempts. Đọc tối đa 4 MB/30 giây/30k ký tự mỗi nguồn, PDF ≤50 trang. Lưu usage có sẵn; **chưa tính phí tiền tệ**. Session cap không phải quota account hay trần tiền tệ; session mới hoặc process mới có thể reset. UI nay yêu cầu mã truy cập riêng trước khi bật nút live. Để dùng trên Cloud, cấu hình Secrets và hạn mức ở phía nhà cung cấp theo [hướng dẫn Gemini online](docs/mission2/online-gemini-setup.md). Mã truy cập chỉ giới hạn người dùng; nó không tự đặt trần chi phí toàn tài khoản.
-
-SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/python-genai), [Google Search grounding](https://ai.google.dev/gemini-api/docs/google-search), [structured outputs](https://ai.google.dev/gemini-api/docs/structured-output). Lần T01 đã nhận search grounding và structured extraction bằng cấu hình của người dùng; model ID lưu trong run là cấu hình client, chưa xác minh độc lập danh tính model phía server.
-
-## Hạn chế đã quan sát
-
-- Đảo ngược ý nghĩa claim vẫn có thể vượt quote matching: O08 minh họa. Semantic audit của người dùng vẫn bắt buộc với claim ảnh hưởng quyết định.
-- Không có D30 retention: trả gap, không đổi câu hỏi sang doanh thu/rating.
-- Run lịch sử strict cần publication date **và snapshot lịch sử**. Reader hiện tại không tự lấy archive, nên tài liệu hiện tại không chứng minh nội dung tồn tại trước cutoff cũ. PDF publication date mặc định unknown, không dùng creation metadata thay thế.
-- Không OCR, JS rendering, paywall bypass, dữ liệu nội bộ hay quyền phát hành thực. HTML date extraction là metadata tự động, cần kiểm tra lại.
-- Exact duplicate URL/content được đánh dấu; paraphrased repost cần reviewer nhận diện, không hứa tự phát hiện mọi phụ thuộc nguồn.
-- URL reader chặn private/reserved addresses trước request/redirect. MVP chưa phải crawler production và chưa có transport chống DNS rebinding; public live retrieval chưa được mở.
-
-## Demo và bài nộp
-
-Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. Người dùng đã cung cấp URL [Streamlit online](https://gamota-game-market-intelligence.streamlit.app/); kiểm tra không đăng nhập nhận chuyển hướng tới login (`HTTP 303`), nên chưa xác minh được UI hoặc Gemini trên Cloud. Cloud Secrets có thể cấp key/model cho chế độ Gemini sau khi chủ key xác nhận phạm vi sử dụng; UI yêu cầu mã truy cập riêng. Lần chạy online do người dùng báo có hai nguồn đọc lỗi và extraction `ValidationError`; bản sửa giữ record hợp lệ và hiển thị chẩn đoán an toàn đã được push, nhưng cần một lượt smoke test mới để xác nhận trên Cloud. [Checklist deploy](docs/mission2/deploy-checklist.md).
-
-[Technical plan](docs/mission2/mission2-technical-plan.md) giữ nguyên lịch sử đề xuất; [Evidence Log](docs/mission2/mission2-evidence-log.md) ghi xác nhận mới. Báo cáo Mission 1 trong `docs/mission1` chỉ là tài liệu nền. [Ba Forced Decisions](docs/mission2/forced-decisions-draft.md) và [kịch bản video](docs/mission2/video-script.md) là AI-PROPOSAL để người dùng rà soát. Không tự nộp thay người dùng.
-
-[Khảo sát sản phẩm tham chiếu](docs/mission2/product-landscape.md) đối chiếu nền tảng dữ liệu game và công cụ nghiên cứu có dẫn nguồn, rồi ưu tiên các cải tiến kiểm chứng được cho core loop Mission 2.
+[Hướng dẫn bàn giao và checklist](docs/mission2/submission-handoff.md) nêu bước demo, trạng thái deploy và những việc chỉ chủ bài nộp có thể hoàn tất. Tài liệu Mission 1 nằm trong `docs/mission1/`; các kế hoạch/lần thử cũ trong `docs/mission2/` là lịch sử, không thay cho report hiện tại.
