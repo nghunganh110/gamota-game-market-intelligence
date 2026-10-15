@@ -1,9 +1,10 @@
 from types import SimpleNamespace
+import json
 import pytest
 from gmi.pipeline import run_research
 from gmi.models import Source, Extraction
 from gmi.replay import replay
-from gmi.gemini import GeminiProvider, LivePolicy
+from gmi.gemini import GeminiProvider, LivePolicy, parse_extraction
 
 class FaultProvider:
     usage={}
@@ -78,3 +79,61 @@ def test_full_mocked_pipeline_applies_distinct_source_assessments():
     r=run_research(base.scope,MockProvider(),MockReader())
     assert r.status=='completed' and r.recommendation=='Tiếp tục'
     assert all(s.relevance=='direct' and 'human review pending' in s.quality for s in r.sources)
+
+
+def test_invalid_gemini_claim_does_not_discard_valid_records_or_leak_content():
+    base = replay('good')
+    payload = base.extraction.model_dump(mode='json')
+    payload['claims'][1]['period_start'] = 'not-a-date'
+    extraction, diagnostic = parse_extraction(json.dumps(payload))
+    assert [claim.id for claim in extraction.claims] == ['C1', 'C3']
+    assert diagnostic['dropped'] == {'claims': 1}
+    assert any(issue['path'].startswith('claims.1') for issue in diagnostic['issues'])
+    assert 'not-a-date' not in str(diagnostic)
+    assert 'not-a-date' not in str(extraction)
+
+
+def test_gemini_adapter_reports_partial_schema_without_extra_api_call():
+    from google.genai import types
+    base = replay('good')
+    payload = base.extraction.model_dump(mode='json')
+    payload['claims'][1]['period_start'] = 'not-a-date'
+    response = types.GenerateContentResponse(candidates=[types.Candidate(
+        content=types.Content(parts=[types.Part(text=json.dumps(payload))])
+    )])
+    calls = []
+    def generate_content(**kwargs):
+        calls.append(kwargs)
+        return response
+    provider = GeminiProvider(
+        LivePolicy(enabled=True, authorized=True, budget_note='Mock only', max_calls=2),
+        client=SimpleNamespace(models=SimpleNamespace(generate_content=generate_content)),
+        model='test-model',
+    )
+    extraction = provider.extract(base.scope, base.sources)
+    assert [claim.id for claim in extraction.claims] == ['C1', 'C3']
+    assert provider.usage['api_calls'] == len(calls) == 1
+    assert provider.usage['extraction_validation']['dropped'] == {'claims': 1}
+
+
+def test_partial_gemini_extraction_keeps_evidence_but_excludes_invalid_finding():
+    base = replay('good')
+    payload = base.extraction.model_dump(mode='json')
+    payload['claims'][1]['period_start'] = 'not-a-date'
+    extraction, diagnostic = parse_extraction(json.dumps(payload))
+
+    class PartialProvider:
+        usage = {'extraction_validation': diagnostic, 'api_calls': 2}
+        def search(self, scope): return [{'url': source.url} for source in base.sources]
+        def extract(self, scope, sources): return extraction
+
+    class BaseReader:
+        def read(self, url, source_id):
+            return next(source.model_copy(deep=True) for source in base.sources if source.url == url)
+
+    run = run_research(base.scope, PartialProvider(), BaseReader())
+    assert run.status == 'partial'
+    assert [claim.id for claim in run.extraction.claims] == ['C1', 'C3']
+    assert not run.extraction.findings  # The model's finding depended on discarded C2.
+    assert 'invalid records' in ' '.join(run.errors)
+    assert run.usage['extraction_validation']['dropped'] == {'claims': 1}

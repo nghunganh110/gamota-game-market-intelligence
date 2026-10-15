@@ -19,6 +19,8 @@ def run_research(scope: Scope, provider, reader) -> Run:
         readable = [s for s in run.sources if s.read_status == 'read' and s.text]
         if readable:
             run.extraction = provider.extract(scope, readable)
+            if getattr(provider, 'usage', {}).get('extraction_validation', {}).get('status') == 'partial':
+                run.errors.append('Gemini extraction had invalid records; valid records retained. See usage.extraction_validation')
             assessments = {a.source_id: a for a in run.extraction.source_assessments}
             for s in readable:
                 a = assessments.get(s.id)

@@ -5,12 +5,17 @@ def result_summary(run: Run) -> dict:
     """Present validated findings without inventing a new model conclusion."""
     findings = run.extraction.findings if run.status != 'failed' else []
     claim_ids = list(dict.fromkeys(cid for f in findings for cid in f.claim_ids))
+    eligible_count = sum(c.status in {'mechanically_checked', 'human_verified'} for c in run.extraction.claims)
     action = next((g.action for g in run.extraction.gaps if g.action),
                   'Kiểm tra các claim trọng yếu và quyết định bước nghiên cứu tiếp theo.')
     return {
         'findings': findings,
         'claim_ids': claim_ids,
-        'answer': findings[0].text if findings else 'Chưa đủ bằng chứng hợp lệ để trả lời câu hỏi này.',
+        'answer': findings[0].text if findings else (
+            'Chưa đủ bằng chứng hợp lệ để trả lời câu hỏi này.'
+            + (f' Có {eligible_count} claim qua kiểm tra cơ học, nhưng chưa có kết luận nào được hỗ trợ đầy đủ.'
+               if eligible_count else '')
+        ),
         'next_action': action,
         'reviewed': bool(run.review),
     }

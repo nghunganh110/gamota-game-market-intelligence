@@ -11,6 +11,24 @@ from .models import Source
 
 MAX_BYTES = 4_000_000
 MAX_CHARS = 30_000
+SAFE_READ_ERRORS = frozenset({
+    'Only public HTTP(S) URLs without credentials are allowed',
+    'Private/reserved address blocked',
+    'PDF exceeds 50-page limit',
+    'No readable full text (scan, paywall or JS page possible)',
+    'Unsupported content type',
+    'Document exceeded size/time limit',
+    'Too many redirects',
+})
+
+
+def safe_read_error(exc: Exception) -> str:
+    """Expose actionable reader failures without leaking arbitrary URL or response text."""
+    if isinstance(exc, httpx.HTTPStatusError):
+        return f'HTTP {exc.response.status_code}'
+    if isinstance(exc, ValueError) and str(exc) in SAFE_READ_ERRORS:
+        return str(exc)
+    return type(exc).__name__
 
 
 def assert_public_url(url: str):
@@ -78,4 +96,4 @@ class DocumentReader:
         except Exception as exc:
             # Never persist arbitrary exception bodies/headers that might include credentials.
             return Source(id=source_id, url=url, title=urlsplit(url).hostname or 'Unreadable source',
-                          text='', accessed=accessed, read_status='failed', error=f'Document read failed ({type(exc).__name__})')
+                          text='', accessed=accessed, read_status='failed', error=f'Document read failed ({safe_read_error(exc)})')

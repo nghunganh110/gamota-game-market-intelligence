@@ -1,5 +1,11 @@
 # Evidence Log Mission 2
 
+## Lần chạy Gemini trên URL Streamlit do người dùng cung cấp
+
+**Quan sát:** Người dùng cung cấp `https://gamota-game-market-intelligence.streamlit.app/` và báo app hiển thị `S2: Document read failed (ValueError)`, `S6: Document read failed (HTTPStatusError)`, `Pipeline interrupted (ValidationError); no fabricated fallback`. Không có claim hỗ trợ hoặc kết luận. Kiểm tra URL không đăng nhập nhận `HTTP 303` tới login; không xem được run, scope, raw model response hoặc Cloud logs. Chưa xác định chính xác trường nào gây `ValidationError`, và không coi URL là smoke test app đã thành công.
+
+**Chẩn đoán code:** `Extraction.model_validate_json` trước đó là all-or-nothing: một record model sai schema làm mất toàn bộ extraction, dù các nguồn khác đọc được. Lỗi đọc S2/S6 được pipeline ghi riêng; chúng không tự dừng lượt chạy. Bản sửa parse JSON, giữ record hợp schema, loại record sai/ID trùng, ghi đường dẫn lỗi và kiểu lỗi trong `usage.extraction_validation` mà không lưu nội dung response. Finding phụ thuộc claim không hợp lệ vẫn bị loại. Reader nay trả lỗi an toàn cụ thể hơn (ví dụ HTTP status hoặc không có full text). Không gọi Gemini khi sửa; 61 tests passed, gồm trường hợp response sai schema bằng fake SDK. Cần chạy lại trong giới hạn sử dụng mới để xác nhận hành vi thực tế và kiểm tra chất lượng ngữ nghĩa.
+
 ## Giao diện kết luận và deploy
 
 **Người dùng hỏi:** `oke nhung toi thay hinh nhu web hien tai chua duoc deploy ?`. Xác minh README/remote: repo đã public nhưng chưa có URL Streamlit online; lựa chọn trước đó là giữ local khi Streamlit xin kết nối GitHub. Tài liệu Streamlit chính thức xác nhận deploy Community Cloud cần repository + entrypoint và kết nối tài khoản GitHub. Không có browser surface khả dụng trong phiên hiện tại; IAB báo unavailable. Chưa deploy hoặc xác minh URL online.

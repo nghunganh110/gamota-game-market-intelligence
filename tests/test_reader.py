@@ -1,5 +1,5 @@
 import pytest
-from gmi.reader import assert_public_url, parse_document
+from gmi.reader import assert_public_url, parse_document, safe_read_error
 
 @pytest.mark.parametrize('url',['http://127.0.0.1/private','http://169.254.169.254/latest','file:///etc/passwd','https://user:pass@example.org','http://[::1]/','https://example.org:22/'])
 def test_private_or_credential_urls_blocked(url):
@@ -16,6 +16,15 @@ def test_html_full_text_extraction():
 def test_empty_scan_and_unsupported_types_fail():
     with pytest.raises(ValueError): parse_document(b'<html><body>JS app</body></html>','text/html','https://example.org')
     with pytest.raises(ValueError): parse_document(b'not readable','application/octet-stream','https://example.org')
+
+
+def test_reader_error_detail_is_actionable_but_does_not_leak_arbitrary_text():
+    import httpx
+    request = httpx.Request('GET', 'https://example.org/private-token')
+    response = httpx.Response(403, request=request)
+    assert safe_read_error(httpx.HTTPStatusError('secret response', request=request, response=response)) == 'HTTP 403'
+    assert safe_read_error(ValueError('No readable full text (scan, paywall or JS page possible)')).startswith('No readable')
+    assert safe_read_error(ValueError('secret source text')) == 'ValueError'
 
 
 def test_navigation_shell_is_not_readable_article():
