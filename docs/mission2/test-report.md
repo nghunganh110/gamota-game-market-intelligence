@@ -140,4 +140,4 @@ Source từ Git archive + venv Python mới + requirements.txt (cài từ cache 
 
 ## Còn thiếu trước bài nộp
 
-T01 đã chạy live và chưa đạt chất lượng end-to-end; latency và usage có trong báo cáo mới. T02–T03 và T06/T09 live chưa chạy; chưa có audit của người tham gia/Lead thực, chi phí tiền tệ hay đo tiết kiệm thời gian. O08 là thất bại synthetic; T01 bổ sung thất bại sản phẩm quan sát từ live research.
+T01–T03 đã chạy live, cùng một lượt online Liên Quân Mobile do người dùng báo; các lượt này đều partial và chưa đạt chất lượng end-to-end. T06/T09 live chưa chạy. Chưa có một case live làm tốt được người dùng/Lead audit và chấp nhận; chưa có chi phí tiền tệ hoặc đo tiết kiệm thời gian. O08 là thất bại synthetic; T01 và Liên Quân bổ sung thất bại sản phẩm quan sát từ live research. Xem [kiểm toán yêu cầu Mission 2](acceptance-gap-audit.md) trước khi dùng báo cáo này làm bài nộp.

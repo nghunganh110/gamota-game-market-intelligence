@@ -1,6 +1,6 @@
 # Ba Forced Decisions — bản thảo để người dùng rà soát
 
-**AI-PROPOSAL**, dựa trên lựa chọn đã xác nhận và implementation/test thực tế. Không tự coi lời văn dưới đây là quyết định mới của người dùng. Chưa có live research hoặc audit của Lead.
+**AI-PROPOSAL lịch sử, chưa sẵn sàng nộp.** T01–T03 và lượt online Liên Quân đã chạy live nhưng đều partial; chưa có brief được người dùng audit và chấp nhận. Nội dung bên dưới được viết trước các lượt live, cần viết lại theo [kiểm toán Mission 2](acceptance-gap-audit.md). Không tự coi lời văn này là quyết định mới của người dùng.
 
 ## 1. Phần quan trọng nhất được hiện thực hóa
 

@@ -1,6 +1,6 @@
 # Kịch bản video — tối đa 4 phút 50 giây
 
-AI-PROPOSAL. Quay phiên bản cuối sau live runs và reviewer audit. Không nói replay là Gemini research.
+AI-PROPOSAL lịch sử, chưa sẵn sàng quay/nộp. Các mốc 37 tests và giả định chưa có live runs bên dưới đã cũ; xem [kiểm toán Mission 2](acceptance-gap-audit.md). Quay phiên bản cuối sau khi có một case thật được reviewer audit. Không nói replay là Gemini research.
 
 | Mốc | Nội dung |
 |---|---|

@@ -2,6 +2,8 @@
 
 MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn → đọc HTML/PDF riêng → Claim Ledger → kiểm tra evidence → brief → người phụ trách review và quyết định.
 
+**Đánh giá lại theo đề gốc:** [Mission 2 chưa đạt giả thuyết cốt lõi](docs/mission2/acceptance-gap-audit.md): app online và test code hoạt động, nhưng chưa có một live decision brief được người dùng kiểm chứng và chấp nhận từ đầu đến cuối. Ưu tiên tiếp theo là một case evidence-backed thật, không thêm tính năng chỉ để tăng số test.
+
 **Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **66 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. Người dùng đã chạy một lượt Gemini trên URL Streamlit online và báo kết quả partial; môi trường kiểm tra không đăng nhập vẫn chuyển tới login nên chưa tự smoke test được app. Chưa có kết quả chi phí tiền tệ. Replay sau sửa không thay thế bằng chứng fresh retrieval.
 
 **Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; claim bị đánh dấu unsupported hoặc unclear không còn hỗ trợ finding. Export giữ review. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
