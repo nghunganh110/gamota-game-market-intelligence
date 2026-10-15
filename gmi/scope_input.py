@@ -41,11 +41,11 @@ def scope_input_errors(question: str, subject: str, period: str, bounded: bool,
         errors.append(f'{period.strip().upper()} tương ứng {expected[0]} đến {expected[1]}; khoảng ngày đang nhập không khớp.')
     effective_end = end if bounded else expected[1] if expected else None
     if effective_end and cutoff < effective_end:
-        errors.append('Cutoff phải sau hoặc bằng ngày kết thúc kỳ đo.')
+        errors.append('Ngày chốt thông tin phải sau hoặc bằng ngày kết thúc kỳ đo.')
     if cutoff > today:
-        errors.append('Cutoff không được ở tương lai.')
+        errors.append('Ngày chốt thông tin không được ở tương lai.')
     if strict and cutoff < today:
-        errors.append('Cutoff lịch sử + strict cần snapshot lưu trước cutoff; reader live hiện không lấy archive. Dùng cutoff hôm nay để phân tích hồi cứu từ nguồn hiện có, hoặc chuẩn bị snapshot lịch sử.')
+        errors.append('Nếu chọn ngày chốt trong quá khứ và yêu cầu chỉ dùng thông tin có trước ngày đó, cần bản lưu tài liệu từ thời điểm ấy. Ứng dụng hiện chưa tự tìm bản lưu lịch sử. Hãy dùng ngày chốt hôm nay để xem nguồn hiện có, hoặc chuẩn bị bản lưu phù hợp.')
     return errors
 
 

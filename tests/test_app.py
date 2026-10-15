@@ -20,13 +20,13 @@ def test_curated_real_cases_keep_short_source_excerpts_and_no_review():
 
 def test_one_click_real_case_replay_renders_two_questions_without_gemini():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
-    app.radio[0].set_value('Ví dụ đã lưu — nguồn thật').run()
-    next(x for x in app.button if x.label == 'Mở case').click().run()
+    app.radio[0].set_value('Ví dụ từ nguồn thật').run()
+    next(x for x in app.button if x.label == 'Mở ví dụ').click().run()
     assert not app.exception
     assert app.session_state['run'].id == 'curated-real-a01-20261015'
     assert len(app.session_state['run'].extraction.claims) == 3
-    next(x for x in app.selectbox if x.label == 'Case thật').select('A02')
-    next(x for x in app.button if x.label == 'Mở case').click().run()
+    next(x for x in app.selectbox if x.label == 'Chọn ví dụ').select('A02')
+    next(x for x in app.button if x.label == 'Mở ví dụ').click().run()
     assert not app.exception
     assert app.session_state['run'].id == 'curated-real-a02-20261015'
     assert app.session_state['run'].extraction.gaps
@@ -35,24 +35,24 @@ def test_one_click_real_case_replay_renders_two_questions_without_gemini():
 
 def test_switching_demo_mode_clears_previous_result():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
-    next(x for x in app.button if x.label == 'Mở case').click().run()
+    next(x for x in app.button if x.label == 'Mở ví dụ').click().run()
     assert app.session_state['run'].id.startswith('curated-real-')
-    app.radio[0].set_value('Demo offline — synthetic').run()
+    app.radio[0].set_value('Tình huống mô phỏng').run()
     assert 'run' not in app.session_state
 
 def test_replay_ui_and_review():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
     assert not app.exception
-    app.radio[0].set_value('Demo offline — synthetic').run()
+    app.radio[0].set_value('Tình huống mô phỏng').run()
     app.button[0].click().run()
     assert not app.exception
-    assert app.metric[0].value=='Giả lập'
+    assert app.metric[0].value=='Dữ liệu mô phỏng'
     assert app.metric[2].value=='Tiếp tục'
     assert any('Câu trả lời sơ bộ' in x.value for x in app.subheader)
-    next(x for x in app.text_input if x.label=='Người review').set_value('Offline test reviewer')
+    next(x for x in app.text_input if x.label=='Người phụ trách kiểm chứng').set_value('Offline test reviewer')
     next(x for x in app.text_area if x.label=='Lý do (bắt buộc)').set_value('Need more evidence before proceeding.')
     next(x for x in app.selectbox if x.label=='Quyết định').select('Tạm giữ')
-    next(x for x in app.button if x.label=='Lưu review').click().run()
+    next(x for x in app.button if x.label=='Lưu kết luận').click().run()
     assert not app.exception
     assert app.session_state['run'].review.decision=='Tạm giữ'
     assert app.session_state['run'].recommendation=='Tiếp tục'
@@ -62,7 +62,7 @@ def test_live_ui_disabled_by_default(monkeypatch):
     monkeypatch.setattr('gmi.config.load_local_env', lambda: None)
     monkeypatch.delenv('GMI_LIVE_ENABLED',raising=False)
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run()
-    app.radio[0].set_value('Nghiên cứu Gemini').run()
+    app.radio[0].set_value('Nghiên cứu bằng Gemini').run()
     assert not app.exception
     assert app.button[0].disabled
 
@@ -78,7 +78,7 @@ def test_live_ui_requires_access_code(monkeypatch):
     for key, value in settings.items():
         monkeypatch.setenv(key, value)
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run()
-    app.radio[0].set_value('Nghiên cứu Gemini').run()
+    app.radio[0].set_value('Nghiên cứu bằng Gemini').run()
     assert next(x for x in app.button if x.label == 'Nghiên cứu').disabled
     next(x for x in app.text_input if x.label == 'Mã truy cập Gemini').set_value('wrong-code')
     next(x for x in app.button if x.label == 'Mở Gemini').click().run()
@@ -98,7 +98,7 @@ def test_live_ui_rejects_subject_mismatch_before_provider(monkeypatch):
     }.items():
         monkeypatch.setenv(key, value)
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run()
-    app.radio[0].set_value('Nghiên cứu Gemini').run()
+    app.radio[0].set_value('Nghiên cứu bằng Gemini').run()
     next(x for x in app.text_input if x.label == 'Mã truy cập Gemini').set_value('a-long-test-access-code')
     next(x for x in app.button if x.label == 'Mở Gemini').click().run()
     monkeypatch.setattr('gmi.gemini.GeminiProvider', lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError('Gemini must not run')))
@@ -113,14 +113,14 @@ def test_live_ui_rejects_subject_mismatch_before_provider(monkeypatch):
 
 def test_reviewer_can_reject_semantically_false_claim_in_ui():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
-    app.radio[0].set_value('Demo offline — synthetic').run()
+    app.radio[0].set_value('Tình huống mô phỏng').run()
     next(x for x in app.selectbox if x.label=='Tình huống').select('semantic_failure')
     next(x for x in app.button if x.label=='Chạy tình huống').click().run()
     assert app.session_state['run'].extraction.findings
     next(x for x in app.text_input if x.key=='claim_reviewer_C1').set_value('Reviewer')
     next(x for x in app.selectbox if x.key=='claim_verdict_C1').select('unsupported')
     next(x for x in app.text_area if x.key=='claim_reason_C1').set_value('Quote negates the positive demand claim.')
-    next(x for x in app.button if x.key=='FormSubmitter:claim_review_C1-Lưu đánh giá claim').click().run()
+    next(x for x in app.button if x.key=='FormSubmitter:claim_review_C1-Lưu đánh giá ý này').click().run()
     run=app.session_state['run']
     assert not run.extraction.findings
     assert run.extraction.claims[0].status=='rejected'
@@ -129,27 +129,27 @@ def test_reviewer_can_reject_semantically_false_claim_in_ui():
 
 def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
-    app.radio[0].set_value('Demo offline — synthetic').run()
+    app.radio[0].set_value('Tình huống mô phỏng').run()
     next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
     next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
     next(x for x in app.text_input if x.key == 'claim_reviewer_C1').set_value('Fixture reviewer')
     next(x for x in app.selectbox if x.key == 'claim_verdict_C1').select('supported')
     next(x for x in app.text_area if x.key == 'claim_reason_C1').set_value('The synthetic quote supports this narrow claim.')
-    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá claim').click().run()
-    next(x for x in app.text_input if x.label == 'Người review').set_value('Fixture reviewer')
-    next(x for x in app.text_area if x.label == 'Nhận định cuối của người review').set_value('Synthetic China demand signal only; real demand remains untested.')
-    next(x for x in app.selectbox if x.label == 'Mức căn cứ của nhận định cuối').select('Có claim đã duyệt')
-    next(x for x in app.multiselect if x.label == 'Claim hỗ trợ nhận định cuối').set_value(['C1'])
+    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá ý này').click().run()
+    next(x for x in app.text_input if x.label == 'Người phụ trách kiểm chứng').set_value('Fixture reviewer')
+    next(x for x in app.text_area if x.label == 'Kết luận cuối của người phụ trách').set_value('Synthetic China demand signal only; real demand remains untested.')
+    next(x for x in app.selectbox if x.label == 'Mức căn cứ của kết luận').select('Có ý đã kiểm chứng')
+    next(x for x in app.multiselect if x.label == 'Các ý làm căn cứ cho kết luận').set_value(['C1'])
     next(x for x in app.text_area if x.label == 'Lý do (bắt buộc)').set_value('Keep the conclusion limited to the reviewed synthetic claim.')
-    next(x for x in app.button if x.label == 'Lưu review').click().run()
+    next(x for x in app.button if x.label == 'Lưu kết luận').click().run()
     assert not app.exception
     assert app.session_state['run'].review.answer_claim_ids == ['C1']
-    assert any('Nhận định đã review' in x.value for x in app.subheader)
+    assert any('Kết luận đã được người phụ trách kiểm chứng' in x.value for x in app.subheader)
 
 
 def test_reviewer_can_narrow_claim_in_ui_before_final_answer():
     app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
-    app.radio[0].set_value('Demo offline — synthetic').run()
+    app.radio[0].set_value('Tình huống mô phỏng').run()
     next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
     next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
     revised = 'Fictional Game Beta has a positive demand signal in the China concept study for Q1 2025.'
@@ -158,7 +158,7 @@ def test_reviewer_can_narrow_claim_in_ui_before_final_answer():
     next(x for x in app.text_area if x.key == 'claim_corrected_text_C1').set_value(revised)
     next(x for x in app.text_input if x.key == 'claim_corrected_metric_C1').set_value('concept-study demand signal')
     next(x for x in app.text_area if x.key == 'claim_reason_C1').set_value('Narrowed the statement to what the quote supports.')
-    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá claim').click().run()
+    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá ý này').click().run()
     assert not app.exception
     run = app.session_state['run']
     assert run.extraction.claims[0].text == revised

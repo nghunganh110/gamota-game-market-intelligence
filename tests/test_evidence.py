@@ -15,7 +15,7 @@ def test_sufficient_screening_and_export_roundtrip():
     assert (r.status, r.recommendation) == ('completed','Tiếp tục')
     assert all(c.status=='mechanically_checked' for c in r.extraction.claims)
     assert Run.model_validate_json(r.model_dump_json()) == r
-    assert 'C1' in brief_markdown(r) and 'synthetic' in brief_markdown(r)
+    assert 'C1' in brief_markdown(r) and 'Dữ liệu mô phỏng' in brief_markdown(r)
 
 
 def test_conflict_keeps_both_sides_and_holds():
@@ -192,7 +192,7 @@ def test_reviewer_can_narrow_claim_without_reusing_old_ai_finding():
     assert narrowed.extraction.claims[0].status == 'human_verified'
     assert narrowed.proposed_extraction.claims[0].text == original
     assert not narrowed.extraction.findings
-    assert 'Original claim in run' in brief_markdown(narrowed)
+    assert 'Ý ban đầu do AI viết' in brief_markdown(narrowed)
     assert Run.model_validate_json(narrowed.model_dump_json()).claim_reviews[-1] == review
     final = apply_review(narrowed, Review(reviewer='Reviewer', decision='Reviewed research',
                                          reason='The narrow claim matches the cited synthetic quote.',
@@ -225,7 +225,7 @@ def test_reviewed_answer_requires_human_checked_citations_and_survives_export():
     assert result_summary(reviewed)['answer'] == premature.final_answer
     assert result_summary(reviewed)['claim_ids'] == ['C1']
     assert result_summary(reviewed)['reviewed']
-    assert 'Reviewed answer' in brief_markdown(reviewed)
+    assert 'Câu trả lời đã được kiểm chứng' in brief_markdown(reviewed)
     assert Run.model_validate_json(reviewed.model_dump_json()).review == premature
 
     with pytest.raises(ValueError, match='reviewed citations'):

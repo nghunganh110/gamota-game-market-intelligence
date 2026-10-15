@@ -1,28 +1,28 @@
 # Bàn giao bài nộp Mission 2
 
-Ngày cập nhật: 2026-10-15. Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. URL demo do chủ bài nộp cung cấp: https://gamota-game-market-intelligence.streamlit.app/. Kiểm tra HTTP không đăng nhập ngày 15/10/2026 trả `303` tới luồng login lặp lại, vì vậy **người chấm chưa chắc mở được demo** và phiên này chưa xác minh được giao diện sau deploy. Bản local và Streamlit AppTest đã chạy. Theo [hướng dẫn chia sẻ của Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/share-your-app), chủ app có thể vào App settings → Sharing → “Who can view this app” → “This app is public and searchable”.
+Cập nhật: 15/10/2026. [Mã nguồn công khai](https://github.com/nghunganh110/gamota-game-market-intelligence) · [Ứng dụng trực tuyến](https://gamota-game-market-intelligence.streamlit.app/) · [Video demo có phụ đề, 2:13](mission2-demo-captioned.mp4).
 
-## Nội dung đã chuẩn bị
+Ứng dụng đã được kiểm thử trên máy cá nhân. Tuy nhiên, khi mở đường dẫn trực tuyến mà chưa đăng nhập, trình duyệt bị chuyển đến màn hình đăng nhập Streamlit. **Chủ ứng dụng cần kiểm tra quyền xem trước khi gửi link cho người chấm.** Theo [hướng dẫn chính thức của Streamlit](https://docs.streamlit.io/deploy/streamlit-community-cloud/share-your-app), vào App settings → Sharing → “Who can view this app” và chọn “This app is public and searchable” nếu muốn ai có link cũng xem được. Sau đó thử lại bằng cửa sổ ẩn danh.
 
-- MVP Streamlit cho nhiều câu hỏi; mặc định mở **hai ví dụ nguồn thật đã lưu** A01/A02. Chúng là bản biên tập rút gọn từ Gemini live, không tốn API, không có human review giả. Chế độ synthetic dùng để tái hiện good/conflict/missing/semantic failure. Chế độ Gemini nhận câu hỏi mới và URL nguồn nếu có mã truy cập.
-- UI dẫn người xem từ nhận định sơ bộ, claim và đoạn trích, chất lượng/độ phù hợp của nguồn, gap, tới form review và export. `app.py` chứa routing/input; `gmi/ui_results.py` chứa trình bày và reviewer actions; pipeline/validation/models không phụ thuộc Streamlit.
-- [Bộ kiểm thử](test-report.md) có trên năm tình huống theo format đề bài. A01 live: pipeline hoàn tất nhưng claim cần audit; A02 auto: discovery lỗi; A02 guided: nhận định nhóm thể loại, không có số riêng MMORPG. Không gán nhãn research PASS khi thiếu human acceptance.
-- [Ba Forced Decisions](forced-decisions-draft.md) đã cập nhật theo kết quả A01/A02. [Video demo có phụ đề, 2:13](mission2-demo-captioned.mp4) được dựng từ ảnh chụp giao diện local, H.264 1920×1080, không có âm thanh hay API call khi quay. Video trình bày A01/A02 và lỗi synthetic; [kịch bản](video-script.md) dành cho bản thuyết minh bằng lời nếu chủ bài nộp muốn quay lại.
+## Đã chuẩn bị
 
-## Demo cho người chấm
+- Ứng dụng nhận nhiều câu hỏi; hai ví dụ từ nguồn thật A01/A02 mở bằng một nút mà không tốn lượt gọi Gemini. Tình huống mô phỏng cho thấy sản phẩm xử lý đủ dữ liệu, mâu thuẫn, thiếu dữ liệu và một lỗi hiểu ngược đoạn trích.
+- Giao diện dẫn từ câu trả lời sơ bộ tới từng ý, đoạn trích, trang nguồn, điều chưa biết và chỗ người phụ trách ghi kết luận. Các thuật ngữ kỹ thuật được giữ trong mã và tệp dữ liệu, còn màn hình chính dùng lời nói thông thường.
+- [Báo cáo kiểm thử](test-report.md) có hơn năm tình huống theo mẫu đề bài. [Ba câu trả lời bắt buộc](forced-decisions-draft.md) đã viết theo kết quả thật và cần chủ bài nộp rà soát.
+- [Video có phụ đề 2:13](mission2-demo-captioned.mp4) dùng ảnh chụp giao diện local, định dạng H.264 1920×1080, không có âm thanh và không lộ khóa API. [Kịch bản có lời](video-script.md) và [lời giải thích 60 giây](presentation-notes.md) có sẵn nếu muốn tự quay lại.
 
-1. Vào URL và mở **A01** bằng một nút; đọc nhận định rồi mở tab Claim và Nguồn. Nhấn mạnh nguồn khác nhau về phương pháp và độ phù hợp.
-2. Mở **A02** để thấy câu hỏi thứ hai và phần dữ liệu riêng thể loại còn thiếu.
-3. Mở synthetic **Giới hạn: diễn giải sai đoạn trích**, cho reviewer bác claim sai. Đây là tình huống thất bại được công khai, không phải kết quả nghiên cứu thị trường.
-4. Mở report và Forced Decisions từ README. Nếu cần live, cấu hình Secrets theo [hướng dẫn](online-gemini-setup.md); demo bài nộp không cần tốn quota.
+## Cách demo
 
-## Cần chủ bài nộp hoàn tất
+1. Mở **A01**. Đọc câu trả lời sơ bộ, mở một ý để xem đoạn trích và trang gốc. Chỉ cách ứng dụng đánh giá mức phù hợp của nguồn.
+2. Mở **A02**. Nói rằng nguồn nêu **nhóm** thể loại, chưa có doanh thu riêng MMORPG. Chỉ phần thông tin còn thiếu.
+3. Mở tình huống mô phỏng **Giới hạn: diễn giải sai đoạn trích**. Chỉ rõ chữ “không” trong nguồn và cho thấy người phụ trách có thể bác ý AI viết sai.
+4. Mở [báo cáo kiểm thử](test-report.md) và [ba câu trả lời](forced-decisions-draft.md). Nói rõ ví dụ thật là kết quả sơ bộ, chưa được người phụ trách chấp nhận là kết luận thị trường cuối.
 
-- Trong tài khoản Streamlit Cloud, kiểm tra **App settings → Sharing** và bật **This app is public and searchable** nếu bài nộp cần link mở tự do; sau đó dùng cửa sổ ẩn danh mở URL, chọn A01/A02 và kiểm tra các tab. Nếu chủ ý giữ app riêng tư, mời đúng người chấm và ghi hướng dẫn đăng nhập trong bài nộp.
-- Đọc/sửa ba câu Forced Decisions để chúng đúng quan điểm cá nhân; không nhận bản AI soạn là lời xác nhận sẵn.
-- Xem lại [video có phụ đề 2:13](mission2-demo-captioned.mp4) và xác nhận nó thể hiện đúng điều bạn muốn nộp; tải file này lên nơi HR/Gamota yêu cầu và kiểm tra quyền xem. Có thể quay bản có lời theo [kịch bản](video-script.md) nếu cần. Sau đó nộp link repo, demo, video và report theo form HR/Gamota. Việc upload/nộp trong tài khoản của chủ bài nộp chưa được thực hiện bởi Codex.
-- Nếu muốn tuyên bố kết quả nghiên cứu A01/A02 đã được xác nhận, cần mở trang gốc, review claim trọng yếu trong app, ghi lý do và xuất brief mới. Bài nộp hiện có thể mô tả trung thực chúng là kết quả live sơ bộ và đánh giá giới hạn của MVP.
+## Chủ bài nộp cần làm
 
-## Rủi ro và dữ liệu
+1. Chỉnh quyền xem ứng dụng trong Streamlit Cloud, thử A01/A02 trong cửa sổ ẩn danh sau khi bản mới cập nhật.
+2. Đọc và sửa ba câu trả lời bắt buộc cho đúng quan điểm cá nhân.
+3. Xem video, tải lên nơi nhận bài và kiểm tra quyền xem; dùng bản có phụ đề hoặc quay bản có lời theo kịch bản.
+4. Nộp link mã nguồn, ứng dụng, video và báo cáo theo hướng dẫn của HR/Gamota. Codex chưa thực hiện thao tác nộp trong tài khoản của bạn.
 
-Không commit `.env`, Secrets hoặc `runs/`: các run local có thể chứa snapshot toàn văn nguồn. Fixture `fixtures/real_cases/` chỉ giữ đoạn trích ngắn và link gốc. Public app live dùng key server và mã truy cập; giới hạn per-session không là giới hạn chi phí toàn tài khoản. Tính đúng ngữ nghĩa vẫn cần người kiểm chứng; `mechanically_checked` và `completed` chỉ nói về gate/phần mềm.
+Tệp `.env` và dữ liệu nghiên cứu đầy đủ trong `runs/` không được đưa lên GitHub. Hai ví dụ công khai chỉ giữ đoạn trích ngắn và link nguồn. Ứng dụng vẫn cần con người đối chiếu những ý ảnh hưởng quyết định; trạng thái “Đã xử lý” không phải chứng nhận câu trả lời đúng.

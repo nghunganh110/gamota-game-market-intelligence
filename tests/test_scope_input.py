@@ -23,7 +23,7 @@ def test_online_user_scope_errors_are_caught_before_api_calls():
     assert any('Đối tượng' in error for error in errors)
     assert any('tiêu chí cụ thể' in error for error in errors)
     assert any('2025-01-01 đến 2025-03-31' in error for error in errors)
-    assert any('snapshot lịch sử' in error for error in errors)
+    assert any('bản lưu lịch sử' in error for error in errors)
 
 
 def test_current_retrospective_scope_is_allowed_with_auto_quarter_bounds():
