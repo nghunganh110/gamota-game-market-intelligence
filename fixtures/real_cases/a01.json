@@ -1,0 +1,268 @@
+{
+  "id": "curated-real-a01-20261015",
+  "evidence_mode": "replay",
+  "scope": {
+    "period": "March–May 2025",
+    "period_start": "2025-03-01",
+    "period_end": "2025-05-31",
+    "question": "MABINOGI MOBILE có tín hiệu ra mắt nào tại Hàn Quốc trong tháng 3–5/2025?",
+    "criteria": "Lượt tải, ước tính doanh thu và người dùng tháng 4; không suy nhu cầu Việt Nam hay lợi nhuận.",
+    "subject": "MABINOGI MOBILE",
+    "market": "South Korea",
+    "cutoff": "2026-10-15",
+    "mode": "research",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://sensortower.com/ko/blog/Mabinogi-Mobile-achieves-cumulative-revenue-of-30-million",
+      "title": "《마비노기 모바일》 누적 매출 3천만 달러 달성… MMORPG와 서브컬처 팬 모두를 사로잡아",
+      "publisher": "unknown",
+      "published": "2025-05-20",
+      "accessed": "2026-10-15T08:37:53.874573Z",
+      "text": "출시 이후 누적 다운로드는 구글 플레이 스토어와 애플 앱스토어 추정치 합산 100만 건을 돌파했습니다. 같은 기간 누적 매출은 약 3천만 달러에 달했습니다.",
+      "sha256": "3063007a1b948de7c5fc4279a192623fd922079317b6541295a9a5783355c384",
+      "read_status": "read",
+      "quality": "Nguồn dữ liệu thương mại Sensor Tower; ước tính App Store/Google Play, không gồm kho Android bên thứ ba.",
+      "relevance": "direct",
+      "relevance_reason": "Bài viết nói trực tiếp về lượt tải và doanh thu của MABINOGI MOBILE tại Hàn Quốc sau khi phát hành.",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S2",
+      "url": "https://www.mobileindex.com/home/blog/post/mobilegame_chart_2504",
+      "title": "4월 월간 인기 모바일 게임 순위 총정리",
+      "publisher": "unknown",
+      "published": "2025-05-12",
+      "accessed": "2026-10-15T08:37:54.641798Z",
+      "text": "5위는 정식 론칭 후, 기존 PC 유저의 모바일 전환 및 신규 유저를 확보하고 있는 '마비노기 모바일'이 124만 명으로 순위에 새롭게 이름을 올렸습니다.",
+      "sha256": "18b5747c452eec11bdd6a32f8c32559fdc8e6e668360cb1b901a14d505081102",
+      "read_status": "read",
+      "quality": "Nguồn dữ liệu thương mại Mobile Index; bảng xếp hạng tháng 4, phương pháp đếm người dùng chưa rõ trong đoạn trích.",
+      "relevance": "direct",
+      "relevance_reason": "Bài viết nêu số người dùng của MABINOGI MOBILE trong bảng tháng 4/2025.",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [
+      {
+        "source_id": "S1",
+        "quality": "Commercial mobile intelligence platform (Sensor Tower APAC blog). Methodology notes estimates combine Google Play and App Store, exclude third-party Android stores, deduplicate repeat/multi-device downloads per account, and aggregate app variants.",
+        "relevance": "direct",
+        "relevance_reason": "Contains quantitative revenue estimates, download volume, publisher market share, and marketing breakdown for MABINOGI MOBILE in South Korea from its release on March 27, 2025 up to publication around May 20, 2025."
+      },
+      {
+        "source_id": "S2",
+        "quality": "Commercial mobile intelligence platform (Mobile Index / IGAWorks blog). Provides estimated monthly active users and gross monthly revenue rankings for South Korea; explicit underlying sampling/modeling methodology is not detailed in the text.",
+        "relevance": "direct",
+        "relevance_reason": "Directly reports monthly active user counts (engagement proxy) and monthly game revenue for MABINOGI MOBILE in South Korea for April 2025."
+      }
+    ],
+    "claims": [
+      {
+        "period": "March 27, 2025 to May 20, 2025",
+        "period_start": "2025-03-27",
+        "period_end": "2025-05-20",
+        "id": "C1",
+        "text": "Sensor Tower ước tính MABINOGI MOBILE vượt 1 triệu lượt tải cộng dồn qua Google Play và App Store sau khi ra mắt tại Hàn Quốc.",
+        "source_id": "S1",
+        "quote": "출시 이후 누적 다운로드는 구글 플레이 스토어와 애플 앱스토어 추정치 합산 100만 건을 돌파했습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Ước tính lượt tải cộng dồn trên hai kho ứng dụng",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "March 27, 2025 to May 20, 2025",
+        "period_start": "2025-03-27",
+        "period_end": "2025-05-20",
+        "id": "C2",
+        "text": "Sensor Tower ước tính doanh thu cộng dồn khoảng 30 triệu USD trong cùng giai đoạn sau ra mắt tại Hàn Quốc.",
+        "source_id": "S1",
+        "quote": "같은 기간 누적 매출은 약 3천만 달러에 달했습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Ước tính doanh thu cộng dồn trên hai kho ứng dụng",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "April 2025",
+        "period_start": "2025-04-01",
+        "period_end": "2025-04-30",
+        "id": "C5",
+        "text": "Mobile Index xếp MABINOGI MOBILE hạng 5 với 1,24 triệu người dùng trong bảng game mobile tháng 4/2025.",
+        "source_id": "S2",
+        "quote": "5위는 정식 론칭 후, 기존 PC 유저의 모바일 전환 및 신규 유저를 확보하고 있는 '마비노기 모바일'이 124만 명으로 순위에 새롭게 이름을 올렸습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Số người dùng tháng 4 theo Mobile Index; cách đếm chưa rõ",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Sensor Tower ước tính MABINOGI MOBILE vượt 1 triệu lượt tải cộng dồn qua Google Play và App Store sau khi ra mắt tại Hàn Quốc.",
+        "claim_ids": [
+          "C1"
+        ],
+        "inference": false
+      },
+      {
+        "text": "Sensor Tower ước tính doanh thu cộng dồn khoảng 30 triệu USD trong cùng giai đoạn sau ra mắt tại Hàn Quốc.",
+        "claim_ids": [
+          "C2"
+        ],
+        "inference": false
+      },
+      {
+        "text": "Mobile Index xếp MABINOGI MOBILE hạng 5 với 1,24 triệu người dùng trong bảng game mobile tháng 4/2025.",
+        "claim_ids": [
+          "C5"
+        ],
+        "inference": false
+      }
+    ],
+    "gaps": [
+      {
+        "missing": "Số liệu cho toàn bộ tháng 5 và dữ liệu lợi nhuận, nhu cầu Việt Nam",
+        "impact": "Chỉ đủ mô tả tín hiệu ra mắt tại Hàn Quốc đến thời điểm hai bài công bố.",
+        "action": "Không suy lợi nhuận hoặc nhu cầu Việt Nam từ các bảng xếp hạng Hàn Quốc.",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "status": "completed",
+  "recommendation": null,
+  "errors": [],
+  "usage": {
+    "origin_run_id": "565fe68c-2460-4abb-8eea-b24ceeef6768",
+    "api_calls_new": 0,
+    "curation": "Short source excerpts and narrower Vietnamese claims prepared from saved live run; not a fresh Gemini run or human-verified verdict",
+    "captured_on": "2026-10-15"
+  },
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [
+      {
+        "source_id": "S1",
+        "quality": "Commercial mobile intelligence platform (Sensor Tower APAC blog). Methodology notes estimates combine Google Play and App Store, exclude third-party Android stores, deduplicate repeat/multi-device downloads per account, and aggregate app variants.",
+        "relevance": "direct",
+        "relevance_reason": "Contains quantitative revenue estimates, download volume, publisher market share, and marketing breakdown for MABINOGI MOBILE in South Korea from its release on March 27, 2025 up to publication around May 20, 2025."
+      },
+      {
+        "source_id": "S2",
+        "quality": "Commercial mobile intelligence platform (Mobile Index / IGAWorks blog). Provides estimated monthly active users and gross monthly revenue rankings for South Korea; explicit underlying sampling/modeling methodology is not detailed in the text.",
+        "relevance": "direct",
+        "relevance_reason": "Directly reports monthly active user counts (engagement proxy) and monthly game revenue for MABINOGI MOBILE in South Korea for April 2025."
+      }
+    ],
+    "claims": [
+      {
+        "period": "March 27, 2025 to May 20, 2025",
+        "period_start": "2025-03-27",
+        "period_end": "2025-05-20",
+        "id": "C1",
+        "text": "Sensor Tower ước tính MABINOGI MOBILE vượt 1 triệu lượt tải cộng dồn qua Google Play và App Store sau khi ra mắt tại Hàn Quốc.",
+        "source_id": "S1",
+        "quote": "출시 이후 누적 다운로드는 구글 플레이 스토어와 애플 앱스토어 추정치 합산 100만 건을 돌파했습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Ước tính lượt tải cộng dồn trên hai kho ứng dụng",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "March 27, 2025 to May 20, 2025",
+        "period_start": "2025-03-27",
+        "period_end": "2025-05-20",
+        "id": "C2",
+        "text": "Sensor Tower ước tính doanh thu cộng dồn khoảng 30 triệu USD trong cùng giai đoạn sau ra mắt tại Hàn Quốc.",
+        "source_id": "S1",
+        "quote": "같은 기간 누적 매출은 약 3천만 달러에 달했습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Ước tính doanh thu cộng dồn trên hai kho ứng dụng",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "April 2025",
+        "period_start": "2025-04-01",
+        "period_end": "2025-04-30",
+        "id": "C5",
+        "text": "Mobile Index xếp MABINOGI MOBILE hạng 5 với 1,24 triệu người dùng trong bảng game mobile tháng 4/2025.",
+        "source_id": "S2",
+        "quote": "5위는 정식 론칭 후, 기존 PC 유저의 모바일 전환 및 신규 유저를 확보하고 있는 '마비노기 모바일'이 124만 명으로 순위에 새롭게 이름을 올렸습니다.",
+        "kind": "estimate",
+        "subject": "MABINOGI MOBILE",
+        "market": "South Korea",
+        "metric": "Số người dùng tháng 4 theo Mobile Index; cách đếm chưa rõ",
+        "limitations": "Số liệu do nhà cung cấp dữ liệu công bố; không chứng minh lợi nhuận hoặc nhu cầu tại Việt Nam.",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Sensor Tower ước tính MABINOGI MOBILE vượt 1 triệu lượt tải cộng dồn qua Google Play và App Store sau khi ra mắt tại Hàn Quốc.",
+        "claim_ids": [
+          "C1"
+        ],
+        "inference": false
+      },
+      {
+        "text": "Sensor Tower ước tính doanh thu cộng dồn khoảng 30 triệu USD trong cùng giai đoạn sau ra mắt tại Hàn Quốc.",
+        "claim_ids": [
+          "C2"
+        ],
+        "inference": false
+      },
+      {
+        "text": "Mobile Index xếp MABINOGI MOBILE hạng 5 với 1,24 triệu người dùng trong bảng game mobile tháng 4/2025.",
+        "claim_ids": [
+          "C5"
+        ],
+        "inference": false
+      }
+    ],
+    "gaps": [
+      {
+        "missing": "Số liệu cho toàn bộ tháng 5 và dữ liệu lợi nhuận, nhu cầu Việt Nam",
+        "impact": "Chỉ đủ mô tả tín hiệu ra mắt tại Hàn Quốc đến thời điểm hai bài công bố.",
+        "action": "Không suy lợi nhuận hoặc nhu cầu Việt Nam từ các bảng xếp hạng Hàn Quốc.",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "claim_reviews": [],
+  "review_history": []
+}

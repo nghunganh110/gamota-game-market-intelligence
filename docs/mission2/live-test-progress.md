@@ -16,7 +16,7 @@ Tổng **10 local API attempt reservations** quan sát trong các artifacts, g�
 
 T01/T02/T03 đã được thực thi với nguồn/model thật, bao gồm hai game và một câu hỏi thể loại. **Chưa có case nghiên cứu end-to-end được human audit chấp nhận**, chưa có đo hữu ích với reviewer hoặc chi phí tiền tệ. Bộ test phần mềm không được dùng để thay thế acceptance nghiên cứu.
 
-**Cập nhật 2026-10-15:** [A01/A02 trên MVP mới](mvp-live-results-2026-10-15.md) đã dùng thêm 3 API attempts theo giới hạn mới của người dùng (A01 guided 1, A02 auto 1 lỗi `ServerError`, A02 guided 1). A01 `completed` về pipeline nhưng chưa được human audit; A02 guided `partial`. Một lượt thử A01 trong sandbox không đọc được URL vì DNS và dừng trước Gemini. Tổng cũ 10 reservations ở bảng trên không bao gồm 3 attempts mới. Bộ test phần mềm mới: 78 passed.
+**Cập nhật 2026-10-15:** [A01/A02 trên MVP mới](mvp-live-results-2026-10-15.md) đã dùng thêm 3 API attempts theo giới hạn mới của người dùng (A01 guided 1, A02 auto 1 lỗi `ServerError`, A02 guided 1). A01 `completed` về pipeline nhưng chưa được human audit; A02 guided `partial`. Một lượt thử A01 trong sandbox không đọc được URL vì DNS và dừng trước Gemini. Tổng cũ 10 reservations ở bảng trên không bao gồm 3 attempts mới. Hai case replay rút gọn mới không gọi API. Bộ test phần mềm mới: 80 passed.
 
 Báo cáo chi tiết: [T01 ban đầu](live-T01-review.md), [T01 lần 2](live-T01-rerun-review.md), [T01 extraction](live-T01-extraction-review.md), [T02](live-T02-review.md).
 

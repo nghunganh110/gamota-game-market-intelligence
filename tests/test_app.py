@@ -2,6 +2,34 @@ from pathlib import Path
 import subprocess
 import sys
 from streamlit.testing.v1 import AppTest
+from gmi.models import Run
+from gmi.validation import validate_run
+
+
+def test_curated_real_cases_keep_short_source_excerpts_and_no_review():
+    root = Path(__file__).resolve().parent.parent / 'fixtures' / 'real_cases'
+    for name in ('a01.json', 'a02.json'):
+        run = Run.model_validate_json((root / name).read_text())
+        assert run.evidence_mode == 'replay'
+        assert run.review is None and not run.claim_reviews
+        assert run.usage['api_calls_new'] == 0
+        assert all(len(source.text.split()) <= 25 for source in run.sources)
+        checked = validate_run(run)
+        assert all(not claim.issues for claim in checked.extraction.claims)
+
+
+def test_one_click_real_case_replay_renders_two_questions_without_gemini():
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    app.radio[0].set_value('Ví dụ đã lưu — nguồn thật').run()
+    next(x for x in app.button if x.label == 'Mở case').click().run()
+    assert not app.exception
+    assert app.session_state['run'].id == 'curated-real-a01-20261015'
+    assert len(app.session_state['run'].extraction.claims) == 3
+    next(x for x in app.selectbox if x.label == 'Case thật').select('A02')
+    next(x for x in app.button if x.label == 'Mở case').click().run()
+    assert not app.exception
+    assert app.session_state['run'].id == 'curated-real-a02-20261015'
+    assert app.session_state['run'].extraction.gaps
 
 def test_replay_ui_and_review():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)

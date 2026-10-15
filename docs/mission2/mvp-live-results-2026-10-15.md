@@ -2,6 +2,8 @@
 
 Người dùng cho phép tối đa 4 Gemini API attempts theo [kế hoạch đã chốt](mvp-live-acceptance-plan.md). Đã dùng **3 attempts có response hoặc ServerError**; còn **1 chưa dùng**. Không tự retry sau lỗi ServerError. Một lượt A01 trong sandbox lỗi DNS ở cả hai URL, dừng trước Gemini nên không tính API attempt. Các artifact `runs/` chỉ ở local vì có snapshot nội dung nguồn; không public toàn văn.
 
+Để xem demo không cần snapshot toàn văn trên GitHub, app có **Ví dụ đã lưu — nguồn thật**. Hai file `fixtures/real_cases/a01.json` và `a02.json` chỉ giữ các trích đoạn ngắn; claim đã được Codex thu hẹp và dịch sang tiếng Việt sau lượt live. Đây là **bản trình diễn đã biên tập**, không phải output nguyên gốc Gemini, không có review giả và không tiêu thụ API calls. Mỗi nguồn có link tới trang gốc để người xem kiểm tra.
+
 | Case | Artifact local | Calls mới | Expected → actual | Đánh giá |
 |---|---|---:|---|---|
 | A01, URL đã chọn | `runs/565fe68c-2460-4abb-8eea-b24ceeef6768/` | 1 | Hai nguồn đọc được; 6/6 claim qua gate cơ học, 5 findings, pipeline `completed`. Câu trả lời đề xuất có số liệu tải, doanh thu và người dùng tháng 4. | **Thành công kỹ thuật, human audit chưa hoàn tất**. Có claim diễn giải mạnh hơn quote; chưa gọi research acceptance PASS. |

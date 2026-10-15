@@ -52,7 +52,7 @@ def brief_markdown(run: Run) -> str:
                   f'Measurement bounds: {c.period_start or "unknown"} to {c.period_end or "unknown"}',
                   f'> {c.quote}', f'Source: {s.url if s else "MISSING"}', f'Limitations: {c.limitations}', f'Issues: {"; ".join(c.issues) or "None mechanically detected"}']
         if original and (original.text != c.text or original.metric != c.metric):
-            lines.append(f'Original AI claim: {original.text}; metric: {original.metric}')
+            lines.append(f'Original claim in run: {original.text}; metric: {original.metric}')
         if reviews:
             latest = reviews[-1]
             lines.append(f'Reviewer: {latest.reviewer}; verdict: {latest.verdict}; reason: {latest.reason}')

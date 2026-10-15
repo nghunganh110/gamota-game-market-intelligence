@@ -1,0 +1,147 @@
+{
+  "id": "curated-real-a02-20261015",
+  "evidence_mode": "replay",
+  "scope": {
+    "period": "Calendar year 2025",
+    "period_start": "2025-01-01",
+    "period_end": "2025-12-31",
+    "question": "Nguồn công khai ủng hộ hoặc giới hạn giả thuyết cơ hội Mobile MMORPG tại Việt Nam năm 2025 như thế nào?",
+    "criteria": "Tín hiệu doanh thu theo thể loại; không lấy doanh thu của nhóm thể loại làm thị phần riêng MMORPG.",
+    "subject": "Mobile MMORPG",
+    "market": "Vietnam",
+    "cutoff": "2026-10-15",
+    "mode": "research",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://gamota.com/gamota-lab/reports/gamota-releases-vietnam-mobile-gaming-year-in-review-2025-report-revenue-reaches-825-million/",
+      "title": "Gamota vừa chính thức công bố báo cáo Vietnam Mobile Gaming Year-in-Review 2025",
+      "publisher": "unknown",
+      "published": "2026-06-04",
+      "accessed": "2026-10-15T08:49:57.874108Z",
+      "text": "Nhóm chủ lực: MMORPG, Chiến thuật 4X và Team Battle đang nắm giữ phần lớn doanh thu.",
+      "sha256": "a93df60dee4c03f7962d7138dff63fbf6a1331b654a94afa432a0b1977e3629a",
+      "read_status": "read",
+      "quality": "Bài giới thiệu báo cáo của Gamota; không có số riêng MMORPG hoặc phương pháp đo chi tiết trong đoạn trích.",
+      "relevance": "direct",
+      "relevance_reason": "Nói trực tiếp về nhóm thể loại gồm MMORPG tại Việt Nam.",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [
+      {
+        "source_id": "S1",
+        "quality": "Report announcement post from local game publisher/lab Gamota; high market visibility but exact research methodology, sample composition, and third-party validation are not detailed.",
+        "relevance": "direct",
+        "relevance_reason": "Contains estimated total Vietnam mobile gaming market revenue for 2025 and directly names MMORPG alongside 4X Strategy and Team Battle as core revenue-generating genres."
+      }
+    ],
+    "claims": [
+      {
+        "period": "Calendar year 2025",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "id": "C2",
+        "text": "Bài Gamota xếp MMORPG cùng Chiến thuật 4X và Team Battle vào nhóm chủ lực nắm phần lớn doanh thu game mobile tại Việt Nam.",
+        "source_id": "S1",
+        "quote": "Nhóm chủ lực: MMORPG, Chiến thuật 4X và Team Battle đang nắm giữ phần lớn doanh thu.",
+        "kind": "qualitative",
+        "subject": "Mobile MMORPG, 4X Strategy, Team Battle",
+        "market": "Vietnam",
+        "metric": "Nhận định định tính về nhóm thể loại; không có số riêng MMORPG",
+        "limitations": "Chỉ là nhận định cho nhóm MMORPG/4X/Team Battle, không tách riêng MMORPG.",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Bài Gamota xếp MMORPG cùng Chiến thuật 4X và Team Battle vào nhóm chủ lực nắm phần lớn doanh thu game mobile tại Việt Nam.",
+        "claim_ids": [
+          "C2"
+        ],
+        "inference": false
+      }
+    ],
+    "gaps": [
+      {
+        "missing": "Doanh thu hoặc thị phần riêng MMORPG tại Việt Nam năm 2025",
+        "impact": "Không thể lượng hóa cơ hội riêng của thể loại từ bài công bố này.",
+        "action": "Tìm báo cáo có số riêng MMORPG và phương pháp đo trước khi đưa ra kết luận đầu tư.",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "status": "completed",
+  "recommendation": null,
+  "errors": [],
+  "usage": {
+    "origin_run_id": "830a2780-6fcb-4877-a2ee-2330023abdea",
+    "api_calls_new": 0,
+    "curation": "Short source excerpt and narrower Vietnamese claim prepared from saved live run; not a fresh Gemini run or human-verified verdict",
+    "captured_on": "2026-10-15"
+  },
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [
+      {
+        "source_id": "S1",
+        "quality": "Report announcement post from local game publisher/lab Gamota; high market visibility but exact research methodology, sample composition, and third-party validation are not detailed.",
+        "relevance": "direct",
+        "relevance_reason": "Contains estimated total Vietnam mobile gaming market revenue for 2025 and directly names MMORPG alongside 4X Strategy and Team Battle as core revenue-generating genres."
+      }
+    ],
+    "claims": [
+      {
+        "period": "Calendar year 2025",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "id": "C2",
+        "text": "Bài Gamota xếp MMORPG cùng Chiến thuật 4X và Team Battle vào nhóm chủ lực nắm phần lớn doanh thu game mobile tại Việt Nam.",
+        "source_id": "S1",
+        "quote": "Nhóm chủ lực: MMORPG, Chiến thuật 4X và Team Battle đang nắm giữ phần lớn doanh thu.",
+        "kind": "qualitative",
+        "subject": "Mobile MMORPG, 4X Strategy, Team Battle",
+        "market": "Vietnam",
+        "metric": "Nhận định định tính về nhóm thể loại; không có số riêng MMORPG",
+        "limitations": "Chỉ là nhận định cho nhóm MMORPG/4X/Team Battle, không tách riêng MMORPG.",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Bài Gamota xếp MMORPG cùng Chiến thuật 4X và Team Battle vào nhóm chủ lực nắm phần lớn doanh thu game mobile tại Việt Nam.",
+        "claim_ids": [
+          "C2"
+        ],
+        "inference": false
+      }
+    ],
+    "gaps": [
+      {
+        "missing": "Doanh thu hoặc thị phần riêng MMORPG tại Việt Nam năm 2025",
+        "impact": "Không thể lượng hóa cơ hội riêng của thể loại từ bài công bố này.",
+        "action": "Tìm báo cáo có số riêng MMORPG và phương pháp đo trước khi đưa ra kết luận đầu tư.",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "claim_reviews": [],
+  "review_history": []
+}

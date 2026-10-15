@@ -192,7 +192,7 @@ def test_reviewer_can_narrow_claim_without_reusing_old_ai_finding():
     assert narrowed.extraction.claims[0].status == 'human_verified'
     assert narrowed.proposed_extraction.claims[0].text == original
     assert not narrowed.extraction.findings
-    assert 'Original AI claim' in brief_markdown(narrowed)
+    assert 'Original claim in run' in brief_markdown(narrowed)
     assert Run.model_validate_json(narrowed.model_dump_json()).claim_reviews[-1] == review
     final = apply_review(narrowed, Review(reviewer='Reviewer', decision='Reviewed research',
                                          reason='The narrow claim matches the cited synthetic quote.',

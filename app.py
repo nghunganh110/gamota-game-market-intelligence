@@ -62,12 +62,22 @@ st.caption('Từ câu hỏi đến bằng chứng có thể kiểm tra. Người
 if st.session_state.pop('_run_cleared_for_update', False):
     st.info('Ứng dụng vừa cập nhật mã nguồn. Run trong bộ nhớ phiên cũ đã được xóa; mở lại từ JSON đã tải nếu cần tiếp tục review.')
 labels = {'good':'Tín hiệu đủ cho sàng lọc', 'conflict':'Hai nguồn mâu thuẫn', 'missing':'Thiếu D30 retention', 'semantic_failure':'Giới hạn: diễn giải sai đoạn trích', 'other_game':'Game khác, thị trường khác'}
-mode = st.radio('Cách chạy', ['Demo offline — synthetic', 'Nghiên cứu Gemini', 'Mở run đã lưu'], horizontal=True)
+mode = st.radio('Cách chạy', ['Demo offline — synthetic', 'Ví dụ đã lưu — nguồn thật', 'Nghiên cứu Gemini', 'Mở run đã lưu'], horizontal=True)
 if mode.startswith('Demo'):
     st.info('Dữ liệu dưới đây được tạo để kiểm thử phần mềm. Không phải dữ kiện thị trường hay kết quả Gemini.')
     case = st.selectbox('Tình huống', list(labels), format_func=labels.get)
     if st.button('Chạy tình huống', type='primary'):
         st.session_state.run = replay(case)
+elif mode == 'Ví dụ đã lưu — nguồn thật':
+    st.info('Hai case rút gọn từ lượt Gemini live đã lưu. Không gọi API; đoạn nguồn là trích ngắn, claim chưa được người dùng xác nhận.')
+    cases = {
+        'A01': ('MABINOGI MOBILE · Hàn Quốc · tín hiệu ra mắt', 'a01.json'),
+        'A02': ('Mobile MMORPG · Việt Nam · giới hạn dữ liệu', 'a02.json'),
+    }
+    selected = st.selectbox('Case thật', list(cases), format_func=lambda key: cases[key][0])
+    if st.button('Mở case', type='primary'):
+        example_path = Path(__file__).resolve().parent / 'fixtures' / 'real_cases' / cases[selected][1]
+        st.session_state.run = Run.model_validate_json(example_path.read_text())
 elif mode == 'Mở run đã lưu':
     st.caption('Tải lại JSON đã xuất từ app để tiếp tục kiểm tra nguồn và claim; thao tác này không gọi Gemini.')
     saved_run = st.file_uploader('Run JSON', type='json')
@@ -145,6 +155,9 @@ else:
 run = st.session_state.get('run')
 if run:
     st.subheader(run.scope.question)
+    if run.id.startswith('curated-real-'):
+        st.info('Case này được biên tập từ snapshot của lượt live để dễ xem trên demo. Chỉ có đoạn nguồn ngắn; mở trang gốc để kiểm tra. Bản mẫu ban đầu chưa có human review.')
+        st.caption('Cách xem: đọc nhận định bên dưới → mở nguồn của claim → xem phần điều chưa biết. Form review ở cuối dành cho người phụ trách.')
     a,b,c = st.columns(3)
     a.metric('Chế độ evidence',run.evidence_mode)
     b.metric('Trạng thái pipeline',run.status)
@@ -198,7 +211,7 @@ if run:
         with st.expander(f'{claim.id} · {claim.status} · {claim.text}'):
             original = next((item for item in run.proposed_extraction.claims if item.id == claim.id), None) if run.proposed_extraction else None
             if original and (original.text != claim.text or original.metric != claim.metric):
-                st.caption(f'AI đề xuất ban đầu: {original.text} · Chỉ số: {original.metric}')
+                st.caption(f'Claim ban đầu trong run: {original.text} · Chỉ số: {original.metric}')
             st.write(f'Loại: {claim.kind} · {claim.market} · {claim.period} · Chỉ số: {claim.metric}')
             st.text(claim.quote)
             s = sources.get(claim.source_id)
