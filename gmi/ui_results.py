@@ -21,13 +21,16 @@ def render_result(run: Run) -> None:
         st.caption('Đọc nhận định → kiểm tra claim và trang gốc → xem điều chưa biết → người phụ trách review.')
     a,b,c = st.columns(3)
     a.metric('Chế độ evidence', EVIDENCE_LABELS.get(run.evidence_mode, run.evidence_mode))
-    b.metric('Trạng thái pipeline', STATUS_LABELS.get(run.status, run.status))
+    b.metric('Trạng thái ví dụ' if run.id.startswith('curated-real-') else 'Trạng thái pipeline',
+             STATUS_LABELS.get(run.status, run.status))
     c.metric('Khuyến nghị AI',run.recommendation or 'Chỉ nghiên cứu')
     bounds = (f'{run.scope.period_start}–{run.scope.period_end}' if run.scope.period_start else 'theo nhãn kỳ đo')
     st.caption(f'{run.scope.subject} · {run.scope.market} · {run.scope.period} ({bounds}) · Cutoff {run.scope.cutoff}')
     if run.scope.criteria:
         st.caption(f'Tiêu chí đánh giá: {run.scope.criteria}')
     st.caption('Pipeline chỉ kiểm tra thu thập và trích dẫn cơ học; kết luận chỉ được xác nhận sau review ngữ nghĩa.')
+    if run.id.startswith('curated-real-'):
+        st.caption('Trạng thái này chỉ áp dụng cho bản ví dụ đã biên tập; run Gemini gốc có thể có trạng thái khác.')
     summary = result_summary(run)
     with st.container(border=True):
         st.subheader('Nhận định đã review' if summary['reviewed'] else 'Câu trả lời sơ bộ từ AI')

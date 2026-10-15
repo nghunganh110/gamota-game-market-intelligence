@@ -30,6 +30,7 @@ def test_one_click_real_case_replay_renders_two_questions_without_gemini():
     assert not app.exception
     assert app.session_state['run'].id == 'curated-real-a02-20261015'
     assert app.session_state['run'].extraction.gaps
+    assert app.metric[1].label == 'Trạng thái ví dụ'
 
 
 def test_switching_demo_mode_clears_previous_result():
