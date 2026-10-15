@@ -24,12 +24,16 @@ def _search_text(value: str) -> str:
 
 def scope_input_errors(question: str, subject: str, period: str, bounded: bool,
                        start: date, end: date, cutoff: date, strict: bool,
-                       today: date | None = None) -> list[str]:
+                       today: date | None = None, criteria: str = '') -> list[str]:
     """Reject internally contradictory scope before Gemini search/extraction."""
     today = today or datetime.now(timezone.utc).date()
     errors = []
     if subject.strip() and _search_text(subject) not in _search_text(question):
         errors.append('Đối tượng nghiên cứu phải xuất hiện trong câu hỏi. Nếu hỏi Liên Quân Mobile, nhập chính tên game thay vì MOBA.')
+    evaluative = re.search(r'\b(successful|success|promising)\b|thành công|tiềm năng|hấp dẫn', question, re.IGNORECASE)
+    specified = re.search(r'xét theo|dựa trên|theo chỉ số|về (doanh thu|người chơi|lượt tải)|measured by|in terms of', question, re.IGNORECASE)
+    if evaluative and not (criteria.strip() or specified):
+        errors.append('Câu hỏi đánh giá cần tiêu chí cụ thể, ví dụ người chơi, doanh thu hoặc tăng trưởng. Điền ô Tiêu chí đánh giá trước khi nghiên cứu.')
     expected = quarter_bounds(period)
     if bounded and start > end:
         errors.append('Bắt đầu kỳ đo phải trước hoặc bằng kết thúc kỳ đo.')

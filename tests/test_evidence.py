@@ -153,6 +153,50 @@ def test_claim_review_marks_supported_and_blocks_mechanically_rejected():
         apply_claim_review(invalid,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='supported',reason='I want to accept it despite missing quote.'))
 
 
+def test_reviewed_answer_requires_human_checked_citations_and_survives_export():
+    from gmi.models import ClaimReview
+    from gmi.validation import apply_claim_review
+    from gmi.export import result_summary
+
+    run = replay('other_game')
+    premature = Review(reviewer='Reviewer', decision='Reviewed research',
+                       reason='The source supports a narrower conclusion.',
+                       final_answer='The game has a measurable launch signal.', answer_claim_ids=['C1'],
+                       answer_basis='supported')
+    with pytest.raises(ValueError, match='semantically reviewed'):
+        apply_review(run, premature)
+
+    run = apply_claim_review(run, ClaimReview(claim_id='C1', reviewer='Reviewer',
+                             verdict='supported', reason='The quoted fictional source states this metric.'))
+    reviewed = apply_review(run, premature)
+    assert result_summary(reviewed)['answer'] == premature.final_answer
+    assert result_summary(reviewed)['claim_ids'] == ['C1']
+    assert result_summary(reviewed)['reviewed']
+    assert 'Reviewed answer' in brief_markdown(reviewed)
+    assert Run.model_validate_json(reviewed.model_dump_json()).review == premature
+
+    with pytest.raises(ValueError, match='reviewed citations'):
+        apply_review(run, premature.model_copy(update={'answer_claim_ids': []}))
+
+
+def test_reviewer_source_change_invalidates_reviewed_answer():
+    from gmi.models import ClaimReview, SourceReview
+    from gmi.validation import apply_claim_review, revise_source
+    from gmi.export import result_summary
+
+    run = replay('other_game')
+    run = apply_claim_review(run, ClaimReview(claim_id='C1', reviewer='Reviewer',
+                             verdict='supported', reason='Quoted metric supports this fictional claim.'))
+    run = apply_review(run, Review(reviewer='Reviewer', decision='Reviewed research',
+                       reason='The source supports the narrow answer.',
+                       final_answer='The title has this limited metric.', answer_claim_ids=['C1']))
+    changed = revise_source(run, SourceReview(source_id='S1', reviewer='Reviewer',
+                            quality='Source method is too weak for a conclusion',
+                            relevance='unsuitable', reason='Population differs from the study question.'))
+    assert changed.review is None and changed.review_history
+    assert not result_summary(changed)['reviewed']
+
+
 def test_stop_candidate_without_predefined_blocker_is_not_used():
     r=raw(); r.extraction.blocker_claim_ids=['C2']
     assert validate_run(r).extraction.blocker_claim_ids==[]

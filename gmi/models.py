@@ -21,6 +21,7 @@ class MeasurementPeriod(StrictModel):
 
 class Scope(MeasurementPeriod):
     question: str = Field(min_length=10, max_length=2000)
+    criteria: str = Field(default='', max_length=500, description='User-defined criteria for evaluative questions; never silently replaced by a model metric.')
     subject: str = Field(min_length=2, max_length=200)
     market: str = Field(min_length=2, max_length=100)
     cutoff: date
@@ -112,6 +113,9 @@ class Review(StrictModel):
     reason: str = Field(min_length=10)
     verified_claim_ids: list[str] = Field(default_factory=list)
     blocker_confirmed: bool = False
+    final_answer: str = ''
+    answer_claim_ids: list[str] = Field(default_factory=list)
+    answer_basis: Literal['supported', 'insufficient'] = 'insufficient'
 
 class SourceReview(StrictModel):
     source_id: str

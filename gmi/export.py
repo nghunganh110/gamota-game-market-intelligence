@@ -8,16 +8,18 @@ def result_summary(run: Run) -> dict:
     eligible_count = sum(c.status in {'mechanically_checked', 'human_verified'} for c in run.extraction.claims)
     action = next((g.action for g in run.extraction.gaps if g.action),
                   'Kiểm tra các claim trọng yếu và quyết định bước nghiên cứu tiếp theo.')
+    reviewed_answer = bool(run.review and run.review.final_answer.strip())
     return {
         'findings': findings,
-        'claim_ids': claim_ids,
-        'answer': findings[0].text if findings else (
+        'claim_ids': run.review.answer_claim_ids if reviewed_answer else claim_ids,
+        'answer': run.review.final_answer if reviewed_answer else findings[0].text if findings else (
             'Chưa đủ bằng chứng hợp lệ để trả lời câu hỏi này.'
             + (f' Có {eligible_count} claim qua kiểm tra cơ học, nhưng chưa có kết luận nào được hỗ trợ đầy đủ.'
                if eligible_count else '')
         ),
         'next_action': action,
-        'reviewed': bool(run.review),
+        'reviewed': reviewed_answer,
+        'answer_basis': run.review.answer_basis if reviewed_answer else None,
     }
 
 def brief_markdown(run: Run) -> str:
@@ -30,6 +32,8 @@ def brief_markdown(run: Run) -> str:
              '\n## Câu trả lời sơ bộ', summary['answer'],
              f'Căn cứ: {", ".join(summary["claim_ids"]) or "chưa có"}',
              f'Bước tiếp theo (AI đề xuất): {summary["next_action"]}', '\n## Findings']
+    if run.scope.criteria:
+        lines.insert(4, f'Evaluation criteria: {run.scope.criteria}')
     if run.scope.period_start:
         lines.insert(4, f'Measurement window: {run.scope.period_start} to {run.scope.period_end}; subperiod evidence does not prove full-window coverage.')
     for f in run.extraction.findings:
@@ -58,4 +62,8 @@ def brief_markdown(run: Run) -> str:
     lines.extend(f'- {e}' for e in run.errors)
     if run.review:
         lines += ['\n## Human decision', f'{run.review.decision}: {run.review.reason} (reviewer: {run.review.reviewer})']
+        if run.review.final_answer:
+            lines += ['\n## Reviewed answer', run.review.final_answer,
+                      f'Basis: {run.review.answer_basis}',
+                      f'Human-verified claims: {", ".join(run.review.answer_claim_ids) or "none; evidence insufficient"}']
     return '\n\n'.join(lines)

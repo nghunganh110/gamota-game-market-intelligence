@@ -1,0 +1,260 @@
+{
+  "id": "synthetic-other-game",
+  "evidence_mode": "synthetic",
+  "scope": {
+    "period": "Q1 2025",
+    "period_start": null,
+    "period_end": null,
+    "question": "What public signals justify reviewing Fictional Game Beta in China?",
+    "criteria": "",
+    "subject": "Fictional Game Beta",
+    "market": "China",
+    "cutoff": "2025-04-01",
+    "mode": "research",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.org/synthetic/1",
+      "title": "Synthetic document 1",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. Fictional Game Beta has a positive demand signal from the China concept study in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "72147640b63edd6466a1792003e6d2d9c8ca95a577e8abb1aff6c23d6a5455e2",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S2",
+      "url": "https://example.org/synthetic/2",
+      "title": "Synthetic document 2",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The rights holder states that China territory is available for Fictional Game Beta in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "7fab6fabcefe72cfbde143f045fa9dfce693050a62748164a8adc4a2499216b8",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S3",
+      "url": "https://example.org/synthetic/3",
+      "title": "Synthetic document 3",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The internal review indicates feasible operations in China for Fictional Game Beta in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "f174440bc5937a07704597381e60bfd4d161c0fa3b16288b4f91ef3bc34207f5",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C1",
+        "text": "Fictional Game Beta has a positive demand signal from the China concept study in Q1 2025.",
+        "source_id": "S1",
+        "quote": "Fictional Game Beta has a positive demand signal from the China concept study in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C2",
+        "text": "The rights holder states that China territory is available for Fictional Game Beta in Q1 2025.",
+        "source_id": "S2",
+        "quote": "The rights holder states that China territory is available for Fictional Game Beta in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "rights",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C3",
+        "text": "The internal review indicates feasible operations in China for Fictional Game Beta in Q1 2025.",
+        "source_id": "S3",
+        "quote": "The internal review indicates feasible operations in China for Fictional Game Beta in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "feasibility",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "market_potential",
+        "state": "supported",
+        "claim_ids": [
+          "C1"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "business_accessibility",
+        "state": "supported",
+        "claim_ids": [
+          "C2"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "feasibility",
+        "state": "supported",
+        "claim_ids": [
+          "C3"
+        ],
+        "reason": "Synthetic supporting claim"
+      }
+    ],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Signals are scoped to fictional China data; no transfer to Vietnam assumed.",
+        "claim_ids": [
+          "C1"
+        ],
+        "inference": true
+      }
+    ],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "status": "completed",
+  "recommendation": null,
+  "errors": [],
+  "usage": {},
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [],
+    "claims": [
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C1",
+        "text": "Fictional Game Beta has a positive demand signal from the China concept study in Q1 2025.",
+        "source_id": "S1",
+        "quote": "Fictional Game Beta has a positive demand signal from the China concept study in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C2",
+        "text": "The rights holder states that China territory is available for Fictional Game Beta in Q1 2025.",
+        "source_id": "S2",
+        "quote": "The rights holder states that China territory is available for Fictional Game Beta in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "rights",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C3",
+        "text": "The internal review indicates feasible operations in China for Fictional Game Beta in Q1 2025.",
+        "source_id": "S3",
+        "quote": "The internal review indicates feasible operations in China for Fictional Game Beta in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Beta",
+        "market": "China",
+        "metric": "feasibility",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "market_potential",
+        "state": "supported",
+        "claim_ids": [
+          "C1"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "business_accessibility",
+        "state": "supported",
+        "claim_ids": [
+          "C2"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "feasibility",
+        "state": "supported",
+        "claim_ids": [
+          "C3"
+        ],
+        "reason": "Synthetic supporting claim"
+      }
+    ],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Signals are scoped to fictional China data; no transfer to Vietnam assumed.",
+        "claim_ids": [
+          "C1"
+        ],
+        "inference": true
+      }
+    ],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "claim_reviews": [],
+  "review_history": []
+}

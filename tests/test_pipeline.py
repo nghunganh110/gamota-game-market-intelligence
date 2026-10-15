@@ -137,3 +137,42 @@ def test_partial_gemini_extraction_keeps_evidence_but_excludes_invalid_finding()
     assert not run.extraction.findings  # The model's finding depended on discarded C2.
     assert 'invalid records' in ' '.join(run.errors)
     assert run.usage['extraction_validation']['dropped'] == {'claims': 1}
+
+
+def test_reviewer_sources_skip_discovery_and_extract_only_readable_documents():
+    base = replay('good')
+    calls = []
+
+    class GuidedProvider:
+        usage = {'api_calls': 0}
+        def search(self, scope):
+            raise AssertionError('Guided research must not spend a discovery call')
+        def extract(self, scope, sources):
+            calls.append([source.url for source in sources])
+            return base.extraction.model_copy(deep=True)
+
+    class GuidedReader:
+        def read(self, url, source_id):
+            if url.endswith('/blocked'):
+                return Source(id=source_id, url=url, title='Blocked', read_status='failed', error='HTTP 403')
+            source = next(s.model_copy(deep=True) for s in base.sources if s.url == url)
+            source.id = source_id
+            return source
+
+    urls = [s.url for s in base.sources] + ['https://example.org/blocked']
+    run = run_research(base.scope, GuidedProvider(), GuidedReader(), source_urls=urls)
+    assert len(calls) == 1 and calls[0] == urls[:3]
+    assert run.usage['discovery'] == 'reviewer_supplied_urls'
+    assert run.status == 'partial'  # One failed source remains visible.
+    assert run.extraction.findings  # Valid evidence is still usable.
+
+
+def test_unreadable_reviewer_sources_do_not_call_gemini():
+    class NoCallProvider:
+        usage = {'api_calls': 0}
+        def search(self, scope): raise AssertionError('No discovery call')
+        def extract(self, scope, sources): raise AssertionError('No extraction without source text')
+
+    run = run_research(replay('good').scope, NoCallProvider(), EmptyReader(),
+                       source_urls=['https://example.org/unreadable'])
+    assert run.status == 'failed' and run.usage['api_calls'] == 0

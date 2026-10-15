@@ -84,3 +84,22 @@ def test_reviewer_can_reject_semantically_false_claim_in_ui():
     assert not run.extraction.findings
     assert run.extraction.claims[0].status=='rejected'
     assert run.claim_reviews[-1].verdict=='unsupported'
+
+
+def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
+    next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
+    next(x for x in app.text_input if x.key == 'claim_reviewer_C1').set_value('Fixture reviewer')
+    next(x for x in app.selectbox if x.key == 'claim_verdict_C1').select('supported')
+    next(x for x in app.text_area if x.key == 'claim_reason_C1').set_value('The synthetic quote supports this narrow claim.')
+    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá claim').click().run()
+    next(x for x in app.text_input if x.label == 'Người review').set_value('Fixture reviewer')
+    next(x for x in app.text_area if x.label == 'Nhận định cuối của người review').set_value('Synthetic China demand signal only; real demand remains untested.')
+    next(x for x in app.selectbox if x.label == 'Mức căn cứ của nhận định cuối').select('Có claim đã duyệt')
+    next(x for x in app.multiselect if x.label == 'Claim hỗ trợ nhận định cuối').set_value(['C1'])
+    next(x for x in app.text_area if x.label == 'Lý do (bắt buộc)').set_value('Keep the conclusion limited to the reviewed synthetic claim.')
+    next(x for x in app.button if x.label == 'Lưu review').click().run()
+    assert not app.exception
+    assert app.session_state['run'].review.answer_claim_ids == ['C1']
+    assert any('Nhận định đã review' in x.value for x in app.subheader)

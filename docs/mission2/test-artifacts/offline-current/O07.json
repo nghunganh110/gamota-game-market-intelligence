@@ -1,0 +1,77 @@
+{
+  "id": "ac9fe340-b141-4fc8-9bba-b00b1b16b52e",
+  "evidence_mode": "live",
+  "scope": {
+    "period": "Q1 2025",
+    "period_start": null,
+    "period_end": null,
+    "question": "Does fictional Game Alpha justify deeper research in Vietnam?",
+    "criteria": "",
+    "subject": "Fictional Game Alpha",
+    "market": "Vietnam",
+    "cutoff": "2025-04-01",
+    "mode": "screening",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [],
+    "gaps": [
+      {
+        "missing": "No eligible evidence",
+        "impact": "Question cannot be answered reliably",
+        "action": "Obtain readable, dated sources matching scope",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "business_accessibility",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "feasibility",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      },
+      {
+        "missing": "market_potential",
+        "impact": "Could change screening decision",
+        "action": "Collect direct evidence and review this dimension",
+        "owner": "Publishing/Strategy reviewer",
+        "revisit": "After requested evidence is available"
+      }
+    ],
+    "blocker_claim_ids": []
+  },
+  "status": "failed",
+  "recommendation": "Tạm giữ",
+  "errors": [
+    "Pipeline interrupted (TimeoutError); no fabricated fallback"
+  ],
+  "usage": {
+    "latency_seconds": 0.0
+  },
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [],
+    "claims": [],
+    "dimensions": [],
+    "conflicts": [],
+    "findings": [],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "claim_reviews": [],
+  "review_history": []
+}

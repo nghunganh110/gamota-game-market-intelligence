@@ -1,143 +1,28 @@
-# Actual offline test report
+# Mission 2 — kiểm thử MVP hiện tại
 
-## Latest live evidence and regression update
+Ngày cập nhật: 2026-10-15. **Phần mềm đã có đủ luồng nghiên cứu và review để thử nghiệm; giả thuyết về chất lượng nghiên cứu live chưa được xác nhận.** Lần cập nhật này không gọi Gemini. Bộ test phần mềm: **72 passed** (`.venv/bin/python -m pytest -q`). Con số này không đo độ đúng của nhận định thị trường.
 
-[T03 đã chạy](live-T03-review.md) bằng .env private: một ConnectError trong sandbox được giữ; sau cấp quyền chạy ngoài sandbox, 2 attempts, 5 claims, 1 mechanically checked, partial. Bốn nguồn đọc thất bại; nhận định còn lại chỉ là qualitative genre signal. T01/T02/T03 đã thực thi nhưng chưa có human acceptance. Không chạy suite mới trong phiên chỉ execute/audit; 53 passed là kết quả lần thêm .env loader.
+Core loop trong app: câu hỏi và tiêu chí → Gemini tìm URL **hoặc** người dùng cung cấp 1–6 URL → đọc HTML/PDF → Gemini đề xuất claim/finding → kiểm tra quote, game, market, kỳ đo, cutoff → hiển thị chất lượng và độ phù hợp của từng nguồn → người review kiểm tra ý nghĩa claim → viết nhận định cuối với claim đã duyệt → tải brief/JSON. JSON có thể mở lại để tiếp tục review.
 
-[T02 live](live-T02-review.md) đã chạy game thứ hai: 2 calls, 10 claims, 6 mechanically checked, 4 rejected vì period ngoài scope; partial. AI audit vẫn có lỗi trộn phạm vi claim, gross/net và attribution; chưa human-accepted. [Bảng tiến độ các lần gọi thật](live-test-progress.md) tách fresh discovery, snapshot extraction và offline derivatives.
+## Kỳ vọng → thực tế → đánh giá → bài học
 
-T01 extraction từ snapshots: **1 model call thật**, 6 claims, 5 mechanically checked, 1 rejected do ghép quote bằng `...`; partial. Không còn period mismatch, Research dimensions rỗng. AI audit vẫn thấy causal inference PC không có đủ evidence, nên chất lượng tổng thể chưa đạt. [Báo cáo extraction](live-T01-extraction-review.md). Đây là replay có extraction mới, không phải fresh discovery hoặc human audit.
+| Case | Kỳ vọng | Thực tế quan sát | Đánh giá | Bài học |
+|---|---|---|---|---|
+| O01, synthetic good | Nguồn/claim đủ → kết luận sàng lọc và ledger | `completed`, đề xuất Tiếp tục, 3 claim qua kiểm tra cơ học | **Đạt luồng phần mềm**, không phải bằng chứng thị trường | Cần chạy cùng luồng với nguồn thật |
+| O02, synthetic câu hỏi khác | Game Beta/China trong research không dùng logic MABINOGI | `completed`, không ép recommendation | **Đạt luồng phần mềm** | Code không hard-code một game; chưa đo chất lượng Gemini |
+| O03/O04, synthetic khó | Mâu thuẫn hoặc thiếu D30 retention phải hiện rõ | Mâu thuẫn giữ hai phía; thiếu D30 → `partial`, gap, không thay bằng doanh thu | **Đạt hành vi bảo thủ** | Không được biến thiếu số liệu thành kết luận chắc chắn |
+| O08, synthetic lỗi ngữ nghĩa | Quote phủ định phải chặn claim khẳng định | Quote matching vẫn cho claim sai qua kiểm tra cơ học | **Chưa đạt tự động** | Bắt buộc review ngữ nghĩa; bản mới cho reviewer bác claim và viết nhận định cuối |
+| T01 MABINOGI MOBILE, live cũ | Nguồn thật hỗ trợ launch strength và giới hạn metric | Một lượt có 0/5, một lượt 0/0; replay snapshot 5/6 qua cơ học nhưng còn suy luận nhân quả quá mức | **Chưa đạt research acceptance** | Retrieval và diễn giải chưa đủ tin cậy; [chi tiết](live-T01-extraction-review.md) |
+| T02 Dungeon & Fighter Mobile, live cũ | Cùng pipeline xử lý game/market khác, tách báo cáo và ước tính | 6/10 claim qua cơ học, còn trộn kỳ/chỉ số; `partial` | **Chưa đạt research acceptance** | Cần thận trọng với dữ liệu quý và số riêng game; [chi tiết](live-T02-review.md) |
+| T03 Mobile MMORPG Vietnam, live cũ | Nhận định đúng đơn vị thể loại, chỉ ra phần thiếu | 2/6 nguồn đọc được, 1/5 claim qua cơ học; tín hiệu định tính hẹp, `partial` | **Một phần** | Nguồn uy tín nhưng sai đơn vị phân tích không được tính trực tiếp; [chi tiết](live-T03-review.md) |
+| Liên Quân Mobile, online do người dùng báo | Câu hỏi “thành công” phải có tiêu chí, kỳ và subject nhất quán | Trước bản sửa: MOBA thay tên game; ngày Q1 và ô Oct–Dec chỉ mâu thuẫn nếu đã bật nhập ngày thủ công (không rõ); 0/5 claim hợp lệ và 3 nguồn lỗi | **Chưa đạt** | Bản mới chặn câu hỏi đánh giá thiếu tiêu chí và cho nhập URL nguồn; chưa có rerun |
+| Guided URLs, offline mock | Không tốn call tìm kiếm; nguồn hỏng vẫn hiển thị; chỉ trích xuất nguồn đọc được | Test bỏ discovery, trích xuất nguồn đọc được trong một lần; nếu tất cả URL hỏng thì 0 model calls | **Đạt kỹ thuật**, chưa có live run | Cần thử bằng URL thật và Gemini thực tế |
+| Human-reviewed answer, offline UI | Chỉ dẫn claim đã kiểm tra ngữ nghĩa; sửa nguồn phải vô hiệu kết luận cũ | AppTest và unit test qua; export/JSON giữ kết luận; sửa source hủy review hiện hành | **Đạt kỹ thuật**, chưa có human acceptance nguồn thật | Review là một hành động có trách nhiệm, không phải quote match |
 
-T01 lần 2: partial, 2 API attempts, 0 claims, discovery chỉ trả navigation shell. Extraction trả gaps thay vì bịa evidence; chưa kiểm chứng được bản sửa kỳ đo. [Báo cáo lần 2](live-T01-rerun-review.md) ghi root cause và phép thử extraction một-call với snapshots cũ. Suite hiện tại **50 passed**, chưa chạy Gemini thêm trong phiên chẩn đoán.
+Artifacts O01–O08 ở [offline results](test-artifacts/offline-current/offline-results.md); báo cáo cũ giữ tại [lịch sử kiểm thử](test-report-history.md). Live artifacts T01–T03 nằm trong `runs/` local và không được public vì chứa snapshot toàn văn của nguồn.
 
-The first T01 live run has now executed: two API attempts, five extracted claims, partial status. It exposed a period-string validation failure and semantic overclaims. See [T01 actual result and AI audit](live-T01-review.md). This is not an accepted research brief; human audit remains pending. The earlier offline results below are historical and unchanged. After the measurement-window fix, the current suite is **47 passed**; the earlier clean-environment verification covered 37 tests.
+## Phép thử còn cần để xác nhận giả thuyết
 
-Toàn bộ O01–O08 là synthetic hoặc fault injection; không có Gemini live call. Không dùng claim thị trường cũ như output MVP.
+Chạy bản online mới trên ít nhất **hai câu hỏi thật khác nhau**: một câu có nguồn trực tiếp đủ cho nhận định hẹp, một câu thiếu hoặc mâu thuẫn nguồn. Trước mỗi lượt ghi câu hỏi, tiêu chí, market, kỳ và kết quả mong đợi. Lưu JSON, mở lại, kiểm tra ít nhất các claim ảnh hưởng kết luận với trang gốc, rồi ghi actual, verdict và lý do. Một câu trả lời `partial` vẫn có thể hữu ích nếu nêu đúng phát hiện có nguồn và giới hạn; không được gọi “đạt” chỉ vì pipeline chạy xong.
 
-## Kiểm thử tự động
-
-Lần đầu: 30 passed, 3 failed. Hai UI tests sai đường dẫn; một HTML test giả định library chọn title tag trong khi chọn heading. Đã sửa assumptions của test. Kết quả trước sửa giữ ở pytest-initial.xml.
-
-Lần sau: 33 passed; sau khi thêm kiểm tra sửa đánh giá nguồn, blocker định nghĩa trước, PDF reader và pipeline mock đầy đủ: **37 passed**. Bao gồm kiểm tra UI/review, API disabled, mock SDK/schema/attribution, scope/cutoff/citation, lỗi thu thập và reader. `test_known_semantic_failure...` PASS vì tái hiện được giới hạn sản phẩm; không phải semantic support PASS.
-
-## Kiểm tra môi trường sạch
-
-Source từ Git archive + venv Python mới + requirements.txt (cài từ cache offline): **37 passed**. Artifact: test-artifacts/pytest-clean.xml. Browser cold start và các tình huống good/conflict/missing/semantic failure đã mở được. Khi hot-reload sau thay đổi module, server giữ import cũ và báo thiếu SourceReview; restart server giải quyết, cold start không tái hiện lỗi này.
-
-## Các tình huống có kết quả thực tế
-
-### O01 — Tình huống tốt
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Các chiều đủ synthetic evidence → Tiếp tục; xuất ledger truy vết được
-
-**Kết quả thực tế:** `{"status": "completed", "recommendation": "Tiếp tục", "claim_statuses": ["mechanically_checked", "mechanically_checked", "mechanically_checked"], "findings": ["Fictional signals justify reviewing the opportunity."], "errors": []}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Workflow hoạt động trên đầu vào synthetic; chưa chứng minh chất lượng Gemini.
-
-**Artifact:** [Run JSON](test-artifacts/O01.json)
-
-### O02 — Game/thị trường/câu hỏi khác
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Xử lý Game Beta ở China; Research không ép recommendation
-
-**Kết quả thực tế:** `{"status": "completed", "recommendation": null, "claim_statuses": ["mechanically_checked", "mechanically_checked", "mechanically_checked"], "findings": ["Signals are scoped to fictional China data; no transfer to Vietnam assumed."], "errors": []}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Logic không hard-code MABINOGI; chưa thay thế ba live runs.
-
-**Artifact:** [Run JSON](test-artifacts/O02.json)
-
-### O03 — Khó: hai nguồn mâu thuẫn
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Giữ C1 và C4, Tạm giữ, có bước phân xử
-
-**Kết quả thực tế:** `{"status": "completed", "recommendation": "Tạm giữ", "claim_statuses": ["mechanically_checked", "mechanically_checked", "mechanically_checked", "mechanically_checked"], "findings": ["Fictional signals justify reviewing the opportunity."], "errors": []}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Không lấy trung bình hoặc bỏ một phía.
-
-**Artifact:** [Run JSON](test-artifacts/O03.json)
-
-### O04 — Thiếu D30 retention
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Không thay bằng doanh thu; partial và gap cụ thể
-
-**Kết quả thực tế:** `{"status": "partial", "recommendation": null, "claim_statuses": [], "findings": [], "errors": []}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Câu hỏi chưa được đáp ứng; xử lý thiếu dữ liệu đúng. Case synthetic, không phải T09 live.
-
-**Artifact:** [Run JSON](test-artifacts/O04.json)
-
-### O05 — Citation giả
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Loại claim và findings phụ thuộc; Tạm giữ
-
-**Kết quả thực tế:** `{"status": "partial", "recommendation": "Tạm giữ", "claim_statuses": ["rejected", "mechanically_checked", "mechanically_checked"], "findings": [], "errors": ["Finding excluded: invalid claim references"]}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Chặn trích đoạn giả bằng nội dung đã đọc.
-
-**Artifact:** [Run JSON](test-artifacts/O05.json)
-
-### O06 — Nguồn sai thị trường
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Không dùng Korea evidence vượt gate Vietnam
-
-**Kết quả thực tế:** `{"status": "partial", "recommendation": "Tạm giữ", "claim_statuses": ["rejected", "mechanically_checked", "mechanically_checked"], "findings": [], "errors": ["Finding excluded: invalid claim references"]}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Uy tín nguồn không thay thế độ phù hợp.
-
-**Artifact:** [Run JSON](test-artifacts/O06.json)
-
-### O07 — Lỗi kỹ thuật
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** failed; không tạo claim, không Dừng opportunity
-
-**Kết quả thực tế:** `{"status": "failed", "recommendation": "Tạm giữ", "claim_statuses": [], "findings": [], "errors": ["Pipeline interrupted (TimeoutError); no fabricated fallback"]}`
-
-**Đạt/Chưa đạt:** Đạt
-
-**Điều học được:** Fault injection PASS kỹ thuật; không tự tính thành case thị trường thất bại.
-
-**Artifact:** [Run JSON](test-artifacts/O07.json)
-
-### O08 — Thất bại sản phẩm: ngữ nghĩa
-
-**Loại:** synthetic / offline
-
-**Kỳ vọng:** Nhận ra claim nói mạnh trong khi quote nói không mạnh
-
-**Kết quả thực tế:** `{"status": "completed", "recommendation": null, "claim_statuses": ["mechanically_checked"], "findings": ["Strong Vietnam demand."], "errors": []}`
-
-**Đạt/Chưa đạt:** Chưa đạt
-
-**Điều học được:** Actual: claim và finding sai vẫn qua quote matching. Cần semantic audit người dùng; ưu tiên thêm entailment assessment và audit set khi chạy live.
-
-**Artifact:** [Run JSON](test-artifacts/O08.json)
-
-## Còn thiếu trước bài nộp
-
-T01–T03 đã chạy live, cùng một lượt online Liên Quân Mobile do người dùng báo; các lượt này đều partial và chưa đạt chất lượng end-to-end. T06/T09 live chưa chạy. Chưa có một case live làm tốt được người dùng/Lead audit và chấp nhận; chưa có chi phí tiền tệ hoặc đo tiết kiệm thời gian. O08 là thất bại synthetic; T01 và Liên Quân bổ sung thất bại sản phẩm quan sát từ live research. Xem [kiểm toán yêu cầu Mission 2](acceptance-gap-audit.md) trước khi dùng báo cáo này làm bài nộp.
+Người dùng/chủ đề tài là người xác nhận cuối. Chưa có xác nhận đó trên bản mới; video và Forced Decisions cần cập nhật theo hai lượt thực tế này.

@@ -112,6 +112,15 @@ def apply_review(run: Run, review: Review) -> Run:
     valid = {c.id for c in run.extraction.claims if c.status in {'mechanically_checked','human_verified'}}
     if not set(review.verified_claim_ids) <= valid:
         raise ValueError('Cannot verify rejected or missing claims')
+    human_verified = {c.id for c in run.extraction.claims if c.status == 'human_verified'}
+    if review.answer_claim_ids and not review.final_answer.strip():
+        raise ValueError('Answer citations require a final answer')
+    if review.answer_basis == 'supported' and (not review.final_answer.strip() or not review.answer_claim_ids):
+        raise ValueError('Supported answer requires a final answer and reviewed citations')
+    if not set(review.answer_claim_ids) <= human_verified:
+        raise ValueError('Final answer may cite only semantically reviewed claims')
+    if review.final_answer.strip() and len(review.final_answer.strip()) < 10:
+        raise ValueError('Final answer must explain the assessment')
     if review.decision == 'Dừng':
         blockers = set(run.extraction.blocker_claim_ids)
         if not review.blocker_confirmed or not blockers or not blockers <= set(review.verified_claim_ids):

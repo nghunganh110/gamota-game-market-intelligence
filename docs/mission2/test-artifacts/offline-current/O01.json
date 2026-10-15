@@ -1,0 +1,264 @@
+{
+  "id": "synthetic-good",
+  "evidence_mode": "synthetic",
+  "scope": {
+    "period": "Q1 2025",
+    "period_start": null,
+    "period_end": null,
+    "question": "Does fictional Game Alpha justify deeper research in Vietnam?",
+    "criteria": "",
+    "subject": "Fictional Game Alpha",
+    "market": "Vietnam",
+    "cutoff": "2025-04-01",
+    "mode": "screening",
+    "strict_cutoff": true,
+    "blocker_definition": ""
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.org/synthetic/1",
+      "title": "Synthetic document 1",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "d6d908a2d9d26470e50906c56f57657c736ffce2359f669b5a3b7f11ae9da9d3",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S2",
+      "url": "https://example.org/synthetic/2",
+      "title": "Synthetic document 2",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "f0ff443e2a53e46c65c914bad89e6fb36a944a546e04d2edb8dfde6cb97a524f",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    },
+    {
+      "id": "S3",
+      "url": "https://example.org/synthetic/3",
+      "title": "Synthetic document 3",
+      "publisher": "Fictional test publisher",
+      "published": "2025-03-01",
+      "accessed": null,
+      "text": "SYNTHETIC evidence. The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025. This is an invented statement for software tests only.",
+      "sha256": "b892175dc03e2d617ee2ec5b900d9cdba225cc4c231dd7cd97db28496421bda2",
+      "read_status": "read",
+      "quality": "Synthetic; no factual authority",
+      "relevance": "direct",
+      "relevance_reason": "Synthetic scope matches fixture",
+      "origin_id": null,
+      "historical_snapshot": true,
+      "error": null
+    }
+  ],
+  "extraction": {
+    "source_assessments": [],
+    "claims": [
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C1",
+        "text": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "source_id": "S1",
+        "quote": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C2",
+        "text": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S2",
+        "quote": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "rights",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C3",
+        "text": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S3",
+        "quote": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "feasibility",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "mechanically_checked",
+        "issues": []
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "market_potential",
+        "state": "supported",
+        "claim_ids": [
+          "C1"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "business_accessibility",
+        "state": "supported",
+        "claim_ids": [
+          "C2"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "feasibility",
+        "state": "supported",
+        "claim_ids": [
+          "C3"
+        ],
+        "reason": "Synthetic supporting claim"
+      }
+    ],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Fictional signals justify reviewing the opportunity.",
+        "claim_ids": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "inference": true
+      }
+    ],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "status": "completed",
+  "recommendation": "Tiếp tục",
+  "errors": [],
+  "usage": {},
+  "review": null,
+  "proposed_extraction": {
+    "source_assessments": [],
+    "claims": [
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C1",
+        "text": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "source_id": "S1",
+        "quote": "Fictional Game Alpha has a positive demand signal from the Vietnam concept study in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "demand",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C2",
+        "text": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S2",
+        "quote": "The rights holder states that Vietnam territory is available for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "rights",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      },
+      {
+        "period": "Q1 2025",
+        "period_start": null,
+        "period_end": null,
+        "id": "C3",
+        "text": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "source_id": "S3",
+        "quote": "The internal review indicates feasible operations in Vietnam for Fictional Game Alpha in Q1 2025.",
+        "kind": "reported",
+        "subject": "Fictional Game Alpha",
+        "market": "Vietnam",
+        "metric": "feasibility",
+        "limitations": "Synthetic fixture; not market evidence",
+        "status": "ai_extracted",
+        "issues": []
+      }
+    ],
+    "dimensions": [
+      {
+        "name": "market_potential",
+        "state": "supported",
+        "claim_ids": [
+          "C1"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "business_accessibility",
+        "state": "supported",
+        "claim_ids": [
+          "C2"
+        ],
+        "reason": "Synthetic supporting claim"
+      },
+      {
+        "name": "feasibility",
+        "state": "supported",
+        "claim_ids": [
+          "C3"
+        ],
+        "reason": "Synthetic supporting claim"
+      }
+    ],
+    "conflicts": [],
+    "findings": [
+      {
+        "text": "Fictional signals justify reviewing the opportunity.",
+        "claim_ids": [
+          "C1",
+          "C2",
+          "C3"
+        ],
+        "inference": true
+      }
+    ],
+    "gaps": [],
+    "blocker_claim_ids": []
+  },
+  "source_reviews": [],
+  "claim_reviews": [],
+  "review_history": []
+}

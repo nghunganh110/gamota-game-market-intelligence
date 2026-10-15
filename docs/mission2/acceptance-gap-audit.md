@@ -1,5 +1,7 @@
 # Kiểm toán lại Mission 2 theo đề gốc
 
+**Lưu ý lịch sử:** Bản kiểm toán này được viết trước đợt xây lại MVP ngày 2026-10-15. Tiêu chí chứng minh hiện tại là cùng core loop hoạt động trên **nhiều câu hỏi thật**, không chỉ một case tốt; xem [báo cáo kiểm thử mới](test-report.md).
+
 Trạng thái: **chưa đạt giả thuyết cốt lõi**. Bản online đã gọi Gemini và hiện kết quả, nhưng chưa có một lượt nghiên cứu live nào đi hết vòng *câu hỏi → nguồn đọc được → nhận định đúng phạm vi, có dẫn chứng → người dùng kiểm chứng và chấp nhận*. Số test Python đạt đo độ ổn định của code, không đo chất lượng nghiên cứu.
 
 Nguồn đối chiếu: [nguyên văn yêu cầu](mission2-evidence-log.md), [kế hoạch đã duyệt](mission2-technical-plan.md), [tiến độ live](live-test-progress.md), báo cáo T01–T03 và kết quả Liên Quân Mobile do người dùng cung cấp.

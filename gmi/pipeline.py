@@ -4,11 +4,14 @@ from .models import Run, Scope, Source
 from .validation import validate_run
 
 
-def run_research(scope: Scope, provider, reader) -> Run:
+def run_research(scope: Scope, provider, reader, source_urls: list[str] | None = None) -> Run:
     started = time.monotonic()
     run = Run(id=str(uuid4()), evidence_mode='live', scope=scope)
     try:
-        urls = provider.search(scope)
+        urls = ([{'url': url} for url in source_urls] if source_urls is not None
+                else provider.search(scope))
+        if source_urls is not None:
+            run.usage['discovery'] = 'reviewer_supplied_urls'
         if not urls:
             run.errors.append('Discovery returned no attributed URLs')
         for index, item in enumerate(urls[:6], 1):
@@ -32,6 +35,6 @@ def run_research(scope: Scope, provider, reader) -> Run:
             run.errors.append('No readable full-text sources; no factual answer generated')
     except Exception as exc:
         run.errors.append(f'Pipeline interrupted ({type(exc).__name__}); no fabricated fallback')
-    run.usage = dict(getattr(provider, 'usage', {}))
+    run.usage.update(getattr(provider, 'usage', {}))
     run.usage['latency_seconds'] = round(time.monotonic() - started, 3)
     return validate_run(run)
