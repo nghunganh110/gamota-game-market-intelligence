@@ -1,5 +1,13 @@
 # Evidence Log Mission 2
 
+## Lượt online Liên Quân Mobile do người dùng báo
+
+**Scope người dùng nhập:** câu hỏi `Liên Quân Mobile có phải 1 game thành công`, subject `MOBA`, market `Vietnam`, period `Q1 2025`, cutoff `2025-12-31`, strict bật. Các ô ngày hiện 2025-10-01 đến 2025-12-31; bản chép không cho biết checkbox nhập khoảng ngày có bật, nên chưa biết hai ngày này có vào `Scope` hay không. Nếu không bật, code cũ chỉ so sánh nhãn period chính xác và thường loại dữ kiện kỳ con như Tết 2025. Nếu bật, ngày nhập mâu thuẫn với Q1. Subject `MOBA` lệch tên game trong câu hỏi. Cutoff lịch sử strict khiến reader live không có snapshot archive không thể đưa claim qua gate lịch sử.
+
+**Kết quả người dùng báo:** live partial; 2 Gemini API calls, 89.64 giây, 5 claim đều rejected, 4 finding excluded, không có câu trả lời được hỗ trợ. S1 ReadTimeout, S3/S4 HTTPStatusError. Lượt chạy không có `ValidationError`, nên bản sửa schema trước đó đã vượt qua lỗi all-or-nothing; không thể khẳng định nguyên nhân các nguồn đọc lỗi chỉ từ tên exception. C4 nói 1Q 2026, ngoài period/cutoff; C2/C3 là thành tích 2024, C5 là genre-level chứ không trực tiếp đánh giá game. C1 là tín hiệu giai đoạn Tết nhưng cần kiểm tra quote, period, subject và nguồn. Các trích dẫn và grounding do model cung cấp chưa phải human verification. Chi phí tiền tệ chưa được tính; không gọi Gemini lại trong phiên chẩn đoán.
+
+**Thay đổi sản phẩm:** trước API call, form giờ yêu cầu subject xuất hiện trong câu hỏi, tự suy ra 01/01–31/03 cho `Q1 2025`, từ chối khoảng ngày thủ công không khớp nhãn quý, và chặn strict với cutoff cũ khi reader không có archive. Result card hiện bounds thực tế và bảng đếm lý do claim bị loại. 66 tests passed bằng mock/offline; cần người dùng xác minh trên Cloud và chỉ chạy lại sau khi xác định allowance mới.
+
 ## Lần chạy Gemini trên URL Streamlit do người dùng cung cấp
 
 **Quan sát:** Người dùng cung cấp `https://gamota-game-market-intelligence.streamlit.app/` và báo app hiển thị `S2: Document read failed (ValueError)`, `S6: Document read failed (HTTPStatusError)`, `Pipeline interrupted (ValidationError); no fabricated fallback`. Không có claim hỗ trợ hoặc kết luận. Kiểm tra URL không đăng nhập nhận `HTTP 303` tới login; không xem được run, scope, raw model response hoặc Cloud logs. Chưa xác định chính xác trường nào gây `ValidationError`, và không coi URL là smoke test app đã thành công.

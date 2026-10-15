@@ -2,9 +2,11 @@
 
 MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn → đọc HTML/PDF riêng → Claim Ledger → kiểm tra evidence → brief → người phụ trách review và quyết định.
 
-**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **61 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. Người dùng đã cung cấp URL Streamlit online; từ môi trường kiểm tra không đăng nhập, URL chuyển tới login nên chưa smoke test được app. Chưa có kết quả chi phí tiền tệ. Replay sau sửa không thay thế bằng chứng fresh retrieval.
+**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **66 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. Người dùng đã chạy một lượt Gemini trên URL Streamlit online và báo kết quả partial; môi trường kiểm tra không đăng nhập vẫn chuyển tới login nên chưa tự smoke test được app. Chưa có kết quả chi phí tiền tệ. Replay sau sửa không thay thế bằng chứng fresh retrieval.
 
 **Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; claim bị đánh dấu unsupported hoặc unclear không còn hỗ trợ finding. Export giữ review. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
+
+**Lượt online Liên Quân Mobile:** người dùng báo subject `MOBA` cho câu hỏi về tên game, kỳ `Q1 2025`, các ô ngày đang hiện 01/10–31/12/2025 (chỉ có hiệu lực nếu chọn nhập ngày thủ công), cutoff 31/12/2025 và strict. Kết quả 2 API calls, 5 claim rejected, 4 findings excluded, 3 nguồn đọc lỗi. UI nay kiểm tra các mâu thuẫn phạm vi trước khi gọi Gemini, tự suy ra ngày đầu/cuối quý từ `Q1–Q4 YYYY` và tóm tắt lý do claim bị loại. [Chi tiết quan sát](docs/mission2/mission2-evidence-log.md).
 
 [Extraction mới trên snapshots](docs/mission2/live-T01-extraction-review.md) đã chạy với 1 API call: 5/6 claim vượt cơ học, xác nhận bản sửa kỳ đo trên output model thật; partial vì một quote ghép không khớp. AI audit vẫn phát hiện kết luận vượt bằng chứng. Đây là replay có model call mới, không phải một lượt tìm nguồn live mới.
 

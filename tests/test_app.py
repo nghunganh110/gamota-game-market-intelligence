@@ -49,6 +49,28 @@ def test_live_ui_requires_access_code(monkeypatch):
     assert not next(x for x in app.button if x.label == 'Nghiên cứu').disabled
 
 
+def test_live_ui_rejects_subject_mismatch_before_provider(monkeypatch):
+    monkeypatch.setattr('gmi.config.load_local_env', lambda: None)
+    for key, value in {
+        'GMI_LIVE_ENABLED': '1', 'GMI_KEY_AUTHORIZED': '1',
+        'GMI_BUDGET_NOTE': 'Mock-only scope check', 'GEMINI_MODEL': 'mock-model',
+        'GEMINI_API_KEY': 'mock-key', 'GMI_LIVE_ACCESS_CODE': 'a-long-test-access-code',
+    }.items():
+        monkeypatch.setenv(key, value)
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run()
+    app.radio[0].set_value('Nghiên cứu Gemini').run()
+    next(x for x in app.text_input if x.label == 'Mã truy cập Gemini').set_value('a-long-test-access-code')
+    next(x for x in app.button if x.label == 'Mở Gemini').click().run()
+    monkeypatch.setattr('gmi.gemini.GeminiProvider', lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError('Gemini must not run')))
+    next(x for x in app.text_area if x.label == 'Câu hỏi nghiên cứu').set_value('Liên Quân Mobile có phải 1 game thành công')
+    next(x for x in app.text_input if x.label == 'Đối tượng nghiên cứu').set_value('MOBA')
+    next(x for x in app.text_input if x.label == 'Kỳ đo').set_value('Q1 2025')
+    next(x for x in app.button if x.label == 'Nghiên cứu').click().run()
+    assert not app.exception
+    assert any('Đối tượng nghiên cứu phải xuất hiện' in error.value for error in app.error)
+    assert 'run' not in app.session_state
+
+
 def test_reviewer_can_reject_semantically_false_claim_in_ui():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
     next(x for x in app.selectbox if x.label=='Tình huống').select('semantic_failure')

@@ -1,4 +1,5 @@
 from datetime import date
+from collections import Counter
 import hashlib
 import hmac
 import json
@@ -12,6 +13,7 @@ from gmi.pipeline import run_research
 from gmi.validation import apply_review, revise_source, apply_claim_review
 from gmi.export import brief_markdown, result_summary
 from gmi.config import load_local_env
+from gmi.scope_input import scope_input_errors, scope_bounds
 
 load_local_env()
 
@@ -44,29 +46,39 @@ else:
             else:
                 st.error('Mã truy cập không đúng.')
     with st.form('research'):
-        question = st.text_area('Câu hỏi nghiên cứu', placeholder='Bạn muốn kiểm chứng tín hiệu nào?')
-        subject = st.text_input('Game hoặc thể loại')
+        question = st.text_area('Câu hỏi nghiên cứu', placeholder='Ví dụ: Liên Quân Mobile có thành công tại Việt Nam trong Q1 2025 xét theo người chơi và doanh thu?')
+        st.caption('Nêu rõ tiêu chí “thành công” nếu muốn kết luận theo một chỉ số cụ thể.')
+        subject = st.text_input('Đối tượng nghiên cứu', help='Nhập đúng tên game hoặc thể loại xuất hiện trong câu hỏi. Nếu hỏi Liên Quân Mobile, không nhập MOBA.')
         market = st.text_input('Thị trường', value='Vietnam')
         period = st.text_input('Kỳ đo', placeholder='Q1 2025, launch window…')
-        bounded_period = st.checkbox('Xác định khoảng ngày đo để nhận cả kỳ con', value=False)
+        st.caption('Q1–Q4 YYYY được tự đổi thành ngày đầu/cuối quý để nhận cả dữ kiện trong kỳ con.')
+        bounded_period = st.checkbox('Tự nhập khoảng ngày đo (chỉ dùng khi ô này được chọn)', value=False)
         period_start = st.date_input('Bắt đầu kỳ đo')
         period_end = st.date_input('Kết thúc kỳ đo')
         cutoff = st.date_input('Ngày cutoff', value=date.today())
         kind = st.selectbox('Mục đích', ['research','screening'])
         blocker_definition = st.text_area('Hard blocker xác định trước (nếu Screening)', placeholder='Ví dụ: chủ quyền xác nhận territory không khả dụng')
-        strict = st.checkbox('Chỉ dùng evidence xác định được trước cutoff', value=True)
+        strict = st.checkbox('Chỉ dùng evidence xác định được trước cutoff', value=True, help='Cutoff cũ hơn hôm nay cần snapshot lịch sử; reader live chưa tự lấy archive.')
         submitted = st.form_submit_button('Nghiên cứu', disabled=not (ready and live_unlocked))
     if submitted and ready and live_unlocked:
-        try:
-            scope = Scope(question=question,subject=subject,market=market,period=period,cutoff=cutoff,mode=kind,strict_cutoff=strict,blocker_definition=blocker_definition,period_start=period_start if bounded_period else None,period_end=period_end if bounded_period else None)
-            # This limit belongs to one browser session; use provider-side quota for an account-wide cap.
-            if 'live_policy' not in st.session_state:
-                st.session_state.live_policy = LivePolicy(enabled=True,authorized=True,budget_note=os.environ['GMI_BUDGET_NOTE'],max_calls=int(os.environ.get('GMI_MAX_CALLS','2')))
-            provider = GeminiProvider(st.session_state.live_policy)
-            with st.spinner('Tìm nguồn và đọc bằng chứng…'):
-                st.session_state.run = run_research(scope,provider,DocumentReader())
-        except Exception as exc:
-            st.error(f'Không thể chạy ({type(exc).__name__}). Kiểm tra scope/cấu hình server; không có kết quả thay thế.')
+        st.session_state.pop('run', None)
+        errors = scope_input_errors(question, subject, period, bounded_period,
+                                    period_start, period_end, cutoff, strict)
+        if errors:
+            for error in errors:
+                st.error(error)
+        else:
+            try:
+                start, end = scope_bounds(period, bounded_period, period_start, period_end)
+                scope = Scope(question=question,subject=subject,market=market,period=period,cutoff=cutoff,mode=kind,strict_cutoff=strict,blocker_definition=blocker_definition,period_start=start,period_end=end)
+                # This limit belongs to one browser session; use provider-side quota for an account-wide cap.
+                if 'live_policy' not in st.session_state:
+                    st.session_state.live_policy = LivePolicy(enabled=True,authorized=True,budget_note=os.environ['GMI_BUDGET_NOTE'],max_calls=int(os.environ.get('GMI_MAX_CALLS','2')))
+                provider = GeminiProvider(st.session_state.live_policy)
+                with st.spinner('Tìm nguồn và đọc bằng chứng…'):
+                    st.session_state.run = run_research(scope,provider,DocumentReader())
+            except Exception as exc:
+                st.error(f'Không thể chạy ({type(exc).__name__}). Kiểm tra scope/cấu hình server; không có kết quả thay thế.')
 
 run = st.session_state.get('run')
 if run:
@@ -75,7 +87,8 @@ if run:
     a.metric('Chế độ evidence',run.evidence_mode)
     b.metric('Trạng thái xử lý',run.status)
     c.metric('Khuyến nghị AI',run.recommendation or 'Research only')
-    st.caption(f'{run.scope.subject} · {run.scope.market} · {run.scope.period} · Cutoff {run.scope.cutoff}')
+    bounds = (f'{run.scope.period_start}–{run.scope.period_end}' if run.scope.period_start else 'theo nhãn kỳ đo')
+    st.caption(f'{run.scope.subject} · {run.scope.market} · {run.scope.period} ({bounds}) · Cutoff {run.scope.cutoff} · Strict {run.scope.strict_cutoff}')
     summary = result_summary(run)
     with st.container(border=True):
         st.subheader('Câu trả lời sơ bộ từ AI')
@@ -90,11 +103,15 @@ if run:
             st.info('Kết luận sơ bộ; người phụ trách chưa xác nhận. Mở từng claim bên dưới để kiểm tra nguồn và ý nghĩa.')
     st.warning('Đoạn trích khớp nguồn chỉ xác nhận khả năng truy vết. Cần kiểm tra claim có diễn giải đúng đoạn trích trước khi quyết định.')
     if run.errors:
-        for error in run.errors:
-            st.error(error)
+        for error, count in Counter(run.errors).items():
+            st.error(error + (f' (×{count})' if count > 1 else ''))
     if run.scope.mode == 'screening':
         st.dataframe([{'Chiều':d.name,'Trạng thái':d.state,'Claim':', '.join(d.claim_ids),'Lý do':d.reason} for d in run.extraction.dimensions], hide_index=True)
     st.subheader('Kiểm tra claim và nguồn')
+    issue_counts = Counter(issue for claim in run.extraction.claims for issue in claim.issues)
+    if issue_counts:
+        st.write('Lý do claim chưa được dùng làm bằng chứng:')
+        st.dataframe([{'Lý do': issue, 'Số claim': count} for issue, count in issue_counts.items()], hide_index=True)
     sources = {s.id:s for s in run.sources}
     for claim in run.extraction.claims:
         with st.expander(f'{claim.id} · {claim.status} · {claim.text}'):
