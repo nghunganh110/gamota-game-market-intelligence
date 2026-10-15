@@ -1,0 +1,13 @@
+{
+  "question": "What public evidence describes MABINOGI MOBILE launch strength in South Korea during March–May 2025, and what does each metric actually measure?",
+  "criteria": "Revenue estimates, downloads and April player engagement; do not infer Vietnam demand or profitability.",
+  "subject": "MABINOGI MOBILE",
+  "market": "South Korea",
+  "period": "March–May 2025",
+  "period_start": "2025-03-01",
+  "period_end": "2025-05-31",
+  "cutoff": "2026-10-15",
+  "mode": "research",
+  "strict_cutoff": true,
+  "blocker_definition": ""
+}

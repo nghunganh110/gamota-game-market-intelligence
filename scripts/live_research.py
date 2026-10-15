@@ -11,6 +11,7 @@ from gmi.models import Scope, Run
 from gmi.pipeline import run_research
 from gmi.reader import DocumentReader
 from gmi.config import load_local_env
+from gmi.source_input import parse_source_urls
 
 
 def preflight(env):
@@ -102,7 +103,10 @@ def main(argv=None):
     parser.add_argument('--scope', required=True, type=Path)
     parser.add_argument('--run', action='store_true')
     parser.add_argument('--sources-from', type=Path, help='Diagnostic: reuse snapshots from a prior run of this question, with one new extraction call')
+    parser.add_argument('--url-file', type=Path, help='One public source URL per line (1–6); skips Gemini discovery and uses at most one extraction call')
     args = parser.parse_args(argv)
+    if args.sources_from and args.url_file:
+        parser.error('--sources-from and --url-file cannot be combined')
     load_local_env()
     scope = Scope.model_validate_json(args.scope.read_text())
     checks = preflight(os.environ)
@@ -113,6 +117,7 @@ def main(argv=None):
         return 0 if all(checks.values()) else 2
     if not all(checks.values()):
         return 2
+    source_urls = parse_source_urls(args.url_file.read_text()) if args.url_file else None
     policy = LivePolicy(enabled=True, authorized=True,
                         budget_note=os.environ['GMI_BUDGET_NOTE'], max_calls=2)
     # Reserve a fresh artifact directory before making any API call.
@@ -123,7 +128,7 @@ def main(argv=None):
     if args.sources_from:
         run = extract_saved_sources(scope, args.sources_from, provider)
     else:
-        run = run_research(scope, provider, DocumentReader())
+        run = run_research(scope, provider, DocumentReader(), source_urls=source_urls)
     (output / 'run.json').write_text(run.model_dump_json(indent=2))
     (output / 'brief.md').write_text(brief_markdown(run))
     (output / 'audit.md').write_text(audit_markdown(run))

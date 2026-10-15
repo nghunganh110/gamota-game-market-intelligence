@@ -1,0 +1,13 @@
+{
+  "question": "What public evidence supports or limits a Mobile MMORPG opportunity hypothesis in Vietnam during calendar year 2025?",
+  "criteria": "Genre-specific revenue direction and evidence coverage; do not turn a combined genre statement into a standalone MMORPG market share.",
+  "subject": "Mobile MMORPG",
+  "market": "Vietnam",
+  "period": "Calendar year 2025",
+  "period_start": "2025-01-01",
+  "period_end": "2025-12-31",
+  "cutoff": "2026-10-15",
+  "mode": "research",
+  "strict_cutoff": true,
+  "blocker_definition": ""
+}

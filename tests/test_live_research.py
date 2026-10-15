@@ -64,3 +64,41 @@ def test_saved_extraction_rejects_different_question_before_api(tmp_path):
     scope=parent.scope.model_copy(update={'question': 'Different research question entirely?'})
     with pytest.raises(ValueError, match='same research question'):
         extract_saved_sources(scope, path, object())
+
+
+def test_cli_guided_sources_produce_artifacts_without_discovery(tmp_path, monkeypatch):
+    from pathlib import Path
+    base = replay('good')
+    scope_path, urls_path = tmp_path/'scope.json', tmp_path/'urls.txt'
+    scope_path.write_text(base.scope.model_dump_json())
+    urls_path.write_text('\n'.join(source.url for source in base.sources))
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr('scripts.live_research.load_local_env', lambda: None)
+    for name, value in {
+        'GEMINI_API_KEY': 'mock-key', 'GEMINI_MODEL': 'mock-model',
+        'GMI_LIVE_ENABLED': '1', 'GMI_KEY_AUTHORIZED': '1',
+        'GMI_BUDGET_NOTE': 'Mocked CLI test', 'GMI_MAX_CALLS': '2',
+    }.items():
+        monkeypatch.setenv(name, value)
+
+    class MockProvider:
+        usage = {'api_calls': 0}
+        def __init__(self, policy): self.policy = policy
+        def search(self, scope): raise AssertionError('Guided mode must skip search')
+        def extract(self, scope, sources):
+            self.usage['api_calls'] += 1
+            return base.extraction.model_copy(deep=True)
+
+    class MockReader:
+        def read(self, url, source_id):
+            source = next(s.model_copy(deep=True) for s in base.sources if s.url == url)
+            source.id = source_id
+            return source
+
+    monkeypatch.setattr('scripts.live_research.GeminiProvider', MockProvider)
+    monkeypatch.setattr('scripts.live_research.DocumentReader', MockReader)
+    assert main(['--scope', str(scope_path), '--url-file', str(urls_path), '--run']) == 0
+    paths = list((tmp_path/'runs').glob('*/run.json'))
+    assert len(paths) == 1
+    assert 'reviewer_supplied_urls' in paths[0].read_text()
+    assert (Path(paths[0].parent)/'brief.md').exists()
