@@ -5,11 +5,24 @@ from pydantic import BaseModel, Field, ConfigDict, model_validator
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
 
-class Scope(StrictModel):
+class MeasurementPeriod(StrictModel):
+    period: str = Field(min_length=2, max_length=200)
+    period_start: date | None = Field(default=None, description='Inclusive measurement start, only when supported by the source. Not publication date.')
+    period_end: date | None = Field(default=None, description='Inclusive measurement end. For an imprecise month use conservative full-month bounds, never invent an exact day.')
+
+    @model_validator(mode='after')
+    def ordered_period(self):
+        if (self.period_start is None) != (self.period_end is None):
+            raise ValueError('Measurement bounds must both be provided or both omitted')
+        if self.period_start and self.period_start > self.period_end:
+            raise ValueError('Measurement start must not follow end')
+        return self
+
+
+class Scope(MeasurementPeriod):
     question: str = Field(min_length=10, max_length=2000)
     subject: str = Field(min_length=2, max_length=200)
     market: str = Field(min_length=2, max_length=100)
-    period: str = Field(min_length=2, max_length=200)
     cutoff: date
     mode: Literal['research', 'screening'] = 'research'
     strict_cutoff: bool = True
@@ -32,7 +45,7 @@ class Source(StrictModel):
     historical_snapshot: bool = False
     error: str | None = None
 
-class Claim(StrictModel):
+class Claim(MeasurementPeriod):
     id: str
     text: str = Field(min_length=1)
     source_id: str
@@ -40,7 +53,6 @@ class Claim(StrictModel):
     kind: Literal['reported', 'estimate', 'qualitative', 'observed']
     subject: str
     market: str
-    period: str
     metric: str
     limitations: str
     status: Literal['ai_extracted', 'mechanically_checked', 'human_verified', 'rejected'] = 'ai_extracted'
@@ -108,6 +120,12 @@ class SourceReview(StrictModel):
     relevance: Literal['direct', 'indirect', 'unsuitable']
     reason: str = Field(min_length=10)
 
+class ClaimReview(StrictModel):
+    claim_id: str
+    reviewer: str = Field(min_length=1)
+    verdict: Literal['supported', 'unsupported', 'unclear']
+    reason: str = Field(min_length=10)
+
 class Run(StrictModel):
     id: str
     evidence_mode: Literal['live', 'synthetic', 'replay']
@@ -121,4 +139,5 @@ class Run(StrictModel):
     review: Review | None = None
     proposed_extraction: Extraction | None = None
     source_reviews: list[SourceReview] = Field(default_factory=list)
+    claim_reviews: list[ClaimReview] = Field(default_factory=list)
     review_history: list[Review] = Field(default_factory=list)

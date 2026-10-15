@@ -1,0 +1,12 @@
+{
+  "question": "What public evidence for calendar year 2025 supports or weakens a hypothesis of mobile MMORPG opportunity in Vietnam? Distinguish genre-specific evidence from whole-market context, revenue from downloads, and observations from forecasts. If direct Vietnam MMORPG evidence is missing, report the gap rather than substitute Korea, China or Southeast Asia totals.",
+  "subject": "Mobile MMORPG",
+  "market": "Vietnam",
+  "period": "Calendar year 2025",
+  "period_start": "2025-01-01",
+  "period_end": "2025-12-31",
+  "cutoff": "2026-10-15",
+  "mode": "research",
+  "strict_cutoff": false,
+  "blocker_definition": ""
+}

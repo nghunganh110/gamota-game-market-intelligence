@@ -2,13 +2,16 @@ from datetime import date
 import json
 import os
 import streamlit as st
-from gmi.models import Scope, Review, SourceReview
+from gmi.models import Scope, Review, SourceReview, ClaimReview
 from gmi.replay import replay
 from gmi.gemini import LivePolicy, GeminiProvider
 from gmi.reader import DocumentReader
 from gmi.pipeline import run_research
-from gmi.validation import apply_review, revise_source
-from gmi.export import brief_markdown
+from gmi.validation import apply_review, revise_source, apply_claim_review
+from gmi.export import brief_markdown, result_summary
+from gmi.config import load_local_env
+
+load_local_env()
 
 st.set_page_config(page_title='Gamota Market Intelligence', layout='wide')
 st.title('Game Market Intelligence')
@@ -29,6 +32,9 @@ else:
         subject = st.text_input('Game hoặc thể loại')
         market = st.text_input('Thị trường', value='Vietnam')
         period = st.text_input('Kỳ đo', placeholder='Q1 2025, launch window…')
+        bounded_period = st.checkbox('Xác định khoảng ngày đo để nhận cả kỳ con', value=False)
+        period_start = st.date_input('Bắt đầu kỳ đo')
+        period_end = st.date_input('Kết thúc kỳ đo')
         cutoff = st.date_input('Ngày cutoff', value=date.today())
         kind = st.selectbox('Mục đích', ['research','screening'])
         blocker_definition = st.text_area('Hard blocker xác định trước (nếu Screening)', placeholder='Ví dụ: chủ quyền xác nhận territory không khả dụng')
@@ -36,7 +42,7 @@ else:
         submitted = st.form_submit_button('Nghiên cứu', disabled=not ready)
     if submitted:
         try:
-            scope = Scope(question=question,subject=subject,market=market,period=period,cutoff=cutoff,mode=kind,strict_cutoff=strict,blocker_definition=blocker_definition)
+            scope = Scope(question=question,subject=subject,market=market,period=period,cutoff=cutoff,mode=kind,strict_cutoff=strict,blocker_definition=blocker_definition,period_start=period_start if bounded_period else None,period_end=period_end if bounded_period else None)
             # A session attempt limit survives Streamlit reruns; public demo must keep live disabled.
             if 'live_policy' not in st.session_state:
                 st.session_state.live_policy = LivePolicy(enabled=True,authorized=True,budget_note=os.environ['GMI_BUDGET_NOTE'],max_calls=int(os.environ.get('GMI_MAX_CALLS','2')))
@@ -54,14 +60,22 @@ if run:
     b.metric('Trạng thái xử lý',run.status)
     c.metric('Khuyến nghị AI',run.recommendation or 'Research only')
     st.caption(f'{run.scope.subject} · {run.scope.market} · {run.scope.period} · Cutoff {run.scope.cutoff}')
+    summary = result_summary(run)
+    with st.container(border=True):
+        st.subheader('Câu trả lời sơ bộ từ AI')
+        st.write(summary['answer'])
+        for finding in summary['findings'][1:]:
+            st.write(finding.text)
+        st.caption('Claim hỗ trợ: ' + (', '.join(summary['claim_ids']) or 'chưa có'))
+        if run.scope.mode == 'screening':
+            st.write(f'Đề xuất sàng lọc: **{run.recommendation or "chưa có"}**')
+        st.write(f'Bước kiểm chứng tiếp (AI đề xuất): {summary["next_action"]}')
+        if not summary['reviewed']:
+            st.info('Kết luận sơ bộ; người phụ trách chưa xác nhận. Mở từng claim bên dưới để kiểm tra nguồn và ý nghĩa.')
     st.warning('Đoạn trích khớp nguồn chỉ xác nhận khả năng truy vết. Cần kiểm tra claim có diễn giải đúng đoạn trích trước khi quyết định.')
     if run.errors:
         for error in run.errors:
             st.error(error)
-    for f in run.extraction.findings:
-        st.write(f'{f.text} — {", ".join(f.claim_ids)}' + (' · AI inference' if f.inference else ''))
-    if not run.extraction.findings:
-        st.info('Chưa có nhận định đủ cơ sở để trả lời câu hỏi.')
     if run.scope.mode == 'screening':
         st.dataframe([{'Chiều':d.name,'Trạng thái':d.state,'Claim':', '.join(d.claim_ids),'Lý do':d.reason} for d in run.extraction.dimensions], hide_index=True)
     st.subheader('Kiểm tra claim và nguồn')
@@ -80,6 +94,20 @@ if run:
             st.write('Giới hạn:',claim.limitations)
             for issue in claim.issues:
                 st.error(issue)
+            latest = next((x for x in reversed(run.claim_reviews) if x.claim_id == claim.id), None)
+            if latest:
+                st.write(f'Review gần nhất: {latest.verdict} — {latest.reason} ({latest.reviewer})')
+            with st.form(f'claim_review_{claim.id}'):
+                reviewer_name = st.text_input('Người kiểm tra claim', key=f'claim_reviewer_{claim.id}')
+                verdict = st.selectbox('Đoạn trích có hỗ trợ claim?', ['unclear', 'supported', 'unsupported'], key=f'claim_verdict_{claim.id}')
+                claim_reason = st.text_area('Lý do đánh giá', key=f'claim_reason_{claim.id}')
+                claim_submit = st.form_submit_button('Lưu đánh giá claim')
+            if claim_submit:
+                try:
+                    st.session_state.run = apply_claim_review(run, ClaimReview(claim_id=claim.id, reviewer=reviewer_name, verdict=verdict, reason=claim_reason))
+                    st.rerun()
+                except Exception:
+                    st.error('Cần tên và lý do ít nhất 10 ký tự; không thể duyệt claim đã bị kiểm tra cơ học loại.')
     with st.expander('Sửa đánh giá chất lượng/độ phù hợp nguồn'):
         if run.sources:
             with st.form('source_review'):
@@ -103,7 +131,7 @@ if run:
         st.write(f'**{g.missing}** — {g.impact}')
         st.write(f'{g.action} · Người review: {g.owner} · Xem lại: {g.revisit}')
     with st.expander('Người phụ trách review và quyết định'):
-        eligible = [c.id for c in run.extraction.claims if c.status in {'mechanically_checked','human_verified'}]
+        eligible = [c.id for c in run.extraction.claims if c.status == 'human_verified']
         with st.form('review'):
             reviewer = st.text_input('Người review')
             verified = st.multiselect('Claim đã kiểm tra ngữ nghĩa',eligible)

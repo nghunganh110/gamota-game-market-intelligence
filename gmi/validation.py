@@ -2,7 +2,7 @@ import hashlib
 import re
 from datetime import datetime, timezone
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
-from .models import Run, Gap, Review, SourceReview
+from .models import Run, Gap, Review, SourceReview, ClaimReview
 
 
 def canonical_url(url):
@@ -24,6 +24,7 @@ def validate_run(run: Run) -> Run:
     if len(ids) != len(set(ids)):
         raise ValueError('Duplicate source IDs')
     sources = {s.id: s for s in run.sources}
+    latest_claim_reviews = {review.claim_id: review for review in run.claim_reviews}
     seen_urls, seen_text = {}, {}
     for s in run.sources:
         s.sha256 = hashlib.sha256(s.text.encode()).hexdigest()
@@ -55,12 +56,22 @@ def validate_run(run: Run) -> Run:
                 c.issues.append('Subject mismatch')
             if normalize(c.market) != normalize(run.scope.market):
                 c.issues.append('Market mismatch; context only')
-            if normalize(c.period) != normalize(run.scope.period):
+            if run.scope.period_start is not None:
+                if c.period_start is None:
+                    c.issues.append('Measurement bounds unknown; context only')
+                elif not (run.scope.period_start <= c.period_start <= c.period_end <= run.scope.period_end):
+                    c.issues.append('Period outside requested window; context only')
+            elif normalize(c.period) != normalize(run.scope.period):
                 c.issues.append('Period mismatch; context only')
             if s.relevance != 'direct':
                 c.issues.append('Source not directly relevant')
-        c.status = 'rejected' if c.issues else 'mechanically_checked'
-    valid = {c.id for c in run.extraction.claims if c.status == 'mechanically_checked'}
+        assessment = latest_claim_reviews.get(c.id)
+        if assessment and assessment.verdict != 'supported':
+            c.issues.append(f'Reviewer marked {assessment.verdict}: {assessment.reason}')
+        c.status = ('rejected' if c.issues else
+                    'human_verified' if assessment and assessment.verdict == 'supported' else
+                    'mechanically_checked')
+    valid = {c.id for c in run.extraction.claims if c.status in {'mechanically_checked', 'human_verified'}}
     sanitized = []
     for f in run.extraction.findings:
         if set(f.claim_ids) <= valid:
@@ -114,6 +125,24 @@ def apply_review(run: Run, review: Review) -> Run:
             c.status = 'human_verified'
     # Keep the AI recommendation intact; the final human decision is a separate field.
     return result
+
+
+def apply_claim_review(run: Run, assessment: ClaimReview) -> Run:
+    claim = next((c for c in run.extraction.claims if c.id == assessment.claim_id), None)
+    if claim is None:
+        raise ValueError('Claim missing')
+    if assessment.verdict == 'supported' and claim.status == 'rejected' and not any(
+        issue.startswith('Reviewer marked') for issue in claim.issues
+    ):
+        raise ValueError('Cannot approve a claim rejected by mechanical checks')
+    result = run.model_copy(deep=True)
+    result.claim_reviews.append(assessment)
+    if result.review:
+        result.review_history.append(result.review)
+    if result.proposed_extraction:
+        result.extraction = result.proposed_extraction.model_copy(deep=True)
+    result.errors = [e for e in result.errors if e != 'Finding excluded: invalid claim references']
+    return validate_run(result)
 
 
 def revise_source(run: Run, revision: SourceReview) -> Run:

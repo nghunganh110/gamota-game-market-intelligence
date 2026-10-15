@@ -2,7 +2,13 @@
 
 MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn → đọc HTML/PDF riêng → Claim Ledger → kiểm tra evidence → brief → người phụ trách review và quyết định.
 
-**Trạng thái đã xác nhận:** app chạy local; 37 kiểm thử offline đạt; 8 actual acceptance cases synthetic/fault injection đã chạy, gồm một giới hạn ngữ nghĩa chưa đạt. **Chưa có Gemini live research, audit của Lead, deploy online hoặc kết quả chi phí.** Replay không thay thế bằng chứng live.
+**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **56 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. **Chưa có deploy online hoặc kết quả chi phí tiền tệ.** Replay sau sửa không thay thế bằng chứng fresh retrieval.
+
+**Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; claim bị đánh dấu unsupported hoặc unclear không còn hỗ trợ finding. Export giữ review. Bộ test hiện tại **56 passed**. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
+
+[Extraction mới trên snapshots](docs/mission2/live-T01-extraction-review.md) đã chạy với 1 API call: 5/6 claim vượt cơ học, xác nhận bản sửa kỳ đo trên output model thật; partial vì một quote ghép không khớp. AI audit vẫn phát hiện kết luận vượt bằng chứng. Đây là replay có model call mới, không phải một lượt tìm nguồn live mới.
+
+[T02 game thứ hai](docs/mission2/live-T02-review.md) đã chạy live: 6/10 claim qua cơ học, partial vì scope và còn lỗi ngữ nghĩa. Xem [tiến độ kiểm chứng](docs/mission2/live-test-progress.md); T03 và human acceptance vẫn còn thiếu.
 
 ## Chạy local
 
@@ -37,6 +43,12 @@ Kết quả và kỳ vọng được ghi trong [test report](docs/mission2/test-
 
 ## Gemini live — mặc định tắt
 
+CLI/app hỗ trợ đọc `.env` riêng trong root project; điền key/model trực tiếp trên máy, không gửi key trong chat. `.env` bị Git bỏ qua; `.env.example` chỉ là mẫu không có credential. Env đã export có ưu tiên hơn file. Xem [hướng dẫn cấu hình](docs/mission2/live-run-guide.md). Bộ test loader literal/không lộ secret nằm trong suite hiện tại.
+
+[T03 thể loại tại Vietnam](docs/mission2/live-T03-review.md) đã chạy bằng .env: partial, 1/5 claim qua cơ học, chỉ đọc được 2/6 nguồn. T01/T02/T03 đã thực thi; vẫn chưa human-accepted. Không có API calls bổ sung ngoài lượt đã được phép. Giới hạn T03 trong .env không phải allowance cho các lần chạy tiếp.
+
+[Hướng dẫn live T01](docs/mission2/live-run-guide.md) có scope, lệnh preflight không gọi API và lệnh chạy một lần để lưu run/brief/mẫu audit. Lần live đầu đã có [báo cáo và AI audit](docs/mission2/live-T01-review.md); lần gọi tiếp theo cần nằm trong giới hạn sử dụng được xác nhận.
+
 Quyền dùng key đã được người dùng xác nhận; **giới hạn chi phí/lượt gọi, model và key local vẫn chưa được cấu hình**. Không nhập key vào chat, source code hoặc GitHub. Đặt các biến môi trường riêng trên máy sau khi có giới hạn được xác nhận:
 
 | Biến | Ý nghĩa |
@@ -50,7 +62,7 @@ Quyền dùng key đã được người dùng xác nhận; **giới hạn chi p
 
 Một run tối đa một search call, sáu nguồn, một extraction call. Không retry API tự động. Search queries bên trong call do model quyết định, không đồng nghĩa với số API attempts. Đọc tối đa 4 MB/30 giây/30k ký tự mỗi nguồn, PDF ≤50 trang. Lưu usage có sẵn; **chưa tính phí tiền tệ**. Session cap không phải quota account hay trần tiền tệ; session mới hoặc process mới có thể reset. Public demo phải giữ live tắt đến khi có cơ chế hạn mức toàn hệ thống được duyệt.
 
-SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/python-genai), [Google Search grounding](https://ai.google.dev/gemini-api/docs/google-search), [structured outputs](https://ai.google.dev/gemini-api/docs/structured-output). Hiện kiểm tra SDK bằng mocked response, chưa xác minh server/model/schema bằng key thật.
+SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/python-genai), [Google Search grounding](https://ai.google.dev/gemini-api/docs/google-search), [structured outputs](https://ai.google.dev/gemini-api/docs/structured-output). Lần T01 đã nhận search grounding và structured extraction bằng cấu hình của người dùng; model ID lưu trong run là cấu hình client, chưa xác minh độc lập danh tính model phía server.
 
 ## Hạn chế đã quan sát
 

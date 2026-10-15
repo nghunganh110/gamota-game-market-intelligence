@@ -18,6 +18,17 @@ def test_empty_scan_and_unsupported_types_fail():
     with pytest.raises(ValueError): parse_document(b'not readable','application/octet-stream','https://example.org')
 
 
+def test_navigation_shell_is_not_readable_article():
+    menu = ''.join(f'<li><a href="/{i}">{label}</a></li>' for i, label in enumerate([
+        'About NEXON', 'Corporate Profile', 'Leadership', 'Location', 'History',
+        'Products', 'Popular Games in Service', 'Pipeline', 'Investor Relations',
+        'Stock Information', 'Our Business', 'Quarterly Disclosure', 'IR News',
+        'Events and Interviews', 'Careers', 'Sustainability', 'News', 'Video Archive']))
+    html = f'<html><head><title>News</title></head><body><nav><ul>{menu}</ul></nav><main><h1>NEWS</h1></main><footer>{menu}</footer></body></html>'
+    with pytest.raises(ValueError):
+        parse_document(html.encode(), 'text/html', 'https://example.org/news')
+
+
 def test_owned_mission1_pdf_read_without_inventing_publication_date():
     from pathlib import Path
     text,title,published=parse_document(Path('docs/mission1/Mission_1_Game_Market_Intelligence.pdf').read_bytes(),'application/pdf','https://example.org/mission1.pdf')

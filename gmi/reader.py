@@ -35,7 +35,9 @@ def parse_document(data: bytes, content_type: str, url: str):
         from trafilatura import extract
         from trafilatura.metadata import extract_metadata
         html = data.decode('utf-8', errors='replace')
-        text = extract(html, include_comments=False, include_tables=True) or ''
+        # Skip backup extraction, which can turn navigation shells into evidence.
+        text = extract(html, include_comments=False, include_tables=True,
+                       fast=True, favor_precision=True) or ''
         meta = extract_metadata(html, default_url=url)
         title = meta.title if meta and meta.title else urlsplit(url).hostname
         try:

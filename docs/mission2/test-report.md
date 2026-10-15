@@ -1,5 +1,17 @@
 # Actual offline test report
 
+## Latest live evidence and regression update
+
+[T03 đã chạy](live-T03-review.md) bằng .env private: một ConnectError trong sandbox được giữ; sau cấp quyền chạy ngoài sandbox, 2 attempts, 5 claims, 1 mechanically checked, partial. Bốn nguồn đọc thất bại; nhận định còn lại chỉ là qualitative genre signal. T01/T02/T03 đã thực thi nhưng chưa có human acceptance. Không chạy suite mới trong phiên chỉ execute/audit; 53 passed là kết quả lần thêm .env loader.
+
+[T02 live](live-T02-review.md) đã chạy game thứ hai: 2 calls, 10 claims, 6 mechanically checked, 4 rejected vì period ngoài scope; partial. AI audit vẫn có lỗi trộn phạm vi claim, gross/net và attribution; chưa human-accepted. [Bảng tiến độ các lần gọi thật](live-test-progress.md) tách fresh discovery, snapshot extraction và offline derivatives.
+
+T01 extraction từ snapshots: **1 model call thật**, 6 claims, 5 mechanically checked, 1 rejected do ghép quote bằng `...`; partial. Không còn period mismatch, Research dimensions rỗng. AI audit vẫn thấy causal inference PC không có đủ evidence, nên chất lượng tổng thể chưa đạt. [Báo cáo extraction](live-T01-extraction-review.md). Đây là replay có extraction mới, không phải fresh discovery hoặc human audit.
+
+T01 lần 2: partial, 2 API attempts, 0 claims, discovery chỉ trả navigation shell. Extraction trả gaps thay vì bịa evidence; chưa kiểm chứng được bản sửa kỳ đo. [Báo cáo lần 2](live-T01-rerun-review.md) ghi root cause và phép thử extraction một-call với snapshots cũ. Suite hiện tại **50 passed**, chưa chạy Gemini thêm trong phiên chẩn đoán.
+
+The first T01 live run has now executed: two API attempts, five extracted claims, partial status. It exposed a period-string validation failure and semantic overclaims. See [T01 actual result and AI audit](live-T01-review.md). This is not an accepted research brief; human audit remains pending. The earlier offline results below are historical and unchanged. After the measurement-window fix, the current suite is **47 passed**; the earlier clean-environment verification covered 37 tests.
+
 Toàn bộ O01–O08 là synthetic hoặc fault injection; không có Gemini live call. Không dùng claim thị trường cũ như output MVP.
 
 ## Kiểm thử tự động
@@ -128,4 +140,4 @@ Source từ Git archive + venv Python mới + requirements.txt (cài từ cache 
 
 ## Còn thiếu trước bài nộp
 
-T01–T03 và T06/T09 live chưa chạy; chưa có audit của người tham gia/Lead thực; chưa đo chất lượng nghiên cứu, latency live, chi phí hay tiết kiệm thời gian. O08 là thất bại synthetic đã quan sát; chưa đáp ứng yêu cầu case sản phẩm thất bại từ live research.
+T01 đã chạy live và chưa đạt chất lượng end-to-end; latency và usage có trong báo cáo mới. T02–T03 và T06/T09 live chưa chạy; chưa có audit của người tham gia/Lead thực, chi phí tiền tệ hay đo tiết kiệm thời gian. O08 là thất bại synthetic; T01 bổ sung thất bại sản phẩm quan sát từ live research.

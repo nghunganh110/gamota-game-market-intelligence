@@ -123,6 +123,72 @@ def test_source_review_recomputes_gates_and_keeps_history():
     assert r.recommendation=='Tiếp tục' and r.review is None
 
 
+def test_claim_review_removes_unsupported_conclusion_and_can_be_revised():
+    from gmi.models import ClaimReview
+    from gmi.validation import apply_claim_review
+    from gmi.export import result_summary
+    r=replay('semantic_failure')
+    assert r.extraction.findings
+    r=apply_claim_review(r,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='unsupported',reason='The quote says demand is not strong.'))
+    assert not r.extraction.findings
+    assert r.extraction.claims[0].status=='rejected'
+    assert 'Chưa đủ bằng chứng' in result_summary(r)['answer']
+    assert len(r.claim_reviews)==1
+    r=apply_claim_review(r,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='unclear',reason='Needs more evidence for this wording.'))
+    assert not r.extraction.findings
+    assert len(r.claim_reviews)==2
+
+
+def test_claim_review_marks_supported_and_blocks_mechanically_rejected():
+    from gmi.models import ClaimReview
+    from gmi.validation import apply_claim_review
+    good=replay('good')
+    out=apply_claim_review(good,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='supported',reason='The quoted fictional source supports this claim.'))
+    assert out.extraction.claims[0].status=='human_verified'
+    assert out.extraction.findings
+    invalid=raw()
+    invalid.extraction.claims[0].quote='Fictitious quotation not found in the source.'
+    invalid=validate_run(invalid)
+    with pytest.raises(ValueError):
+        apply_claim_review(invalid,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='supported',reason='I want to accept it despite missing quote.'))
+
+
 def test_stop_candidate_without_predefined_blocker_is_not_used():
     r=raw(); r.extraction.blocker_claim_ids=['C2']
     assert validate_run(r).extraction.blocker_claim_ids==[]
+
+
+@pytest.mark.parametrize('start,end,eligible', [
+    ('2025-04-01', '2025-04-30', True),
+    ('2025-03-01', '2025-06-30', True),
+    ('2025-02-28', '2025-04-30', False),
+    ('2025-06-01', '2025-07-01', False),
+    (None, None, False),
+])
+def test_measurement_window_accepts_only_contained_subperiods(start, end, eligible):
+    from datetime import date
+    r = raw()
+    r.scope.period = 'March–June 2025 launch window'
+    r.scope.period_start = date(2025, 3, 1)
+    r.scope.period_end = date(2025, 6, 30)
+    r.scope.strict_cutoff = False
+    c = r.extraction.claims[0]
+    c.period = 'April 2025'  # Preserve the actual period, not the scope label.
+    c.period_start = date.fromisoformat(start) if start else None
+    c.period_end = date.fromisoformat(end) if end else None
+    out = validate_run(r)
+    assert (out.extraction.claims[0].status == 'mechanically_checked') == eligible
+    assert out.extraction.claims[0].period == 'April 2025'
+    assert out.extraction.claims[0].status != 'human_verified'
+
+
+@pytest.mark.parametrize('bounds', [
+    {'period_start': '2025-04-01'},
+    {'period_start': '2025-05-01', 'period_end': '2025-04-01'},
+])
+def test_invalid_measurement_bounds_rejected_by_schema(bounds):
+    from gmi.models import Scope
+    scope = raw().scope.model_dump(mode='json')
+    scope.update(bounds)
+    with pytest.raises(ValueError):
+        Scope.model_validate(scope)
