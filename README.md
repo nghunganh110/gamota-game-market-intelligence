@@ -5,7 +5,8 @@
 **Bộ kiểm thử và kết quả thật:** [docs/mission2/test-report.md](docs/mission2/test-report.md)
 
 **Ba câu trả lời bắt buộc:** [docs/mission2/forced-decisions-draft.md](docs/mission2/forced-decisions-draft.md)
-**Kịch bản video ≤5 phút:** [docs/mission2/video-script.md](docs/mission2/video-script.md)
+
+**Video demo có phụ đề (2:13):** [docs/mission2/mission2-demo-captioned.mp4](docs/mission2/mission2-demo-captioned.mp4) · [Kịch bản bản có lời](docs/mission2/video-script.md)
 
 MVP thử một giả thuyết hẹp: một câu hỏi nghiên cứu game có thể được chuyển thành nhận định truy ngược được tới claim, đoạn trích và nguồn; phần thiếu và độ tin cậy được hiện rõ để người phụ trách quyết định. Luồng là **câu hỏi → thu nguồn → trích claim → kiểm tra cơ học → nhận định sơ bộ → người review đối chiếu và viết kết luận cuối**. Ứng dụng không tự gán nhãn “đúng” cho một claim chỉ vì câu trích xuất hiện trên trang.
 

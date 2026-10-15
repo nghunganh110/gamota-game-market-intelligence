@@ -29,4 +29,4 @@ Artifacts O01–O08 ở [offline results](test-artifacts/offline-current/offline
 
 Hai câu hỏi thật đã chạy local bằng model thật, nhưng chưa có lượt online mới hay nhận định cuối được người review chấp nhận. Bước kế tiếp là mở lại JSON, kiểm tra ít nhất các claim ảnh hưởng kết luận với trang gốc, rồi ghi verdict và lý do. Một câu trả lời `partial` vẫn có thể hữu ích nếu nêu đúng phát hiện có nguồn và giới hạn; không được gọi “đạt” chỉ vì pipeline chạy xong.
 
-Người dùng/chủ đề tài là người xác nhận cuối. Chưa có xác nhận nhận định live trên bản mới. [Ba Forced Decisions](forced-decisions-draft.md) và [kịch bản video](video-script.md) đã cập nhật theo hai lượt thực tế; vẫn cần chủ bài nộp rà soát và quay video.
+Người dùng/chủ đề tài là người xác nhận cuối. Chưa có xác nhận nhận định live trên bản mới. [Ba Forced Decisions](forced-decisions-draft.md), [video demo có phụ đề 2:13](mission2-demo-captioned.mp4) và [kịch bản bản có lời](video-script.md) đã cập nhật theo hai lượt thực tế; chủ bài nộp vẫn cần rà soát, kiểm tra quyền xem và nộp.

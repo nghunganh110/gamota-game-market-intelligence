@@ -1,6 +1,6 @@
 # Kịch bản quay video Mission 2 — khoảng 4 phút 30 giây
 
-Đây là **kịch bản**, chưa phải file video. Quay màn hình app đang chạy trong phiên của chủ bài nộp. Không dùng API Gemini khi quay; hai ví dụ rút gọn đã lưu giúp demo lặp lại được. Khi nói về A01/A02, dùng đúng nhãn “lượt live đã lưu và biên tập, chưa có human acceptance”.
+Đây là **kịch bản cho bản quay có lời**. [Bản demo có phụ đề 2:13](mission2-demo-captioned.mp4) đã được dựng từ ảnh chụp app local, không có âm thanh và không gọi API Gemini. Nếu quay bản có lời, dùng hai ví dụ rút gọn đã lưu để demo lặp lại được. Khi nói về A01/A02, dùng đúng nhãn “lượt live đã lưu và biên tập, chưa có human acceptance”.
 
 | Thời gian | Màn hình / lời nói chính |
 |---|---|
