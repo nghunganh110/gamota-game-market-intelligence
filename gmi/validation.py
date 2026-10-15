@@ -109,10 +109,9 @@ def validate_run(run: Run) -> Run:
 def apply_review(run: Run, review: Review) -> Run:
     if run.scope.mode == 'research' and review.decision != 'Reviewed research':
         raise ValueError('Research review must not assign a screening decision')
-    valid = {c.id for c in run.extraction.claims if c.status in {'mechanically_checked','human_verified'}}
-    if not set(review.verified_claim_ids) <= valid:
-        raise ValueError('Cannot verify rejected or missing claims')
     human_verified = {c.id for c in run.extraction.claims if c.status == 'human_verified'}
+    if not set(review.verified_claim_ids) <= human_verified:
+        raise ValueError('Decision may use only semantically reviewed claims')
     if review.answer_claim_ids and not review.final_answer.strip():
         raise ValueError('Answer citations require a final answer')
     if review.answer_basis == 'supported' and (not review.final_answer.strip() or not review.answer_claim_ids):

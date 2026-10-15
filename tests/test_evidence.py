@@ -68,6 +68,8 @@ def test_duplicate_tracking_and_repost_exact_content():
 
 
 def test_stop_requires_human_confirmed_evidence():
+    from gmi.models import ClaimReview
+    from gmi.validation import apply_claim_review
     r=raw()
     r.scope.blocker_definition='Rights holder confirms territory unavailable'
     r.extraction.blocker_claim_ids=['C2']
@@ -75,6 +77,8 @@ def test_stop_requires_human_confirmed_evidence():
     assert r.recommendation=='Tạm giữ'
     with pytest.raises(ValueError):
         apply_review(r,Review(reviewer='Test reviewer',decision='Dừng',reason='Confirmed territory blocker',verified_claim_ids=['C2']))
+    r=apply_claim_review(r,ClaimReview(claim_id='C2',reviewer='Test reviewer',
+                         verdict='supported',reason='The synthetic quote explicitly confirms this blocker.'))
     out=apply_review(r,Review(reviewer='Test reviewer',decision='Dừng',reason='Confirmed territory blocker',verified_claim_ids=['C2'],blocker_confirmed=True))
     assert out.review.decision=='Dừng'
     assert out.recommendation=='Tạm giữ'
