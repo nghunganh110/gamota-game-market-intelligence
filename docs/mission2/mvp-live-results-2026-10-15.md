@@ -28,12 +28,23 @@ Người dùng cho phép tối đa 4 Gemini API attempts theo [kế hoạch đã
 
 Hai câu dự thảo trên được viết sau khi đọc snapshot nguồn. Chúng **không** thay thế review từng claim trong app; đặc biệt các claim AI có câu chữ rộng hơn nguồn cần được sửa hoặc bác trước khi dùng làm citation của nhận định cuối.
 
+| Claim nên kiểm tra để tạo bản demo | Câu thu hẹp đề xuất cho form review | Chỉ số nên ghi | Nguồn |
+|---|---|---|---|
+| A01 C1 | Sensor Tower estimated that MABINOGI MOBILE exceeded one million cumulative Google Play and App Store downloads in South Korea after launch. | Estimated cumulative store downloads | [Sensor Tower](https://sensortower.com/ko/blog/Mabinogi-Mobile-achieves-cumulative-revenue-of-30-million) |
+| A01 C2 | Sensor Tower estimated approximately USD 30 million in cumulative South Korean mobile store revenue for MABINOGI MOBILE after launch. | Estimated cumulative App Store/Google Play revenue | [Sensor Tower](https://sensortower.com/ko/blog/Mabinogi-Mobile-achieves-cumulative-revenue-of-30-million) |
+| A01 C5 | Mobile Index listed 1.24 million users for MABINOGI MOBILE in its April 2025 South Korean mobile-game ranking, placing it fifth. | April users reported by Mobile Index; counting method unspecified | [Mobile Index](https://www.mobileindex.com/home/blog/post/mobilegame_chart_2504) |
+| A01 C6 | Mobile Index listed MABINOGI MOBILE fourth for April 2025 South Korean mobile-game revenue at KRW 26.9 billion. | April revenue reported by Mobile Index; method unspecified | [Mobile Index](https://www.mobileindex.com/home/blog/post/mobilegame_chart_2504) |
+| A02 C2 | Gamota's report announcement groups MMORPG with 4X Strategy and Team Battle as genres holding most Vietnam mobile-game revenue. | Combined genre statement; no MMORPG-only estimate | [Gamota](https://gamota.com/gamota-lab/reports/gamota-releases-vietnam-mobile-gaming-year-in-review-2025-report-revenue-reaches-825-million/) |
+
+Đây là **gợi ý của Codex để người review đối chiếu**, không phải các claim đã được người dùng duyệt. Ngày kết thúc “sau ra mắt” trong bài Sensor Tower lấy theo ngày đăng bài; nếu cần mốc đo chính xác hơn, giữ ở dạng chưa rõ thay vì tự gán ngày cho dữ liệu.
+
 ## Thay đổi phần mềm từ phép thử
 
 - Gate chủ thể nhận một chủ thể khi được ghi **nguyên vẹn** trong danh sách phân tách dấu phẩy; vẫn loại tên chỉ chứa chuỗi con hoặc chỉ là toàn thị trường. Gate cơ học không chứng minh ý nghĩa claim.
 - Câu trả lời sơ bộ nay hiển thị **từng finding với đúng claim ID của finding đó**, thay cho chỉ finding đầu nhưng liệt kê ID của tất cả findings.
-- Bộ test Python: **76 passed**. Đây là kiểm tra phần mềm, không tính là người dùng đã chấp nhận brief thật.
+- Reviewer nay có thể sửa câu claim và tên chỉ số khi đánh dấu `supported`; run/brief giữ bản AI gốc, và finding AI dựa trên claim đã sửa bị loại để tránh dùng lại câu kết luận cũ. Test UI và JSON roundtrip đã qua.
+- Bộ test Python: **78 passed**. Đây là kiểm tra phần mềm, không tính là người dùng đã chấp nhận brief thật.
 
 ## Kết luận phép thử
 
-Đã có một case live `completed` về mặt pipeline và một case thể loại có gap đúng hướng, nhưng **chưa có brief end-to-end được người review xác nhận**. Để demo trung thực: mở A01 JSON trong app, kiểm tra từng claim ảnh hưởng nhận định và sửa/bác diễn giải vượt quote; sau đó làm tương tự với A02, chỉ kết luận rằng bài Gamota nêu nhóm thể loại mà không tách MMORPG. Màn hình review hiện chưa cho sửa câu chữ claim/metric, nên các claim cần thu hẹp có thể phải bị đánh dấu `unsupported`/`unclear` cho đến khi có cơ chế chỉnh hoặc trích xuất lại. Không dùng attempt còn lại chỉ để thay đổi status.
+Đã có một case live `completed` về mặt pipeline và một case thể loại có gap đúng hướng, nhưng **chưa có brief end-to-end được người review xác nhận**. Để demo trung thực: mở A01 JSON trong app, kiểm tra từng claim ảnh hưởng nhận định và sửa/bác diễn giải vượt quote; sau đó làm tương tự với A02, chỉ kết luận rằng bài Gamota nêu nhóm thể loại mà không tách MMORPG. Form review nay cho thu hẹp claim/chỉ số, nhưng chỉ người đã xem nguồn mới được đánh dấu `supported`. Không dùng attempt còn lại chỉ để thay đổi status.

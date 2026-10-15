@@ -129,6 +129,14 @@ class ClaimReview(StrictModel):
     reviewer: str = Field(min_length=1)
     verdict: Literal['supported', 'unsupported', 'unclear']
     reason: str = Field(min_length=10)
+    corrected_text: str | None = Field(default=None, min_length=10)
+    corrected_metric: str | None = Field(default=None, min_length=3)
+
+    @model_validator(mode='after')
+    def correction_requires_support(self):
+        if self.verdict != 'supported' and (self.corrected_text or self.corrected_metric):
+            raise ValueError('Only a supported claim may carry reviewer corrections')
+        return self
 
 class Run(StrictModel):
     id: str

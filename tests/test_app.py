@@ -107,6 +107,25 @@ def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
     assert any('Nhận định đã review' in x.value for x in app.subheader)
 
 
+def test_reviewer_can_narrow_claim_in_ui_before_final_answer():
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
+    next(x for x in app.selectbox if x.label == 'Tình huống').select('other_game')
+    next(x for x in app.button if x.label == 'Chạy tình huống').click().run()
+    revised = 'Fictional Game Beta has a positive demand signal in the China concept study for Q1 2025.'
+    next(x for x in app.text_input if x.key == 'claim_reviewer_C1').set_value('Fixture reviewer')
+    next(x for x in app.selectbox if x.key == 'claim_verdict_C1').select('supported')
+    next(x for x in app.text_area if x.key == 'claim_corrected_text_C1').set_value(revised)
+    next(x for x in app.text_input if x.key == 'claim_corrected_metric_C1').set_value('concept-study demand signal')
+    next(x for x in app.text_area if x.key == 'claim_reason_C1').set_value('Narrowed the statement to what the quote supports.')
+    next(x for x in app.button if x.key == 'FormSubmitter:claim_review_C1-Lưu đánh giá claim').click().run()
+    assert not app.exception
+    run = app.session_state['run']
+    assert run.extraction.claims[0].text == revised
+    assert run.extraction.claims[0].status == 'human_verified'
+    assert not run.extraction.findings
+    assert run.proposed_extraction.claims[0].text != revised
+
+
 def test_cloud_hot_update_recovers_stale_imported_modules():
     # Isolate the simulated old process so reloaded Pydantic classes do not
     # affect other tests holding module-level class references.

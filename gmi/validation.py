@@ -35,6 +35,7 @@ def validate_run(run: Run) -> Run:
         raise ValueError('Duplicate source IDs')
     sources = {s.id: s for s in run.sources}
     latest_claim_reviews = {review.claim_id: review for review in run.claim_reviews}
+    revised_claim_ids = set()
     seen_urls, seen_text = {}, {}
     for s in run.sources:
         s.sha256 = hashlib.sha256(s.text.encode()).hexdigest()
@@ -49,6 +50,14 @@ def validate_run(run: Run) -> Run:
                 seen_text[content] = s.id
     for c in run.extraction.claims:
         c.issues = []
+        assessment = latest_claim_reviews.get(c.id)
+        if assessment and assessment.verdict == 'supported':
+            if assessment.corrected_text and assessment.corrected_text != c.text:
+                c.text = assessment.corrected_text
+                revised_claim_ids.add(c.id)
+            if assessment.corrected_metric and assessment.corrected_metric != c.metric:
+                c.metric = assessment.corrected_metric
+                revised_claim_ids.add(c.id)
         s = sources.get(c.source_id)
         if not s or s.read_status != 'read' or not s.text:
             c.issues.append('Source missing or unreadable')
@@ -75,7 +84,6 @@ def validate_run(run: Run) -> Run:
                 c.issues.append('Period mismatch; context only')
             if s.relevance != 'direct':
                 c.issues.append('Source not directly relevant')
-        assessment = latest_claim_reviews.get(c.id)
         if assessment and assessment.verdict != 'supported':
             c.issues.append(f'Reviewer marked {assessment.verdict}: {assessment.reason}')
         c.status = ('rejected' if c.issues else
@@ -84,7 +92,9 @@ def validate_run(run: Run) -> Run:
     valid = {c.id for c in run.extraction.claims if c.status in {'mechanically_checked', 'human_verified'}}
     sanitized = []
     for f in run.extraction.findings:
-        if set(f.claim_ids) <= valid:
+        if set(f.claim_ids) & revised_claim_ids:
+            run.errors.append('Finding excluded: supporting claim was revised by reviewer')
+        elif set(f.claim_ids) <= valid:
             sanitized.append(f)
         else:
             run.errors.append('Finding excluded: invalid claim references')
@@ -159,7 +169,9 @@ def apply_claim_review(run: Run, assessment: ClaimReview) -> Run:
         result.review_history.append(result.review)
     if result.proposed_extraction:
         result.extraction = result.proposed_extraction.model_copy(deep=True)
-    result.errors = [e for e in result.errors if e != 'Finding excluded: invalid claim references']
+    result.errors = [e for e in result.errors if e not in {
+        'Finding excluded: invalid claim references',
+        'Finding excluded: supporting claim was revised by reviewer'}]
     return validate_run(result)
 
 
@@ -176,5 +188,7 @@ def revise_source(run: Run, revision: SourceReview) -> Run:
         result.review_history.append(result.review)
     if result.proposed_extraction:
         result.extraction = result.proposed_extraction.model_copy(deep=True)
-    result.errors = [e for e in result.errors if e != 'Finding excluded: invalid claim references']
+    result.errors = [e for e in result.errors if e not in {
+        'Finding excluded: invalid claim references',
+        'Finding excluded: supporting claim was revised by reviewer'}]
     return validate_run(result)

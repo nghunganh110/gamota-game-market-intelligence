@@ -26,6 +26,7 @@ _scope_module = importlib.import_module('gmi.scope_input')
 _pipeline_module = importlib.import_module('gmi.pipeline')
 _old_mvp_api = ('criteria' not in _models_module.Scope.model_fields
                 or 'answer_basis' not in _models_module.Review.model_fields
+                or 'corrected_text' not in _models_module.ClaimReview.model_fields
                 or 'criteria' not in inspect.signature(_scope_module.scope_input_errors).parameters
                 or 'source_urls' not in inspect.signature(_pipeline_module.run_research).parameters)
 if _old_mvp_api or (_loaded_version is not None and _loaded_version != _runtime_version):
@@ -159,9 +160,6 @@ if run:
         st.write(summary['answer'])
         if summary['reviewed']:
             st.caption('Mức căn cứ do người review chọn: ' + ('có claim đã duyệt' if summary['answer_basis'] == 'supported' else 'chưa đủ căn cứ'))
-        if not summary['reviewed']:
-            for finding in summary['findings'][1:]:
-                st.write(finding.text)
         st.caption('Claim hỗ trợ: ' + (', '.join(summary['claim_ids']) or 'chưa có'))
         for claim_id in summary['claim_ids']:
             claim = next((item for item in run.extraction.claims if item.id == claim_id), None)
@@ -198,6 +196,9 @@ if run:
     sources = {s.id:s for s in run.sources}
     for claim in run.extraction.claims:
         with st.expander(f'{claim.id} · {claim.status} · {claim.text}'):
+            original = next((item for item in run.proposed_extraction.claims if item.id == claim.id), None) if run.proposed_extraction else None
+            if original and (original.text != claim.text or original.metric != claim.metric):
+                st.caption(f'AI đề xuất ban đầu: {original.text} · Chỉ số: {original.metric}')
             st.write(f'Loại: {claim.kind} · {claim.market} · {claim.period} · Chỉ số: {claim.metric}')
             st.text(claim.quote)
             s = sources.get(claim.source_id)
@@ -215,15 +216,19 @@ if run:
                 st.write(f'Review gần nhất: {latest.verdict} — {latest.reason} ({latest.reviewer})')
             with st.form(f'claim_review_{claim.id}'):
                 reviewer_name = st.text_input('Người kiểm tra claim', key=f'claim_reviewer_{claim.id}')
-                verdict = st.selectbox('Đoạn trích có hỗ trợ claim?', ['unclear', 'supported', 'unsupported'], key=f'claim_verdict_{claim.id}')
+                verdict = st.selectbox('Đoạn trích có hỗ trợ claim sau khi chỉnh?', ['unclear', 'supported', 'unsupported'], key=f'claim_verdict_{claim.id}')
+                corrected_text = st.text_area('Câu claim sau khi chỉnh (chỉ giữ điều quote hỗ trợ)', value=claim.text, key=f'claim_corrected_text_{claim.id}')
+                corrected_metric = st.text_input('Chỉ số sau khi chỉnh', value=claim.metric, key=f'claim_corrected_metric_{claim.id}')
                 claim_reason = st.text_area('Lý do đánh giá', key=f'claim_reason_{claim.id}')
                 claim_submit = st.form_submit_button('Lưu đánh giá claim')
             if claim_submit:
                 try:
-                    st.session_state.run = apply_claim_review(run, ClaimReview(claim_id=claim.id, reviewer=reviewer_name, verdict=verdict, reason=claim_reason))
+                    st.session_state.run = apply_claim_review(run, ClaimReview(claim_id=claim.id, reviewer=reviewer_name, verdict=verdict, reason=claim_reason,
+                                                                               corrected_text=corrected_text.strip() if verdict == 'supported' else None,
+                                                                               corrected_metric=corrected_metric.strip() if verdict == 'supported' else None))
                     st.rerun()
                 except Exception:
-                    st.error('Cần tên và lý do ít nhất 10 ký tự; không thể duyệt claim đã bị kiểm tra cơ học loại.')
+                    st.error('Cần tên, lý do và claim/chỉ số hợp lệ; không thể duyệt claim đã bị kiểm tra cơ học loại.')
     with st.expander('Sửa đánh giá chất lượng/độ phù hợp nguồn'):
         if run.sources:
             with st.form('source_review'):

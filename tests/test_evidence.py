@@ -176,6 +176,36 @@ def test_claim_review_marks_supported_and_blocks_mechanically_rejected():
         apply_claim_review(invalid,ClaimReview(claim_id='C1',reviewer='Reviewer',verdict='supported',reason='I want to accept it despite missing quote.'))
 
 
+def test_reviewer_can_narrow_claim_without_reusing_old_ai_finding():
+    from gmi.models import ClaimReview
+    from gmi.validation import apply_claim_review
+
+    run = replay('other_game')
+    original = run.extraction.claims[0].text
+    corrected = 'Fictional Game Beta has a positive demand signal in the China concept study for Q1 2025.'
+    review = ClaimReview(claim_id='C1', reviewer='Reviewer', verdict='supported',
+                         reason='The revised statement stays within the quoted synthetic study.',
+                         corrected_text=corrected, corrected_metric='concept-study demand signal')
+    narrowed = apply_claim_review(run, review)
+    assert narrowed.extraction.claims[0].text == corrected
+    assert narrowed.extraction.claims[0].metric == 'concept-study demand signal'
+    assert narrowed.extraction.claims[0].status == 'human_verified'
+    assert narrowed.proposed_extraction.claims[0].text == original
+    assert not narrowed.extraction.findings
+    assert 'Original AI claim' in brief_markdown(narrowed)
+    assert Run.model_validate_json(narrowed.model_dump_json()).claim_reviews[-1] == review
+    final = apply_review(narrowed, Review(reviewer='Reviewer', decision='Reviewed research',
+                                         reason='The narrow claim matches the cited synthetic quote.',
+                                         verified_claim_ids=['C1'],
+                                         final_answer='Only a synthetic China concept-study signal is supported.',
+                                         answer_claim_ids=['C1'], answer_basis='supported'))
+    assert final.review.answer_claim_ids == ['C1']
+
+    with pytest.raises(ValueError, match='Only a supported claim'):
+        ClaimReview(claim_id='C1', reviewer='Reviewer', verdict='unsupported',
+                    reason='This original claim is too broad.', corrected_text=corrected)
+
+
 def test_reviewed_answer_requires_human_checked_citations_and_survives_export():
     from gmi.models import ClaimReview
     from gmi.validation import apply_claim_review

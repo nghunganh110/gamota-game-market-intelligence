@@ -47,9 +47,12 @@ def brief_markdown(run: Run) -> str:
     for c in run.extraction.claims:
         s = sources.get(c.source_id)
         reviews = [x for x in run.claim_reviews if x.claim_id == c.id]
+        original = next((item for item in run.proposed_extraction.claims if item.id == c.id), None) if run.proposed_extraction else None
         lines += [f'### {c.id}: {c.text}', f'{c.kind}; {c.status}; {c.market}; {c.period}; metric: {c.metric}',
                   f'Measurement bounds: {c.period_start or "unknown"} to {c.period_end or "unknown"}',
                   f'> {c.quote}', f'Source: {s.url if s else "MISSING"}', f'Limitations: {c.limitations}', f'Issues: {"; ".join(c.issues) or "None mechanically detected"}']
+        if original and (original.text != c.text or original.metric != c.metric):
+            lines.append(f'Original AI claim: {original.text}; metric: {original.metric}')
         if reviews:
             latest = reviews[-1]
             lines.append(f'Reviewer: {latest.reviewer}; verdict: {latest.verdict}; reason: {latest.reason}')
