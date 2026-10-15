@@ -21,6 +21,7 @@ O01–O08 là **dữ liệu mô phỏng** để kiểm thử hành vi phần m�
 
 - Kiểm tra tự động xem đoạn trích có xuất hiện trong nguồn, đúng game, thị trường và thời gian hay không. Nó **chưa xác nhận AI hiểu đúng ý nghĩa**; O08 chứng minh điều này.
 - Trang web có thể chặn đọc, lỗi máy chủ hoặc thiếu chỉ số cần tìm. Khi đó ứng dụng báo điều chưa biết thay vì tự điền số.
+- A01 kiểm tra tín hiệu ra mắt ở Hàn Quốc. Mission 1 hướng tới cơ hội MABINOGI MOBILE tại Việt Nam; MVP chưa có đủ nguồn để kết luận câu hỏi đó. Đây là thay đổi phạm vi cần trình bày rõ với người chấm.
 - Chưa có kết luận thị trường cuối của A01/A02 được người phụ trách kiểm chứng và chấp nhận. [Ba câu trả lời bắt buộc](forced-decisions-draft.md) và [video demo](mission2-demo-captioned.mp4) giữ rõ giới hạn này.
 
 Kết quả chi tiết cũ của T01–T03 và các lần thử khác được lưu trong [báo cáo lịch sử](test-report-history.md) và [báo cáo A01/A02](mvp-live-results-2026-10-15.md). Chúng không thay thế đánh giá hiện tại ở trên.

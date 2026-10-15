@@ -14,6 +14,7 @@ Cập nhật: 15/10/2026. [Mã nguồn công khai](https://github.com/nghunganh1
 ## Cách demo
 
 1. Mở **A01**. Đọc câu trả lời sơ bộ, mở một ý để xem đoạn trích và trang gốc. Chỉ cách ứng dụng đánh giá mức phù hợp của nguồn.
+   Nói rõ A01 dùng số liệu Hàn Quốc để chứng minh quy trình, **chưa trả lời câu hỏi cơ hội MABINOGI tại Việt Nam** của Mission 1.
 2. Mở **A02**. Nói rằng nguồn nêu **nhóm** thể loại, chưa có doanh thu riêng MMORPG. Chỉ phần thông tin còn thiếu.
 3. Mở tình huống mô phỏng **Giới hạn: diễn giải sai đoạn trích**. Chỉ rõ chữ “không” trong nguồn và cho thấy người phụ trách có thể bác ý AI viết sai.
 4. Mở [báo cáo kiểm thử](test-report.md) và [ba câu trả lời](forced-decisions-draft.md). Nói rõ ví dụ thật là kết quả sơ bộ, chưa được người phụ trách chấp nhận là kết luận thị trường cuối.

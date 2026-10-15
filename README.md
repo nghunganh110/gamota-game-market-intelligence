@@ -24,6 +24,8 @@ Hai ví dụ A01/A02 được biên tập rút gọn từ các lần nghiên c�
 
 Nguồn web không đọc được, ngày công bố không rõ, dữ liệu sai thị trường hoặc thiếu số liệu đều được báo ra. Người phụ trách có thể sửa đánh giá nguồn, bác hoặc viết lại một ý, và ghi kết luận cuối kèm lý do. Ứng dụng chưa tự kiểm tra được mọi lỗi diễn giải, chưa đọc được mọi trang động hoặc nội dung trả phí, và chưa thay thế quyết định của con người.
 
+Mission 1 chọn MABINOGI MOBILE để xem cơ hội tại Việt Nam. Ví dụ A01 của MVP chỉ kiểm tra tín hiệu ra mắt tại Hàn Quốc, nơi có nguồn công khai đọc được; **chưa có kết luận về cơ hội tại Việt Nam**. Đây là thay đổi phạm vi để chứng minh quy trình, được giải thích trong [ba câu trả lời bắt buộc](docs/mission2/forced-decisions-draft.md).
+
 ## Chạy trên máy cá nhân
 
 Yêu cầu Python 3.13. Hai chế độ xem ví dụ và mô phỏng không cần khóa API.
