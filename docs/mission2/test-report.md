@@ -1,6 +1,6 @@
 # Mission 2 — kiểm thử MVP hiện tại
 
-Ngày cập nhật: 2026-10-15. **Phần mềm đã có đủ luồng nghiên cứu và review để thử nghiệm; giả thuyết về chất lượng nghiên cứu live chưa được xác nhận.** Lần cập nhật này không gọi Gemini. Bộ test phần mềm: **74 passed** (`.venv/bin/python -m pytest -q`), gồm phép thử mô phỏng Cloud giữ module cũ sau deploy. Con số này không đo độ đúng của nhận định thị trường. [Hai ca live đã chốt trước](mvp-live-acceptance-plan.md) đang chờ giới hạn API mới.
+Ngày cập nhật: 2026-10-15. **Phần mềm đã có đủ luồng nghiên cứu và review để thử nghiệm; giả thuyết về chất lượng nghiên cứu live chưa được xác nhận.** Sau khi người dùng cấp giới hạn mới, [A01/A02 đã chạy](mvp-live-results-2026-10-15.md): A01 `completed` về pipeline nhưng còn lỗi diễn giải cần review; A02 auto thất bại ở discovery, guided có một claim định tính về nhóm thể loại sau khi sửa gate. Bộ test phần mềm: **76 passed** (`.venv/bin/python -m pytest -q`). Con số này không đo độ đúng của nhận định thị trường.
 
 Core loop trong app: câu hỏi và tiêu chí → Gemini tìm URL **hoặc** người dùng cung cấp 1–6 URL → đọc HTML/PDF → Gemini đề xuất claim/finding → kiểm tra quote, game, market, kỳ đo, cutoff → hiển thị chất lượng và độ phù hợp của từng nguồn → người review kiểm tra ý nghĩa claim → viết nhận định cuối với claim đã duyệt → tải brief/JSON. JSON có thể mở lại để tiếp tục review.
 
@@ -18,11 +18,13 @@ Core loop trong app: câu hỏi và tiêu chí → Gemini tìm URL **hoặc** ng
 | Liên Quân Mobile, online do người dùng báo | Câu hỏi “thành công” phải có tiêu chí, kỳ và subject nhất quán | Trước bản sửa: MOBA thay tên game; ngày Q1 và ô Oct–Dec chỉ mâu thuẫn nếu đã bật nhập ngày thủ công (không rõ); 0/5 claim hợp lệ và 3 nguồn lỗi | **Chưa đạt** | Bản mới chặn câu hỏi đánh giá thiếu tiêu chí và cho nhập URL nguồn; chưa có rerun |
 | Guided URLs, offline mock | Không tốn call tìm kiếm; nguồn hỏng vẫn hiển thị; chỉ trích xuất nguồn đọc được | Test bỏ discovery, trích xuất nguồn đọc được trong một lần; nếu tất cả URL hỏng thì 0 model calls | **Đạt kỹ thuật**, chưa có live run | Cần thử bằng URL thật và Gemini thực tế |
 | Human-reviewed answer, offline UI | Chỉ dẫn claim đã kiểm tra ngữ nghĩa; sửa nguồn phải vô hiệu kết luận cũ | AppTest và unit test qua; export/JSON giữ kết luận; sửa source hủy review hiện hành | **Đạt kỹ thuật**, chưa có human acceptance nguồn thật | Review là một hành động có trách nhiệm, không phải quote match |
+| A01 trên MVP mới, live guided | Nguồn trực tiếp hỗ trợ nhận định launch strength hẹp | 2 nguồn đọc được, 6/6 claim qua cơ học, `completed`; nhiều claim cần thu hẹp/ghi attribution | **Chưa đạt human acceptance** | Pipeline completed không chứng minh câu chữ claim đã đúng; [báo cáo](mvp-live-results-2026-10-15.md) |
+| A02 trên MVP mới, live auto/guided | Câu hỏi thể loại khác chạy cùng pipeline và thể hiện giới hạn nguồn | Auto `ServerError` sau 1 attempt; guided đọc bài Gamota, sau sửa gate còn 1 claim nhóm thể loại qua cơ học | **Một phần** | Cần tách lỗi discovery khỏi chất lượng evidence; không suy thị phần MMORPG riêng |
 
 Artifacts O01–O08 ở [offline results](test-artifacts/offline-current/offline-results.md); báo cáo cũ giữ tại [lịch sử kiểm thử](test-report-history.md). Live artifacts T01–T03 nằm trong `runs/` local và không được public vì chứa snapshot toàn văn của nguồn.
 
 ## Phép thử còn cần để xác nhận giả thuyết
 
-Chạy bản online mới trên ít nhất **hai câu hỏi thật khác nhau**: một câu có nguồn trực tiếp đủ cho nhận định hẹp, một câu thiếu hoặc mâu thuẫn nguồn. Trước mỗi lượt ghi câu hỏi, tiêu chí, market, kỳ và kết quả mong đợi. Lưu JSON, mở lại, kiểm tra ít nhất các claim ảnh hưởng kết luận với trang gốc, rồi ghi actual, verdict và lý do. Một câu trả lời `partial` vẫn có thể hữu ích nếu nêu đúng phát hiện có nguồn và giới hạn; không được gọi “đạt” chỉ vì pipeline chạy xong.
+Hai câu hỏi thật đã chạy local bằng model thật, nhưng chưa có lượt online mới hay nhận định cuối được người review chấp nhận. Bước kế tiếp là mở lại JSON, kiểm tra ít nhất các claim ảnh hưởng kết luận với trang gốc, rồi ghi verdict và lý do. Một câu trả lời `partial` vẫn có thể hữu ích nếu nêu đúng phát hiện có nguồn và giới hạn; không được gọi “đạt” chỉ vì pipeline chạy xong.
 
 Người dùng/chủ đề tài là người xác nhận cuối. Chưa có xác nhận đó trên bản mới; video và Forced Decisions cần cập nhật theo hai lượt thực tế này.

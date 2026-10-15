@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 from gmi.models import Run, Review, Finding
 from gmi.replay import replay, FIXTURES
-from gmi.validation import validate_run, apply_review
+from gmi.validation import validate_run, apply_review, subject_matches
 from gmi.export import brief_markdown
 
 
@@ -99,6 +99,16 @@ def test_multiple_game_questions_without_hardcoding():
     assert b.recommendation is None
 
 
+def test_group_subject_accepts_exact_member_without_matching_broader_market():
+    assert subject_matches('Mobile MMORPG', 'Mobile MMORPG, 4X Strategy, Team Battle')
+    assert not subject_matches('Mobile MMORPG', 'Vietnam Mobile Gaming Market')
+    assert not subject_matches('Game Alpha', 'Game Alphabet, Game Beta')
+    r = raw()
+    r.scope.subject = 'Mobile MMORPG'
+    r.extraction.claims[0].subject = 'Mobile MMORPG, 4X Strategy, Team Battle'
+    assert 'Subject mismatch' not in validate_run(r).extraction.claims[0].issues
+
+
 def test_known_semantic_failure_is_exposed_not_mislabeled_verified():
     # This passes as a regression documenting a PRODUCT FAILURE, not entailment success.
     r=replay('semantic_failure')
@@ -113,6 +123,15 @@ def test_fabricated_finding_excluded():
     r=raw(); r.extraction.findings=[Finding(text='Unsupported synthesis',claim_ids=['FAKE'])]
     out=validate_run(r)
     assert not out.extraction.findings and out.status=='partial'
+
+
+def test_preliminary_answer_shows_each_finding_with_its_own_claims():
+    from gmi.export import result_summary
+    r = replay('good')
+    r.extraction.findings.append(Finding(text='A second, narrower signal.', claim_ids=['C1']))
+    summary = result_summary(r)
+    for finding in r.extraction.findings:
+        assert f'- {finding.text} [{", ".join(finding.claim_ids)}]' in summary['answer']
 
 
 def test_source_review_recomputes_gates_and_keeps_history():

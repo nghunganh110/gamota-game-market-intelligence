@@ -9,10 +9,14 @@ def result_summary(run: Run) -> dict:
     action = next((g.action for g in run.extraction.gaps if g.action),
                   'Kiểm tra các claim trọng yếu và quyết định bước nghiên cứu tiếp theo.')
     reviewed_answer = bool(run.review and run.review.final_answer.strip())
+    preliminary_answer = '\n'.join(
+        f'- {finding.text} [{", ".join(finding.claim_ids)}]'
+        for finding in findings
+    )
     return {
         'findings': findings,
         'claim_ids': run.review.answer_claim_ids if reviewed_answer else claim_ids,
-        'answer': run.review.final_answer if reviewed_answer else findings[0].text if findings else (
+        'answer': run.review.final_answer if reviewed_answer else preliminary_answer if findings else (
             'Chưa đủ bằng chứng hợp lệ để trả lời câu hỏi này.'
             + (f' Có {eligible_count} claim qua kiểm tra cơ học, nhưng chưa có kết luận nào được hỗ trợ đầy đủ.'
                if eligible_count else '')

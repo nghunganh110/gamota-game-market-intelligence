@@ -15,6 +15,16 @@ def normalize(text):
     return re.sub(r'\s+', ' ', text).strip().casefold()
 
 
+def subject_matches(scope_subject: str, claim_subject: str) -> bool:
+    """Accept an exact subject or its explicit membership in a comma-separated group.
+
+    Group evidence still needs semantic review; it cannot establish a metric for
+    the requested subject alone.
+    """
+    wanted = normalize(scope_subject)
+    return wanted in {normalize(part) for part in claim_subject.split(',')}
+
+
 def validate_run(run: Run) -> Run:
     """Mechanical traceability checks. Does not prove semantic entailment."""
     run = run.model_copy(deep=True)
@@ -52,7 +62,7 @@ def validate_run(run: Run) -> Run:
             today = datetime.now(timezone.utc).date()
             if run.scope.strict_cutoff and run.scope.cutoff < today and not s.historical_snapshot:
                 c.issues.append('No snapshot proving content existed at historical cutoff')
-            if normalize(c.subject) != normalize(run.scope.subject):
+            if not subject_matches(run.scope.subject, c.subject):
                 c.issues.append('Subject mismatch')
             if normalize(c.market) != normalize(run.scope.market):
                 c.issues.append('Market mismatch; context only')
