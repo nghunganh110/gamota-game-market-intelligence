@@ -6,12 +6,13 @@ def test_env_load_is_literal_allowlisted_and_does_not_override_terminal(tmp_path
     path = tmp_path/'.env'
     path.write_text('# private config\nGEMINI_API_KEY="fixture=secret"\n'
                     'GEMINI_MODEL=local-model\nGMI_BUDGET_NOTE=literal $(command) ${HOME}\n'
-                    'PATH=/malicious\n')
+                    'GMI_LIVE_ACCESS_CODE="fixture private code"\nPATH=/malicious\n')
     env = {'GEMINI_MODEL':'terminal-model'}
     assert load_local_env(path, env) is None
     assert env['GEMINI_API_KEY']=='fixture=secret'
     assert env['GEMINI_MODEL']=='terminal-model'
     assert env['GMI_BUDGET_NOTE']=='literal $(command) ${HOME}'
+    assert env['GMI_LIVE_ACCESS_CODE']=='fixture private code'
     assert 'PATH' not in env
 
 

@@ -27,6 +27,28 @@ def test_live_ui_disabled_by_default(monkeypatch):
     assert app.button[0].disabled
 
 
+def test_live_ui_requires_access_code(monkeypatch):
+    monkeypatch.setattr('gmi.config.load_local_env', lambda: None)
+    settings = {
+        'GMI_LIVE_ENABLED': '1', 'GMI_KEY_AUTHORIZED': '1',
+        'GMI_BUDGET_NOTE': 'One browser session, at most two attempts',
+        'GEMINI_MODEL': 'mock-model', 'GEMINI_API_KEY': 'mock-key',
+        'GMI_LIVE_ACCESS_CODE': 'a-long-test-access-code',
+    }
+    for key, value in settings.items():
+        monkeypatch.setenv(key, value)
+    app = AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run()
+    app.radio[0].set_value('Nghiên cứu Gemini').run()
+    assert next(x for x in app.button if x.label == 'Nghiên cứu').disabled
+    next(x for x in app.text_input if x.label == 'Mã truy cập Gemini').set_value('wrong-code')
+    next(x for x in app.button if x.label == 'Mở Gemini').click().run()
+    assert next(x for x in app.button if x.label == 'Nghiên cứu').disabled
+    next(x for x in app.text_input if x.label == 'Mã truy cập Gemini').set_value(settings['GMI_LIVE_ACCESS_CODE'])
+    next(x for x in app.button if x.label == 'Mở Gemini').click().run()
+    assert not app.exception
+    assert not next(x for x in app.button if x.label == 'Nghiên cứu').disabled
+
+
 def test_reviewer_can_reject_semantically_false_claim_in_ui():
     app=AppTest.from_file(Path(__file__).resolve().parent.parent/'app.py').run(timeout=20)
     next(x for x in app.selectbox if x.label=='Tình huống').select('semantic_failure')

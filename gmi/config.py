@@ -6,6 +6,7 @@ PROJECT_ENV = Path(__file__).resolve().parents[1] / '.env'
 ALLOWED_KEYS = frozenset({
     'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GEMINI_MODEL',
     'GMI_LIVE_ENABLED', 'GMI_KEY_AUTHORIZED', 'GMI_BUDGET_NOTE', 'GMI_MAX_CALLS',
+    'GMI_LIVE_ACCESS_CODE',
 })
 
 

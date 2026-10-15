@@ -2,9 +2,9 @@
 
 MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn → đọc HTML/PDF riêng → Claim Ledger → kiểm tra evidence → brief → người phụ trách review và quyết định.
 
-**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **56 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. **Chưa có deploy online hoặc kết quả chi phí tiền tệ.** Replay sau sửa không thay thế bằng chứng fresh retrieval.
+**Trạng thái đã xác nhận:** app chạy local; bộ test hiện tại **57 đạt**; 8 acceptance cases synthetic/fault injection và [T01–T03 với model thật](docs/mission2/live-test-progress.md) đã chạy. Các research runs còn partial và lỗi ngữ nghĩa; chưa có human acceptance end-to-end. **Chưa có deploy online hoặc kết quả chi phí tiền tệ.** Replay sau sửa không thay thế bằng chứng fresh retrieval.
 
-**Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; claim bị đánh dấu unsupported hoặc unclear không còn hỗ trợ finding. Export giữ review. Bộ test hiện tại **56 passed**. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
+**Cập nhật UI:** Sau phản hồi người dùng rằng brief T01 thiếu kết luận, màn hình kết quả nay đưa câu trả lời sơ bộ, claim hỗ trợ và bước kiểm chứng lên đầu. Mỗi claim có review supported/unsupported/unclear với tên và lý do; claim bị đánh dấu unsupported hoặc unclear không còn hỗ trợ finding. Export giữ review. Bộ test hiện tại **57 passed**. Kết luận vẫn là đề xuất AI cho đến khi người dùng review nội dung; lỗi diễn giải ngữ nghĩa chưa được tự động chữa.
 
 [Extraction mới trên snapshots](docs/mission2/live-T01-extraction-review.md) đã chạy với 1 API call: 5/6 claim vượt cơ học, xác nhận bản sửa kỳ đo trên output model thật; partial vì một quote ghép không khớp. AI audit vẫn phát hiện kết luận vượt bằng chứng. Đây là replay có model call mới, không phải một lượt tìm nguồn live mới.
 
@@ -59,8 +59,9 @@ Quyền dùng key đã được người dùng xác nhận. Key/model đã đư�
 | `GMI_KEY_AUTHORIZED=1` | Quyền sử dụng key cho MVP |
 | `GMI_BUDGET_NOTE` | Giới hạn đã xác nhận, không chứa key |
 | `GMI_MAX_CALLS` | Tổng API attempts trong một browser session, 1–3; mặc định 2 |
+| `GMI_LIVE_ACCESS_CODE` | Mã riêng ít nhất 12 ký tự để mở Gemini trên UI; không phải API key |
 
-Một run tối đa một search call, sáu nguồn, một extraction call. Không retry API tự động. Search queries bên trong call do model quyết định, không đồng nghĩa với số API attempts. Đọc tối đa 4 MB/30 giây/30k ký tự mỗi nguồn, PDF ≤50 trang. Lưu usage có sẵn; **chưa tính phí tiền tệ**. Session cap không phải quota account hay trần tiền tệ; session mới hoặc process mới có thể reset. Public demo phải giữ live tắt đến khi có cơ chế hạn mức toàn hệ thống được duyệt.
+Một run tối đa một search call, sáu nguồn, một extraction call. Không retry API tự động. Search queries bên trong call do model quyết định, không đồng nghĩa với số API attempts. Đọc tối đa 4 MB/30 giây/30k ký tự mỗi nguồn, PDF ≤50 trang. Lưu usage có sẵn; **chưa tính phí tiền tệ**. Session cap không phải quota account hay trần tiền tệ; session mới hoặc process mới có thể reset. UI nay yêu cầu mã truy cập riêng trước khi bật nút live. Để dùng trên Cloud, cấu hình Secrets và hạn mức ở phía nhà cung cấp theo [hướng dẫn Gemini online](docs/mission2/online-gemini-setup.md). Mã truy cập chỉ giới hạn người dùng; nó không tự đặt trần chi phí toàn tài khoản.
 
 SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/python-genai), [Google Search grounding](https://ai.google.dev/gemini-api/docs/google-search), [structured outputs](https://ai.google.dev/gemini-api/docs/structured-output). Lần T01 đã nhận search grounding và structured extraction bằng cấu hình của người dùng; model ID lưu trong run là cấu hình client, chưa xác minh độc lập danh tính model phía server.
 
@@ -75,6 +76,6 @@ SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/pyt
 
 ## Demo và bài nộp
 
-Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. UI mới nhất và 56 tests đã được push lên `main` (commit `ffb4ff4`). Demo local đã chạy; trước đây người dùng chọn **giữ demo local** khi Streamlit yêu cầu cấp quyền GitHub. Chưa cấp quyền/deploy online. Nếu tiếp tục, người dùng kết nối GitHub với Streamlit Community Cloud và tạo app từ repo này, nhánh `main`, entrypoint `app.py`, Python 3.13 và `requirements.txt`; không cấu hình live key cho public demo. Cần smoke test URL online sau khi deploy; hiện chưa có URL được xác minh. [Checklist deploy](docs/mission2/deploy-checklist.md).
+Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. Demo local đã chạy; chưa có URL online được xác minh. Người dùng cần kết nối GitHub với Streamlit Community Cloud và tạo app từ repo này, nhánh `main`, entrypoint `app.py`, Python 3.13. Cloud Secrets có thể cấp key/model cho chế độ Gemini sau khi chủ key xác nhận phạm vi sử dụng; UI yêu cầu mã truy cập riêng. Cần smoke test URL online sau khi deploy. [Checklist deploy](docs/mission2/deploy-checklist.md).
 
 [Technical plan](docs/mission2/mission2-technical-plan.md) giữ nguyên lịch sử đề xuất; [Evidence Log](docs/mission2/mission2-evidence-log.md) ghi xác nhận mới. Báo cáo Mission 1 trong `docs/mission1` chỉ là tài liệu nền. [Ba Forced Decisions](docs/mission2/forced-decisions-draft.md) và [kịch bản video](docs/mission2/video-script.md) là AI-PROPOSAL để người dùng rà soát. Không tự nộp thay người dùng.

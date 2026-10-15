@@ -1,4 +1,6 @@
 from datetime import date
+import hashlib
+import hmac
 import json
 import os
 import streamlit as st
@@ -24,9 +26,23 @@ if mode.startswith('Demo'):
     if st.button('Chạy tình huống', type='primary'):
         st.session_state.run = replay(case)
 else:
-    ready = os.environ.get('GMI_LIVE_ENABLED') == '1' and os.environ.get('GMI_KEY_AUTHORIZED') == '1' and bool(os.environ.get('GMI_BUDGET_NOTE')) and bool(os.environ.get('GEMINI_MODEL')) and bool(os.environ.get('GEMINI_API_KEY') or os.environ.get('GOOGLE_API_KEY'))
+    access_code = os.environ.get('GMI_LIVE_ACCESS_CODE', '')
+    ready = os.environ.get('GMI_LIVE_ENABLED') == '1' and os.environ.get('GMI_KEY_AUTHORIZED') == '1' and bool(os.environ.get('GMI_BUDGET_NOTE', '').strip()) and bool(os.environ.get('GEMINI_MODEL', '').strip()) and bool(os.environ.get('GEMINI_API_KEY') or os.environ.get('GOOGLE_API_KEY')) and len(access_code) >= 12
+    access_fingerprint = hashlib.sha256(access_code.encode()).hexdigest()
+    live_unlocked = st.session_state.get('live_unlocked_for') == access_fingerprint
     if not ready:
-        st.warning('Live chưa sẵn sàng: cần quyền dùng key, giới hạn sử dụng, model và cấu hình riêng trên máy. Không nhập key vào giao diện.')
+        st.warning('Live chưa sẵn sàng: cần key, model, giới hạn sử dụng và mã truy cập riêng dài ít nhất 12 ký tự trong cấu hình server. Không nhập API key vào giao diện.')
+    elif not live_unlocked:
+        st.info('Chế độ Gemini dùng API key của chủ app. Nhập mã truy cập được cấp riêng để mở trong phiên này.')
+        with st.form('live_unlock'):
+            entered_code = st.text_input('Mã truy cập Gemini', type='password')
+            unlock = st.form_submit_button('Mở Gemini')
+        if unlock:
+            if hmac.compare_digest(entered_code, access_code):
+                st.session_state.live_unlocked_for = access_fingerprint
+                st.rerun()
+            else:
+                st.error('Mã truy cập không đúng.')
     with st.form('research'):
         question = st.text_area('Câu hỏi nghiên cứu', placeholder='Bạn muốn kiểm chứng tín hiệu nào?')
         subject = st.text_input('Game hoặc thể loại')
@@ -39,18 +55,18 @@ else:
         kind = st.selectbox('Mục đích', ['research','screening'])
         blocker_definition = st.text_area('Hard blocker xác định trước (nếu Screening)', placeholder='Ví dụ: chủ quyền xác nhận territory không khả dụng')
         strict = st.checkbox('Chỉ dùng evidence xác định được trước cutoff', value=True)
-        submitted = st.form_submit_button('Nghiên cứu', disabled=not ready)
-    if submitted:
+        submitted = st.form_submit_button('Nghiên cứu', disabled=not (ready and live_unlocked))
+    if submitted and ready and live_unlocked:
         try:
             scope = Scope(question=question,subject=subject,market=market,period=period,cutoff=cutoff,mode=kind,strict_cutoff=strict,blocker_definition=blocker_definition,period_start=period_start if bounded_period else None,period_end=period_end if bounded_period else None)
-            # A session attempt limit survives Streamlit reruns; public demo must keep live disabled.
+            # This limit belongs to one browser session; use provider-side quota for an account-wide cap.
             if 'live_policy' not in st.session_state:
                 st.session_state.live_policy = LivePolicy(enabled=True,authorized=True,budget_note=os.environ['GMI_BUDGET_NOTE'],max_calls=int(os.environ.get('GMI_MAX_CALLS','2')))
             provider = GeminiProvider(st.session_state.live_policy)
             with st.spinner('Tìm nguồn và đọc bằng chứng…'):
                 st.session_state.run = run_research(scope,provider,DocumentReader())
         except Exception as exc:
-            st.error(f'Không thể chạy ({type(exc).__name__}). Kiểm tra scope/cấu hình local; không có kết quả thay thế.')
+            st.error(f'Không thể chạy ({type(exc).__name__}). Kiểm tra scope/cấu hình server; không có kết quả thay thế.')
 
 run = st.session_state.get('run')
 if run:
