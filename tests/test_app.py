@@ -1,4 +1,6 @@
 from pathlib import Path
+import subprocess
+import sys
 from streamlit.testing.v1 import AppTest
 
 def test_replay_ui_and_review():
@@ -103,3 +105,26 @@ def test_research_reviewer_can_publish_narrow_answer_with_checked_source():
     assert not app.exception
     assert app.session_state['run'].review.answer_claim_ids == ['C1']
     assert any('Nhận định đã review' in x.value for x in app.subheader)
+
+
+def test_cloud_hot_update_recovers_stale_imported_modules():
+    # Isolate the simulated old process so reloaded Pydantic classes do not
+    # affect other tests holding module-level class references.
+    code = '''
+import inspect
+import gmi.models as models
+import gmi.scope_input as scope_input
+class OldScope:
+    model_fields = {}
+models.Scope = OldScope
+scope_input.scope_input_errors = lambda question, subject, period, bounded, start, end, cutoff, strict: []
+from streamlit.testing.v1 import AppTest
+app = AppTest.from_file('app.py').run(timeout=20)
+assert not app.exception
+assert 'criteria' in models.Scope.model_fields
+assert 'criteria' in inspect.signature(scope_input.scope_input_errors).parameters
+'''
+    project = Path(__file__).resolve().parent.parent
+    result = subprocess.run([sys.executable, '-c', code], cwd=project,
+                            capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, result.stderr

@@ -2,9 +2,47 @@ from datetime import date
 from collections import Counter
 import hashlib
 import hmac
+import importlib
+import inspect
 import json
 import os
+from pathlib import Path
+import sys
 import streamlit as st
+
+st.set_page_config(page_title='Gamota Market Intelligence', layout='wide')
+
+# Streamlit reruns app.py in an existing process. A Cloud pull can replace local
+# modules while Python still has their old classes/functions in sys.modules.
+import gmi as _gmi_package
+_code_hash = hashlib.sha256()
+for _path in sorted((Path(__file__).resolve().parent / 'gmi').glob('*.py')):
+    _code_hash.update(_path.name.encode())
+    _code_hash.update(_path.read_bytes())
+_runtime_version = _code_hash.hexdigest()
+_loaded_version = getattr(_gmi_package, '_runtime_version', None)
+_models_module = importlib.import_module('gmi.models')
+_scope_module = importlib.import_module('gmi.scope_input')
+_pipeline_module = importlib.import_module('gmi.pipeline')
+_old_mvp_api = ('criteria' not in _models_module.Scope.model_fields
+                or 'answer_basis' not in _models_module.Review.model_fields
+                or 'criteria' not in inspect.signature(_scope_module.scope_input_errors).parameters
+                or 'source_urls' not in inspect.signature(_pipeline_module.run_research).parameters)
+if _old_mvp_api or (_loaded_version is not None and _loaded_version != _runtime_version):
+    for _name in ('gmi.models', 'gmi.scope_input', 'gmi.source_input',
+                  'gmi.reader', 'gmi.validation', 'gmi.replay',
+                  'gmi.gemini', 'gmi.pipeline', 'gmi.export'):
+        if _name in sys.modules:
+            importlib.reload(sys.modules[_name])
+    _gmi_package._runtime_version = _runtime_version
+if st.session_state.get('_runtime_version') != _runtime_version:
+    _had_run = 'run' in st.session_state
+    st.session_state.pop('run', None)
+    st.session_state.pop('live_policy', None)
+    st.session_state['_runtime_version'] = _runtime_version
+    if _had_run:
+        st.session_state['_run_cleared_for_update'] = True
+
 from gmi.models import Run, Scope, Review, SourceReview, ClaimReview
 from gmi.replay import replay
 from gmi.gemini import LivePolicy, GeminiProvider
@@ -18,9 +56,10 @@ from gmi.source_input import parse_source_urls
 
 load_local_env()
 
-st.set_page_config(page_title='Gamota Market Intelligence', layout='wide')
 st.title('Game Market Intelligence')
 st.caption('Từ câu hỏi đến bằng chứng có thể kiểm tra. Người phụ trách quyết định cuối.')
+if st.session_state.pop('_run_cleared_for_update', False):
+    st.info('Ứng dụng vừa cập nhật mã nguồn. Run trong bộ nhớ phiên cũ đã được xóa; mở lại từ JSON đã tải nếu cần tiếp tục review.')
 labels = {'good':'Tín hiệu đủ cho sàng lọc', 'conflict':'Hai nguồn mâu thuẫn', 'missing':'Thiếu D30 retention', 'semantic_failure':'Giới hạn: diễn giải sai đoạn trích', 'other_game':'Game khác, thị trường khác'}
 mode = st.radio('Cách chạy', ['Demo offline — synthetic', 'Nghiên cứu Gemini', 'Mở run đã lưu'], horizontal=True)
 if mode.startswith('Demo'):

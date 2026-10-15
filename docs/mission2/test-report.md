@@ -1,6 +1,6 @@
 # Mission 2 — kiểm thử MVP hiện tại
 
-Ngày cập nhật: 2026-10-15. **Phần mềm đã có đủ luồng nghiên cứu và review để thử nghiệm; giả thuyết về chất lượng nghiên cứu live chưa được xác nhận.** Lần cập nhật này không gọi Gemini. Bộ test phần mềm: **73 passed** (`.venv/bin/python -m pytest -q`). Con số này không đo độ đúng của nhận định thị trường. [Hai ca live đã chốt trước](mvp-live-acceptance-plan.md) đang chờ giới hạn API mới.
+Ngày cập nhật: 2026-10-15. **Phần mềm đã có đủ luồng nghiên cứu và review để thử nghiệm; giả thuyết về chất lượng nghiên cứu live chưa được xác nhận.** Lần cập nhật này không gọi Gemini. Bộ test phần mềm: **74 passed** (`.venv/bin/python -m pytest -q`), gồm phép thử mô phỏng Cloud giữ module cũ sau deploy. Con số này không đo độ đúng của nhận định thị trường. [Hai ca live đã chốt trước](mvp-live-acceptance-plan.md) đang chờ giới hạn API mới.
 
 Core loop trong app: câu hỏi và tiêu chí → Gemini tìm URL **hoặc** người dùng cung cấp 1–6 URL → đọc HTML/PDF → Gemini đề xuất claim/finding → kiểm tra quote, game, market, kỳ đo, cutoff → hiển thị chất lượng và độ phù hợp của từng nguồn → người review kiểm tra ý nghĩa claim → viết nhận định cuối với claim đã duyệt → tải brief/JSON. JSON có thể mở lại để tiếp tục review.
 
