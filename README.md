@@ -8,7 +8,7 @@ MVP Mission 2 cho Publishing/Strategy Lead: câu hỏi → Gemini tìm nguồn �
 
 [Extraction mới trên snapshots](docs/mission2/live-T01-extraction-review.md) đã chạy với 1 API call: 5/6 claim vượt cơ học, xác nhận bản sửa kỳ đo trên output model thật; partial vì một quote ghép không khớp. AI audit vẫn phát hiện kết luận vượt bằng chứng. Đây là replay có model call mới, không phải một lượt tìm nguồn live mới.
 
-[T02 game thứ hai](docs/mission2/live-T02-review.md) đã chạy live: 6/10 claim qua cơ học, partial vì scope và còn lỗi ngữ nghĩa. Xem [tiến độ kiểm chứng](docs/mission2/live-test-progress.md); T03 và human acceptance vẫn còn thiếu.
+[T02 game thứ hai](docs/mission2/live-T02-review.md) đã chạy live: 6/10 claim qua cơ học, partial vì scope và còn lỗi ngữ nghĩa. Xem [tiến độ kiểm chứng](docs/mission2/live-test-progress.md); T03 cũng đã chạy, human acceptance vẫn còn thiếu.
 
 ## Chạy local
 
@@ -49,7 +49,7 @@ CLI/app hỗ trợ đọc `.env` riêng trong root project; điền key/model tr
 
 [Hướng dẫn live T01](docs/mission2/live-run-guide.md) có scope, lệnh preflight không gọi API và lệnh chạy một lần để lưu run/brief/mẫu audit. Lần live đầu đã có [báo cáo và AI audit](docs/mission2/live-T01-review.md); lần gọi tiếp theo cần nằm trong giới hạn sử dụng được xác nhận.
 
-Quyền dùng key đã được người dùng xác nhận; **giới hạn chi phí/lượt gọi, model và key local vẫn chưa được cấu hình**. Không nhập key vào chat, source code hoặc GitHub. Đặt các biến môi trường riêng trên máy sau khi có giới hạn được xác nhận:
+Quyền dùng key đã được người dùng xác nhận. Key/model đã được người dùng cấu hình trong `.env` local cho T03; file này không nằm trên GitHub. Giới hạn hai calls cho T03 đã được sử dụng. Không nhập key vào chat, source code hoặc GitHub. Nếu chạy live thêm, xác định giới hạn sử dụng mới và cấu hình riêng trên máy:
 
 | Biến | Ý nghĩa |
 |---|---|
@@ -75,6 +75,6 @@ SDK integration theo [Google GenAI Python SDK](https://github.com/googleapis/pyt
 
 ## Demo và bài nộp
 
-Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. Demo local đã chạy; người dùng chọn **giữ demo local trước** khi Streamlit yêu cầu cấp quyền GitHub. Chưa cấp quyền/deploy online. Khi người dùng muốn tiếp tục, deploy cần đăng nhập nền tảng và smoke test. Trên Streamlit Community Cloud, chọn `app.py`, Python 3.13 và `requirements.txt`; demo public ban đầu chỉ replay, không đặt live key. Chưa có URL deployment được xác minh.
+Repo public: https://github.com/nghunganh110/gamota-game-market-intelligence. UI mới nhất và 56 tests đã được push lên `main` (commit `ffb4ff4`). Demo local đã chạy; trước đây người dùng chọn **giữ demo local** khi Streamlit yêu cầu cấp quyền GitHub. Chưa cấp quyền/deploy online. Nếu tiếp tục, người dùng kết nối GitHub với Streamlit Community Cloud và tạo app từ repo này, nhánh `main`, entrypoint `app.py`, Python 3.13 và `requirements.txt`; không cấu hình live key cho public demo. Cần smoke test URL online sau khi deploy; hiện chưa có URL được xác minh. [Checklist deploy](docs/mission2/deploy-checklist.md).
 
 [Technical plan](docs/mission2/mission2-technical-plan.md) giữ nguyên lịch sử đề xuất; [Evidence Log](docs/mission2/mission2-evidence-log.md) ghi xác nhận mới. Báo cáo Mission 1 trong `docs/mission1` chỉ là tài liệu nền. [Ba Forced Decisions](docs/mission2/forced-decisions-draft.md) và [kịch bản video](docs/mission2/video-script.md) là AI-PROPOSAL để người dùng rà soát. Không tự nộp thay người dùng.
